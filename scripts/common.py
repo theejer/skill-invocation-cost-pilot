@@ -34,7 +34,7 @@ CONFIGS = {
     "pi-anthropic":       {"harness": "pi",       "model": f"openrouter/{OPENROUTER_ANTHROPIC}", "route": "openrouter", "price": ("openrouter", OPENROUTER_ANTHROPIC)},
 }
 
-PINNED_VERSIONS = {"claude": "2.1.288", "codex": "0.160.0", "opencode": "2.0.22", "pi": "1.0.0"}
+PINNED_VERSIONS = {"claude": "2.1.289", "codex": "0.160.0", "opencode": "2.0.22", "pi": "1.0.0"}
 
 TOKEN_FIELDS = ["input_uncached", "cache_write", "cache_write_1h", "cache_read", "output", "reasoning"]
 

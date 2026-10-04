@@ -20,7 +20,7 @@ Cost pilot for a study of skill invocation in LLM coding agents. It measures, fo
 | `pi-openai` | Pi | GPT-6.1 Sol | OpenAI (subscription login) |
 | `pi-anthropic` | Pi | Claude Sonnet 5.5 | OpenRouter |
 
-Each run names its model explicitly and uses the harness's default effort. Harness versions are pinned in `scripts/common.py` (Claude Code 2.1.288, Codex 0.160.0, OpenCode 2.0.22, Pi 1.0.0); a run on any other version stops with an error. Subscription-login runs are costed at the same model's API prices.
+Each run names its model explicitly and uses the harness's default effort. Harness versions are pinned in `scripts/common.py` (Claude Code 2.1.289, Codex 0.160.0, OpenCode 2.0.22, Pi 1.0.0); a run on any other version stops with an error. Subscription-login runs are costed at the same model's API prices.
 
 ## Fixture and prompts
 
