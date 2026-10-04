@@ -1,0 +1,114 @@
+{
+  "cc-anthropic": {
+    "harness": "claude",
+    "harness_version": "2.1.289",
+    "model": "claude-sonnet-5-5",
+    "route": "direct",
+    "effort": "harness default",
+    "first_turn_context": {
+      "n": 3,
+      "min": 19434.0,
+      "median": 19434.0,
+      "mean": 19434.3333,
+      "max": 19435.0
+    }
+  },
+  "codex-openai": {
+    "harness": "codex",
+    "harness_version": "0.160.0",
+    "model": "gpt-6.1-sol",
+    "route": "direct",
+    "effort": "harness default",
+    "first_turn_context": {
+      "n": 3,
+      "min": 14429.0,
+      "median": 14429.0,
+      "mean": 14430.0,
+      "max": 14432.0
+    }
+  },
+  "codex-anthropic": {
+    "harness": "codex",
+    "harness_version": "0.160.0",
+    "model": "anthropic/claude-sonnet-5.5",
+    "route": "openrouter",
+    "effort": "harness default",
+    "first_turn_context": {
+      "n": 3,
+      "min": 15553.0,
+      "median": 15556.0,
+      "mean": 15556.0,
+      "max": 15559.0
+    }
+  },
+  "opencode-openai": {
+    "harness": "opencode",
+    "harness_version": "2.0.22",
+    "model": "gpt-6.1-sol",
+    "route": "direct",
+    "effort": "default",
+    "first_turn_context": {
+      "n": 3,
+      "min": 6222.0,
+      "median": 6222.0,
+      "mean": 6222.0,
+      "max": 6222.0
+    }
+  },
+  "opencode-anthropic": {
+    "harness": "opencode",
+    "harness_version": "2.0.22",
+    "model": "anthropic/claude-sonnet-5.5",
+    "route": "openrouter",
+    "effort": "default",
+    "first_turn_context": {
+      "n": 3,
+      "min": 10523.0,
+      "median": 10523.0,
+      "mean": 10523.0,
+      "max": 10523.0
+    }
+  },
+  "pi-openai": {
+    "harness": "pi",
+    "harness_version": "1.0.0",
+    "model": "gpt-6.1-sol",
+    "route": "direct",
+    "effort": "harness default",
+    "first_turn_context": {
+      "n": 3,
+      "min": 1160.0,
+      "median": 1160.0,
+      "mean": 1160.3333,
+      "max": 1161.0
+    }
+  },
+  "pi-anthropic": {
+    "harness": "pi",
+    "harness_version": "1.0.0",
+    "model": "anthropic/claude-sonnet-5.5",
+    "route": "openrouter",
+    "effort": "harness default",
+    "first_turn_context": {
+      "n": 3,
+      "min": 2300.0,
+      "median": 2300.0,
+      "mean": 2300.3333,
+      "max": 2301.0
+    }
+  },
+  "cc-openai": {
+    "harness": "claude",
+    "harness_version": "2.1.289",
+    "model": "openai/gpt-6.1-sol",
+    "route": "openrouter",
+    "effort": "harness default",
+    "first_turn_context": {
+      "n": 3,
+      "min": 19951.0,
+      "median": 19953.0,
+      "mean": 19953.6667,
+      "max": 19957.0
+    }
+  }
+}

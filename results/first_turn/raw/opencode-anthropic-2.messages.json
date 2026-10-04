@@ -1,0 +1,56 @@
+[
+ {
+  "type": "user",
+  "time": {
+   "created": 1791098604333
+  },
+  "text": "Reply with OK.\r\n",
+  "files": []
+ },
+ {
+  "type": "assistant",
+  "time": {
+   "created": 1791098604865,
+   "streamed": 1791098606951,
+   "completed": 1791098607385
+  },
+  "agent": "build",
+  "model": {
+   "id": "anthropic/claude-sonnet-5.5",
+   "providerID": "openrouter",
+   "variant": "default"
+  },
+  "content": [
+   {
+    "type": "text",
+    "text": "OK"
+   }
+  ],
+  "snapshot": {
+   "start": "4ceec46ca054f83773d0327730432111532547b6",
+   "end": "c5ec3fc27cc2b3009759f1210c925d7911d361d3",
+   "files": [
+    "results/first_turn/raw/opencode-anthropic-2.jsonl"
+   ]
+  },
+  "finish": "stop",
+  "rawFinish": "end_turn",
+  "cost": 0.0021518,
+  "tokens": {
+   "input": 4,
+   "output": 4,
+   "reasoning": 0,
+   "cache": {
+    "read": 10519,
+    "write": 0
+   }
+  }
+ },
+ {
+  "type": "idle",
+  "time": {
+   "created": 1791098607392
+  },
+  "outcome": "succeeded"
+ }
+]

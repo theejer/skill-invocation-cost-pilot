@@ -32,7 +32,7 @@ def rules():
         for form in path_forms(path):
             out.append((re.compile(re.escape(form), re.IGNORECASE), token))
     keys = "|".join(map(re.escape, ID_KEYS))
-    out.append((re.compile(rf'("(?:{keys})"\s*:\s*)"[^"]*"'), r'\1"<redacted>"'))
+    out.append((re.compile(rf'("(?:{keys})"\s*:\s*)"(?!<redacted>")[^"]*"'), r'\1"<redacted>"'))
     out.append((re.compile(r"\bsk-[A-Za-z0-9_-]{16,}"), "<redacted>"))
     out.append((re.compile(r"[A-Za-z0-9._%+-]+@(?!example\.invalid\b)[A-Za-z0-9.-]+\.[A-Za-z]{2,}"), "<email>"))
     for name in ("OPENROUTER_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY"):

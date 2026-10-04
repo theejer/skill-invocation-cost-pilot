@@ -1,0 +1,63 @@
+[
+ {
+  "type": "user",
+  "time": {
+   "created": 1791098571550
+  },
+  "text": "Reply with OK.\r\n",
+  "files": []
+ },
+ {
+  "type": "assistant",
+  "time": {
+   "created": 1791098572250,
+   "streamed": 1791098576327,
+   "completed": 1791098576884
+  },
+  "agent": "build",
+  "model": {
+   "id": "gpt-6.1-sol",
+   "providerID": "openai",
+   "variant": "default"
+  },
+  "content": [
+   {
+    "type": "text",
+    "text": "OK.",
+    "state": {
+     "itemId": "msg_0bbce3ef6f43589a016ac1fecfbc3087d081d80231b6a0fd9d",
+     "phase": "final_answer"
+    }
+   }
+  ],
+  "snapshot": {
+   "start": "5cfd80d0e382d4c6154ecbbb3bb44e7e7bd9c97d",
+   "end": "945020c3b25864936e696a78b9671f0eb6f447ea",
+   "files": [
+    "results/first_turn/raw/opencode-openai-1.jsonl"
+   ]
+  },
+  "finish": "stop",
+  "providerState": {
+   "responseId": "resp_0bbce3ef6f43589a016ac1fecd949c87d095b9f4256b116e13",
+   "serviceTier": "default"
+  },
+  "cost": 0,
+  "tokens": {
+   "input": 6222,
+   "output": 6,
+   "reasoning": 0,
+   "cache": {
+    "read": 0,
+    "write": 0
+   }
+  }
+ },
+ {
+  "type": "idle",
+  "time": {
+   "created": 1791098576891
+  },
+  "outcome": "succeeded"
+ }
+]
