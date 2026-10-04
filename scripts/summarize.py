@@ -5,7 +5,7 @@ from common import (CONFIGS, RESULTS, context_of, input_cost, load_prices, outpu
 
 PER_CALL = ["config_id", "run_id", "call", "call_kind", "model_reported", "thinking", "input_uncached",
             "cache_write", "cache_write_1h", "cache_read", "context", "output", "reasoning", "output_exact",
-            "input_cost_usd", "output_cost_usd", "cost_usd"]
+            "input_cost_usd", "output_cost_usd", "cost_usd", "billed_cost_usd"]
 SESSIONS = ["config_id", "harness", "harness_version", "model", "route", "effort", "run_id", "order",
             "started_at", "exit_code", "is_error", "duration_s", "api_calls", "harness_turns",
             "final_call_context", "total_input_sent", "token_multiplier", "session_output", "reasoning",
@@ -57,6 +57,10 @@ def sessions():
     for c in calls:
         p = price_for(prices, base_config(c["config_id"])["price"])
         c["context"] = context_of(c)
+        if c.get("billed_cost_usd") not in ("", None):
+            c["input_cost_usd"] = c["output_cost_usd"] = ""
+            c["cost_usd"] = float(c["billed_cost_usd"])
+            continue
         c["input_cost_usd"] = round(input_cost(c, p), 8)
         exact = c["output_exact"] == "True"
         c["output_cost_usd"] = round(output_cost(c["output"], p), 8) if exact else ""
@@ -72,12 +76,16 @@ def sessions():
             continue
         final = agent[-1]["context"]
         sent = sum(c["context"] for c in mine if c["call_kind"] in TASK_CALLS)
-        session_in = sum(c["input_cost_usd"] for c in mine)
-        session_cost = session_in + output_cost(s["session_output"], p)
+        if any(c.get("billed_cost_usd") not in ("", None) for c in mine):
+            session_in = ""
+            session_cost = sum(float(c["cost_usd"] or 0) for c in mine)
+        else:
+            session_in = round(sum(c["input_cost_usd"] for c in mine), 6)
+            session_cost = session_in + output_cost(s["session_output"], p)
         estimate = (p["input"] * final + p["output"] * int(s["session_output"] or 0)) / 1e6
         s.update(final_call_context=final, total_input_sent=sent,
                  token_multiplier=round(sent / final, 4) if final else "",
-                 session_input_cost_usd=round(session_in, 6),
+                 session_input_cost_usd=session_in,
                  session_cost_usd=round(session_cost, 6), final_turn_estimate_usd=round(estimate, 6))
         if any(int(c[k] or 0) < 0 for c in mine for k in ("input_uncached", "cache_write", "cache_read")):
             warnings.append(f"{s['run_id']}: negative token count (check the input mapping)")

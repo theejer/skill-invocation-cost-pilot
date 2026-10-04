@@ -74,17 +74,19 @@ python scripts/scrub.py
 
 Claude Code reports exact per-call output only for the final call; its session output comes from the session totals, and `output_exact` marks which per-call rows are exact.
 
+Claude Code through OpenRouter (`cc-openai`) reports no per-call token counts. Each call is looked up on OpenRouter's generation endpoint by its generation ID: prompt and cached tokens give the call's context, completion tokens its output, and the cost is OpenRouter's billed `total_cost` (`billed_cost_usd` in `per_call.csv`) rather than a `prices.json` calculation. The lookups are saved as `raw/<run>.generations.json`.
+
 ## Results
 
 | File | One row or entry per | Contents |
 |---|---|---|
 | `first_turn/first_turn.csv` | run | version, model, route, effort, token buckets, first-turn context, counts of tools, skills and plugins |
 | `first_turn/first_turn.json` | configuration | spread of first-turn context |
-| `session/per_call.csv` | API call | call kind, token buckets, context, output, reasoning, cost |
+| `session/per_call.csv` | API call | call kind, token buckets, context, output, reasoning, cost, billed cost where looked up |
 | `session/sessions.csv` | session | calls, final-call context, total input sent, token multiplier, output, reasoning, costs, lines added, whether used |
 | `session/summary.json` | configuration, plus `pooled` | spreads per configuration; token multiplier and calls pooled across all used sessions |
 | `*/environment.json` | configuration | what the harness loaded |
-| `*/raw/` | run | harness output, stderr, the agent's diff, and Codex's session file or OpenCode's messages |
+| `*/raw/` | run | harness output, stderr, the agent's diff, and Codex's session file, OpenCode's messages or OpenRouter's generation lookups |
 
 A session is excluded (`used` = false) only when an error ended it before any line was added.
 

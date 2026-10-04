@@ -4,6 +4,8 @@ import re
 import shutil
 import sqlite3
 import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 from common import (Timer, added_lines_chars, capture_diff, make_workspace, read_jsonl,
@@ -26,6 +28,20 @@ def openrouter_key():
     if not key:
         raise SystemExit("error: OPENROUTER_API_KEY is not set (put it in .env)")
     return key
+
+
+def openrouter_generation(gen_id, tries=10):
+    req = urllib.request.Request(f"{OPENROUTER_OPENAI_BASE}/generation?id={gen_id}",
+                                 headers={"Authorization": f"Bearer {openrouter_key()}"})
+    for _ in range(tries):
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                return json.load(resp).get("data") or {}
+        except urllib.error.HTTPError as e:
+            if e.code != 404:
+                raise
+        time.sleep(1)
+    return None
 
 
 # ================================================================ Claude Code
@@ -87,8 +103,23 @@ class Claude:
             for c, it in zip(agent_calls[len(agent_calls) - len(iterations):], iterations):
                 c.update(self._usage(it), output_exact=True)
         usage = result.get("usage") or {}
-        if cfg["route"] == "openrouter" and not iterations and len(agent_calls) == 1:
-            agent_calls[0].update(self._usage(usage), output_exact=True)
+        generations, lookup_failed = [], False
+        if cfg["route"] == "openrouter":
+            for mid, c in zip(order, calls):
+                g = openrouter_generation(mid)
+                if g is None:
+                    lookup_failed = True
+                    continue
+                cached = g.get("native_tokens_cached") or 0
+                c.update(model_reported=g.get("model"), input_uncached=(g.get("native_tokens_prompt") or 0) - cached,
+                         cache_write=0, cache_write_1h=0, cache_read=cached,
+                         output=g.get("native_tokens_completion") or 0,
+                         reasoning=g.get("native_tokens_reasoning") or 0,
+                         output_exact=True, billed_cost_usd=g.get("total_cost"))
+                generations.append({k: g.get(k) for k in ("id", "model", "provider_name", "native_tokens_prompt",
+                                                          "native_tokens_cached", "native_tokens_completion",
+                                                          "native_tokens_reasoning", "cache_discount", "total_cost")})
+            (raw_dir / f"{run_id}.generations.json").write_text(json.dumps(generations, indent=1), encoding="utf-8")
         models = result.get("modelUsage") or {}
         if len(models) > 1:
             session_output = sum(m.get("outputTokens") or 0 for m in models.values())
@@ -97,15 +128,18 @@ class Claude:
         if session_output is None:
             session_output = sum(c["output"] for c in calls)
         reasoning = (usage.get("output_tokens_details") or {}).get("thinking_tokens")
+        if cfg["route"] == "openrouter":
+            session_output = sum(c["output"] for c in calls)
+            reasoning = sum(c["reasoning"] for c in calls)
         return {
             "calls": calls,
             "session_output": session_output,
             "reasoning": reasoning,
-            "harness_reported_cost_usd": result.get("total_cost_usd"),
+            "harness_reported_cost_usd": None if cfg["route"] == "openrouter" else result.get("total_cost_usd"),
             "harness_turns": result.get("num_turns"),
             "model_reported": init.get("model"),
             "effort": init.get("effort") or "harness default",
-            "is_error": bool(result.get("is_error")) or not result,
+            "is_error": bool(result.get("is_error")) or not result or lookup_failed,
             "environment": {
                 "version": init.get("claude_code_version"),
                 "tools": init.get("tools"), "skills": init.get("skills"),
