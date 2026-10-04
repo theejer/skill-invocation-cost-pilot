@@ -42,8 +42,8 @@ Each run starts in a new temporary git repository holding one commit: empty for 
 
 | Harness | Flags and environment | Job 2 permissions |
 |---|---|---|
-| Claude Code | `-p --setting-sources project --strict-mcp-config --no-session-persistence`; `DISABLE_AUTOUPDATER=1` | `--permission-mode bypassPermissions` |
-| Codex | `exec --ignore-user-config --ignore-rules`; a new `CODEX_HOME` per run holding only a copy of the login | `--sandbox workspace-write` |
+| Claude Code | `-p --setting-sources project --strict-mcp-config --no-session-persistence`; `DISABLE_AUTOUPDATER=1`; `CLAUDE_CODE_SUBAGENT_MODEL` and `ANTHROPIC_DEFAULT_{FABLE,OPUS,SONNET,HAIKU}_MODEL` set to the configuration's model, with `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1`, so subagents and background calls use it | `--permission-mode bypassPermissions` |
+| Codex | `exec --ignore-user-config --ignore-rules --skip-git-repo-check`; the npm package's native `codex.exe` run directly, not through its Node launcher; a new `CODEX_HOME` per run holding only a copy of the login | `--sandbox danger-full-access` |
 | OpenCode | `run --standalone`; a new home directory per run | `--auto` |
 | Pi | `--print --no-session --no-extensions --no-skills --no-prompt-templates --no-context-files --no-approve --offline` | default tools |
 
@@ -62,7 +62,7 @@ python scripts/scrub.py
 
 ## Definitions
 
-- **Call:** one API call. **Task calls:** calls of kind `agent` or `subagent`; title generation and other calls outside the task are kind `other`.
+- **Call:** one API call. **Task calls:** calls of kind `agent`, `subagent` or `unlogged`; title generation and other calls outside the task are kind `other`. An `unlogged` row holds the tokens Claude Code reports in its session totals but not per call in its event stream: output the stream reports only at the start of a message, and the calls of a background subagent still running when the session ends. Its tokens are priced at list price.
 - **Context of a call** = uncached input + cache write + 1-hour cache write + cache read.
 - **First-turn context:** the context of job 1's first call.
 - **Final-call context:** the context of the last `agent` call.

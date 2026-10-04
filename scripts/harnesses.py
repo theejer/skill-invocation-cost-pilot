@@ -30,7 +30,7 @@ def openrouter_key():
     return key
 
 
-def openrouter_generation(gen_id, tries=10):
+def openrouter_generation(gen_id, tries=60, wait=5):
     req = urllib.request.Request(f"{OPENROUTER_OPENAI_BASE}/generation?id={gen_id}",
                                  headers={"Authorization": f"Bearer {openrouter_key()}"})
     for _ in range(tries):
@@ -40,7 +40,7 @@ def openrouter_generation(gen_id, tries=10):
         except urllib.error.HTTPError as e:
             if e.code != 404:
                 raise
-        time.sleep(1)
+        time.sleep(wait)
     return None
 
 
@@ -55,7 +55,11 @@ class Claude:
         argv = (resolve_executable("claude") + ["-p", "--model", cfg["model"],
                 "--output-format", "stream-json", "--verbose"] + self.ISOLATION
                 + (self.SESSION if job == "session" else []))
-        env = {"DISABLE_AUTOUPDATER": "1"}
+        # Every request, including subagents and background calls, uses the configuration's model.
+        env = {"DISABLE_AUTOUPDATER": "1", "CLAUDE_CODE_SUBAGENT_MODEL": cfg["model"],
+               "CLAUDE_CODE_SUBAGENT_MODEL_FORCE": "1"}
+        env.update({f"ANTHROPIC_DEFAULT_{alias}_MODEL": cfg["model"]
+                    for alias in ("FABLE", "OPUS", "SONNET", "HAIKU")})
         if cfg["route"] == "openrouter":
             env.update(ANTHROPIC_BASE_URL=OPENROUTER_ANTHROPIC_BASE,
                        ANTHROPIC_AUTH_TOKEN=openrouter_key(), ANTHROPIC_API_KEY="")
@@ -63,6 +67,32 @@ class Claude:
 
     def cleanup(self, home):
         pass
+
+    @staticmethod
+    def _unlogged(calls, models, route):
+        """Calls missing from the stream (a background subagent still running at exit) appear only in the
+        session totals; each model's remainder becomes one `unlogged` row."""
+        def key(model):  # "anthropic/claude-sonnet-5.5-20260928" and "claude-sonnet-5-5" name one model
+            return (model or "").split("/")[-1].replace(".", "-")
+
+        rows = []
+        for name, m in models.items():
+            mine = [c for c in calls if key(c["model_reported"]).startswith(key(name))]
+            write = m.get("cacheCreationInputTokens") or 0
+            rest = {"input_uncached": (m.get("inputTokens") or 0) + (write if route == "openrouter" else 0),
+                    "cache_read": m.get("cacheReadInputTokens") or 0,
+                    "output": m.get("outputTokens") or 0, "reasoning": m.get("thinkingTokens") or 0}
+            for k in rest:
+                rest[k] -= sum(c[k] for c in mine)
+            if route != "openrouter":
+                logged_1h = sum(c["cache_write_1h"] for c in mine)
+                logged = sum(c["cache_write"] for c in mine) + logged_1h
+                left = write - logged
+                rest["cache_write_1h"] = round(left * logged_1h / logged) if logged else 0
+                rest["cache_write"] = left - rest["cache_write_1h"]
+            if any(v > 0 for v in rest.values()):
+                rows.append(call_row("unlogged", name, **{k: max(0, v) for k, v in rest.items()}))
+        return rows
 
     @staticmethod
     def _usage(u):
@@ -121,13 +151,16 @@ class Claude:
                                                           "native_tokens_reasoning", "cache_discount", "total_cost")})
             (raw_dir / f"{run_id}.generations.json").write_text(json.dumps(generations, indent=1), encoding="utf-8")
         models = result.get("modelUsage") or {}
-        if len(models) > 1:
+        calls += self._unlogged(calls, models, cfg["route"])
+        # The result's `usage` covers the main conversation only; `modelUsage` adds subagents.
+        if models:
             session_output = sum(m.get("outputTokens") or 0 for m in models.values())
+            reasoning = sum(m.get("thinkingTokens") or 0 for m in models.values())
         else:
             session_output = usage.get("output_tokens")
+            reasoning = (usage.get("output_tokens_details") or {}).get("thinking_tokens")
         if session_output is None:
             session_output = sum(c["output"] for c in calls)
-        reasoning = (usage.get("output_tokens_details") or {}).get("thinking_tokens")
         if cfg["route"] == "openrouter":
             session_output = sum(c["output"] for c in calls)
             reasoning = sum(c["reasoning"] for c in calls)
@@ -177,7 +210,12 @@ class Codex:
             if not login.exists():
                 raise SystemExit(f"error: no Codex login at {login}")
             shutil.copyfile(login, codex_home / "auth.json")
-        return argv + ["-"], {"CODEX_HOME": str(codex_home)}
+        env = {"CODEX_HOME": str(codex_home)}
+        exe = Path(argv[0])
+        package = next((p.parent for p in exe.parents if p.name == "node_modules"), None)
+        if package:  # what the npm launcher sets before starting the native binary
+            env.update(CODEX_MANAGED_PACKAGE_ROOT=str(package.resolve()), CODEX_MANAGED_BY_NPM="1")
+        return argv + ["-"], env
 
     def cleanup(self, home):
         (self._home(home) / "auth.json").unlink(missing_ok=True)

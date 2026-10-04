@@ -74,6 +74,12 @@ def resolve_executable(name):
         scripts = [t for t in targets if t.lower().endswith(".js")]
         binaries = [t for t in targets if t.lower().endswith(".exe") and t.lower() != "node.exe"]
         if scripts:
+            # A package that vendors its own native binary (Codex) runs it directly, not under Node, so an
+            # agent ending every Node process cannot end the harness.
+            script = Path(found).parent / scripts[0]
+            native = sorted(script.parent.parent.glob(f"node_modules/*/*/vendor/*/bin/{name}.exe"))
+            if native:
+                return [str(native[0])]
             node = Path(found).parent / "node.exe"
             return [str(node) if node.exists() else "node", str(Path(found).parent / scripts[0])]
         if binaries:

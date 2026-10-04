@@ -23,6 +23,8 @@ def path_forms(path):
     forms = {raw, raw.replace("\\", "/"), raw.replace("\\", "\\\\"), json.dumps(raw)[1:-1]}
     if re.match(r"^[A-Za-z]:", raw):
         forms.add("/" + raw[0].lower() + raw[2:].replace("\\", "/"))
+        # streamed tool-call fragments can split the drive letter from the rest of the path
+        forms |= {f[2:] for f in list(forms) if re.match(r"^[A-Za-z]:", f)}
     return sorted(forms, key=len, reverse=True)
 
 

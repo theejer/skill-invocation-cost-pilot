@@ -14,7 +14,7 @@ SESSIONS = ["config_id", "harness", "harness_version", "model", "route", "effort
 SPREAD_FIELDS = ["api_calls", "final_call_context", "total_input_sent", "token_multiplier", "session_output",
                  "reasoning", "session_cost_usd", "duration_s", "added_lines"]
 POOLED_FIELDS = ["token_multiplier", "api_calls"]
-TASK_CALLS = ("agent", "subagent")
+TASK_CALLS = ("agent", "subagent", "unlogged")
 
 
 def base_config(config_id):
