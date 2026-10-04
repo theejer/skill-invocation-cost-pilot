@@ -2,7 +2,7 @@
  {
   "type": "user",
   "time": {
-   "created": 1791098604333
+   "created": 1791101381219
   },
   "text": "Reply with OK.\r\n",
   "files": []
@@ -10,9 +10,9 @@
  {
   "type": "assistant",
   "time": {
-   "created": 1791098604865,
-   "streamed": 1791098606951,
-   "completed": 1791098607385
+   "created": 1791101381817,
+   "streamed": 1791101383909,
+   "completed": 1791101384039
   },
   "agent": "build",
   "model": {
@@ -23,33 +23,31 @@
   "content": [
    {
     "type": "text",
-    "text": "OK"
+    "text": "OK."
    }
   ],
   "snapshot": {
-   "start": "4ceec46ca054f83773d0327730432111532547b6",
-   "end": "c5ec3fc27cc2b3009759f1210c925d7911d361d3",
-   "files": [
-    "results/first_turn/raw/opencode-anthropic-2.jsonl"
-   ]
+   "start": "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
+   "end": "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
+   "files": []
   },
   "finish": "stop",
   "rawFinish": "end_turn",
-  "cost": 0.0021518,
+  "cost": 0.012587899999999999,
   "tokens": {
    "input": 4,
-   "output": 4,
+   "output": 5,
    "reasoning": 0,
    "cache": {
-    "read": 10519,
-    "write": 0
+    "read": 5212,
+    "write": 4595
    }
   }
  },
  {
   "type": "idle",
   "time": {
-   "created": 1791098607392
+   "created": 1791101384046
   },
   "outcome": "succeeded"
  }

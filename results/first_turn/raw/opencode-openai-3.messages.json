@@ -2,7 +2,7 @@
  {
   "type": "user",
   "time": {
-   "created": 1791098588447
+   "created": 1791101363487
   },
   "text": "Reply with OK.\r\n",
   "files": []
@@ -10,9 +10,9 @@
  {
   "type": "assistant",
   "time": {
-   "created": 1791098588982,
-   "streamed": 1791098593070,
-   "completed": 1791098593553
+   "created": 1791101363998,
+   "streamed": 1791101368024,
+   "completed": 1791101368161
   },
   "agent": "build",
   "model": {
@@ -23,32 +23,30 @@
   "content": [
    {
     "type": "text",
-    "text": "OK.",
+    "text": "OK",
     "state": {
-     "itemId": "msg_087ec4589a0a403b016ac1fee0758087d0adbae19e972b2751",
+     "itemId": "msg_02376a1656011aeb016ac209b7c7f887d09bf53e722d0054db",
      "phase": "final_answer"
     }
    }
   ],
   "snapshot": {
-   "start": "f5cb81aaff1d07a0ff39104638a4f6b3e0b42c02",
-   "end": "b185f5268f004b7590c96315a371a453c480e4ad",
-   "files": [
-    "results/first_turn/raw/opencode-openai-3.jsonl"
-   ]
+   "start": "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
+   "end": "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
+   "files": []
   },
   "finish": "stop",
   "providerState": {
-   "responseId": "resp_087ec4589a0a403b016ac1fede933c87d0988c9da23a89c38b",
+   "responseId": "resp_02376a1656011aeb016ac209b5f99487d0899e42bbd4a63258",
    "serviceTier": "default"
   },
   "cost": 0,
   "tokens": {
-   "input": 6222,
-   "output": 6,
+   "input": 3768,
+   "output": 5,
    "reasoning": 0,
    "cache": {
-    "read": 0,
+    "read": 2048,
     "write": 0
    }
   }
@@ -56,7 +54,7 @@
  {
   "type": "idle",
   "time": {
-   "created": 1791098593558
+   "created": 1791101368172
   },
   "outcome": "succeeded"
  }

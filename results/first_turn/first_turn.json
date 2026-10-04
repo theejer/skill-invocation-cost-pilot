@@ -41,34 +41,6 @@
       "max": 15559.0
     }
   },
-  "opencode-openai": {
-    "harness": "opencode",
-    "harness_version": "2.0.22",
-    "model": "gpt-6.1-sol",
-    "route": "direct",
-    "effort": "default",
-    "first_turn_context": {
-      "n": 3,
-      "min": 6222.0,
-      "median": 6222.0,
-      "mean": 6222.0,
-      "max": 6222.0
-    }
-  },
-  "opencode-anthropic": {
-    "harness": "opencode",
-    "harness_version": "2.0.22",
-    "model": "anthropic/claude-sonnet-5.5",
-    "route": "openrouter",
-    "effort": "default",
-    "first_turn_context": {
-      "n": 3,
-      "min": 10523.0,
-      "median": 10523.0,
-      "mean": 10523.0,
-      "max": 10523.0
-    }
-  },
   "pi-openai": {
     "harness": "pi",
     "harness_version": "1.0.0",
@@ -109,6 +81,34 @@
       "median": 19953.0,
       "mean": 19953.6667,
       "max": 19957.0
+    }
+  },
+  "opencode-openai": {
+    "harness": "opencode",
+    "harness_version": "2.0.22",
+    "model": "gpt-6.1-sol",
+    "route": "direct",
+    "effort": "default",
+    "first_turn_context": {
+      "n": 3,
+      "min": 5814.0,
+      "median": 5814.0,
+      "mean": 5814.6667,
+      "max": 5816.0
+    }
+  },
+  "opencode-anthropic": {
+    "harness": "opencode",
+    "harness_version": "2.0.22",
+    "model": "anthropic/claude-sonnet-5.5",
+    "route": "openrouter",
+    "effort": "default",
+    "first_turn_context": {
+      "n": 3,
+      "min": 9811.0,
+      "median": 9813.0,
+      "mean": 9813.0,
+      "max": 9815.0
     }
   }
 }

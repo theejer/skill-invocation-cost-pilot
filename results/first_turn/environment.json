@@ -171,22 +171,6 @@
     "disabled_plugin_ids": [],
     "session_file_found": true
   },
-  "opencode-openai": {
-    "harness": "opencode",
-    "model_requested": "openai/gpt-6.1-sol",
-    "route": "direct",
-    "model_reported": "gpt-6.1-sol",
-    "effort": "default",
-    "agent": "build"
-  },
-  "opencode-anthropic": {
-    "harness": "opencode",
-    "model_requested": "openrouter/anthropic/claude-sonnet-5.5",
-    "route": "openrouter",
-    "model_reported": "anthropic/claude-sonnet-5.5",
-    "effort": "default",
-    "agent": "build"
-  },
   "pi-openai": {
     "harness": "pi",
     "model_requested": "openai-codex/gpt-6.1-sol",
@@ -226,5 +210,21 @@
       "rules",
       "tools"
     ]
+  },
+  "opencode-openai": {
+    "harness": "opencode",
+    "model_requested": "openai/gpt-6.1-sol",
+    "route": "direct",
+    "model_reported": "gpt-6.1-sol",
+    "effort": "default",
+    "agent": "build"
+  },
+  "opencode-anthropic": {
+    "harness": "opencode",
+    "model_requested": "openrouter/anthropic/claude-sonnet-5.5",
+    "route": "openrouter",
+    "model_reported": "anthropic/claude-sonnet-5.5",
+    "effort": "default",
+    "agent": "build"
   }
 }

@@ -164,7 +164,7 @@ class Codex:
         codex_home = self._home(home)
         codex_home.mkdir()
         argv = (resolve_executable("codex") + ["exec", "--json", "-m", cfg["model"]] + self.ISOLATION
-                + ["--sandbox", "workspace-write" if job == "session" else "read-only"])
+                + ["--sandbox", "danger-full-access" if job == "session" else "read-only"])
         if cfg["route"] == "openrouter":
             openrouter_key()
             argv += ["-c", 'model_provider="openrouter"',
@@ -266,7 +266,7 @@ class OpenCode:
                 + (["--auto"] if job == "session" else []))
         if cfg["route"] == "openrouter":
             openrouter_key()
-        return argv, {"HOME": str(home), "USERPROFILE": str(home), "XDG_DATA_HOME": str(self.DATA)}
+        return argv, {"HOME": str(home), "USERPROFILE": str(home), "XDG_DATA_HOME": str(self.DATA), "PWD": str(workdir)}
 
     def cleanup(self, home):
         pass
