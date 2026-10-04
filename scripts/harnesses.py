@@ -60,7 +60,7 @@ class Claude:
                 "cache_write_1h": w1h, "cache_read": u.get("cache_read_input_tokens") or 0,
                 "output": u.get("output_tokens") or 0}
 
-    def parse(self, stdout_path, raw_dir, run_id, home):
+    def parse(self, cfg, stdout_path, raw_dir, run_id, home):
         events = read_jsonl(stdout_path)
         init = next((e for e in events if e.get("type") == "system" and e.get("subtype") == "init"), {})
         result = next((e for e in reversed(events) if e.get("type") == "result"), {})
@@ -87,6 +87,8 @@ class Claude:
             for c, it in zip(agent_calls[len(agent_calls) - len(iterations):], iterations):
                 c.update(self._usage(it), output_exact=True)
         usage = result.get("usage") or {}
+        if cfg["route"] == "openrouter" and not iterations and len(agent_calls) == 1:
+            agent_calls[0].update(self._usage(usage), output_exact=True)
         models = result.get("modelUsage") or {}
         if len(models) > 1:
             session_output = sum(m.get("outputTokens") or 0 for m in models.values())
@@ -160,7 +162,7 @@ class Codex:
         block = re.search(r"<skills_instructions>(.*?)</skills_instructions>", text, re.S)
         return re.findall(r"^- ([\w.-]+): ", block.group(1), re.M) if block else []
 
-    def parse(self, stdout_path, raw_dir, run_id, home):
+    def parse(self, cfg, stdout_path, raw_dir, run_id, home):
         events = read_jsonl(stdout_path)
         thread = next((e.get("thread_id") for e in events if e.get("type") == "thread.started"), None)
         turns = sum(1 for e in events if e.get("type") == "turn.completed")
@@ -235,7 +237,7 @@ class OpenCode:
     def cleanup(self, home):
         pass
 
-    def parse(self, stdout_path, raw_dir, run_id, home):
+    def parse(self, cfg, stdout_path, raw_dir, run_id, home):
         events = read_jsonl(stdout_path)
         sid = next((e.get("sessionID") for e in events if e.get("sessionID")), None)
         failed = any(e.get("type") == "error" for e in events)
@@ -304,7 +306,7 @@ class Pi:
     def cleanup(self, home):
         pass
 
-    def parse(self, stdout_path, raw_dir, run_id, home):
+    def parse(self, cfg, stdout_path, raw_dir, run_id, home):
         events = read_jsonl(stdout_path)
         calls, cost, model, sections = [], 0.0, None, None
         for e in events:
@@ -355,7 +357,7 @@ def run(cfg, job, prompt, raw_dir, run_id, timeout):
                 code, timed_out = run_process(argv, repo, prompt, stdout, raw_dir / f"{run_id}.stderr.txt",
                                               timeout, env)
             diff = capture_diff(repo)
-            parsed = adapter.parse(stdout, raw_dir, run_id, home)
+            parsed = adapter.parse(cfg, stdout, raw_dir, run_id, home)
         finally:
             adapter.cleanup(home)
     if job == "session":
