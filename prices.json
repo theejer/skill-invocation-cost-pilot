@@ -1,0 +1,47 @@
+{
+  "currency": "USD",
+  "unit": "per million tokens",
+  "notes": "One entry per provider and model. cache_write is the standard cache write (Anthropic 5-minute); cache_write_1h is Anthropic's 1-hour write and null where the provider has none. Requests above long_context_threshold input tokens are not priced by this file; the scripts flag any call above it.",
+  "prices": [
+    {
+      "provider": "anthropic",
+      "model": "claude-sonnet-5-5",
+      "input": 2.0, "output": 10.0, "cache_write": 2.5, "cache_write_1h": 4.0, "cache_read": 0.2,
+      "long_context_threshold": null,
+      "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "checked": "2026-10-03"
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-sonnet-5",
+      "input": 2.0, "output": 10.0, "cache_write": 2.5, "cache_write_1h": 4.0, "cache_read": 0.2,
+      "long_context_threshold": null,
+      "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "checked": "2026-10-03"
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-6.1-sol",
+      "input": 2.0, "output": 10.0, "cache_write": 2.5, "cache_write_1h": null, "cache_read": 0.1,
+      "long_context_threshold": 272000,
+      "source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol",
+      "checked": "2026-10-03"
+    },
+    {
+      "provider": "openrouter",
+      "model": "anthropic/claude-sonnet-5.5",
+      "input": 2.0, "output": 10.0, "cache_write": 2.5, "cache_write_1h": null, "cache_read": 0.2,
+      "long_context_threshold": null,
+      "source": "https://openrouter.ai/api/v1/models",
+      "checked": "2026-10-03"
+    },
+    {
+      "provider": "openrouter",
+      "model": "openai/gpt-6.1-sol",
+      "input": 2.0, "output": 10.0, "cache_write": 2.5, "cache_write_1h": null, "cache_read": 0.1,
+      "long_context_threshold": 272000,
+      "source": "https://openrouter.ai/api/v1/models",
+      "checked": "2026-10-03"
+    }
+  ]
+}

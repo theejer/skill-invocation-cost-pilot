@@ -1,0 +1,1 @@
+Add request parsing to the server: read the request line, headers and any Content-Length body, add an /echo route that replies with the method and path, and reply 400 Bad Request to malformed requests.
