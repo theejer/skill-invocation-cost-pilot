@@ -1,0 +1,167 @@
+[
+ {
+  "id": "gen-1791122303-P8c9xxuHKr5qLHgU1rPS",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 20031,
+  "native_tokens_cached": 0,
+  "native_tokens_completion": 71,
+  "native_tokens_reasoning": 0,
+  "cache_discount": -0.010014,
+  "total_cost": 0.050786
+ },
+ {
+  "id": "gen-1791122307-eFV3Z7p0UBjRs51bTVVu",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 20571,
+  "native_tokens_cached": 18115,
+  "native_tokens_completion": 253,
+  "native_tokens_reasoning": 0,
+  "cache_discount": 0.033192,
+  "total_cost": 0.01048
+ },
+ {
+  "id": "gen-1791122316-evQHRgUAMraXTTHn2f9U",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 21039,
+  "native_tokens_cached": 20551,
+  "native_tokens_completion": 213,
+  "native_tokens_reasoning": 0,
+  "cache_discount": 0.0388044,
+  "total_cost": 0.0054036
+ },
+ {
+  "id": "gen-1791122322-oOTHPRt2v1He3UX1aeuq",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 22251,
+  "native_tokens_cached": 21019,
+  "native_tokens_completion": 691,
+  "native_tokens_reasoning": 516,
+  "cache_discount": 0.0393216,
+  "total_cost": 0.0120904
+ },
+ {
+  "id": "gen-1791122345-QiqlaOqZmjNVx8K9KPvs",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 22504,
+  "native_tokens_cached": 22231,
+  "native_tokens_completion": 3086,
+  "native_tokens_reasoning": 1968,
+  "cache_discount": 0.0421039,
+  "total_cost": 0.0337641
+ },
+ {
+  "id": "gen-1791122424-ze4aBan0wbIv5nggwGcE",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 23690,
+  "native_tokens_cached": 22484,
+  "native_tokens_completion": 706,
+  "native_tokens_reasoning": 516,
+  "cache_discount": 0.0421181,
+  "total_cost": 0.0123219
+ },
+ {
+  "id": "gen-1791122448-TKnkP1KRPJ7ejQjeaXKD",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 24003,
+  "native_tokens_cached": 23670,
+  "native_tokens_completion": 271,
+  "native_tokens_reasoning": 0,
+  "cache_discount": 0.044808,
+  "total_cost": 0.005908
+ },
+ {
+  "id": "gen-1791122454-rAC5E53A0LbS19u7rGGX",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 24399,
+  "native_tokens_cached": 23983,
+  "native_tokens_completion": 1010,
+  "native_tokens_reasoning": 516,
+  "cache_discount": 0.0453612,
+  "total_cost": 0.0135368
+ },
+ {
+  "id": "gen-1791122483-F5ppOfM73fty7NTNeWX6",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 25122,
+  "native_tokens_cached": 24379,
+  "native_tokens_completion": 170,
+  "native_tokens_reasoning": 0,
+  "cache_discount": 0.0459501,
+  "total_cost": 0.0059939
+ },
+ {
+  "id": "gen-1791122489-RZIUgXrwWcYnliRKMcc2",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 25364,
+  "native_tokens_cached": 25102,
+  "native_tokens_completion": 4684,
+  "native_tokens_reasoning": 1034,
+  "cache_discount": 0.0475643,
+  "total_cost": 0.0500037
+ },
+ {
+  "id": "gen-1791122584-Fv9TtylaA9udvUrh5wlG",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 29241,
+  "native_tokens_cached": 25344,
+  "native_tokens_completion": 809,
+  "native_tokens_reasoning": 349,
+  "cache_discount": 0.0462066,
+  "total_cost": 0.0203654
+ },
+ {
+  "id": "gen-1791122607-Dps1x68HqNVsmsR9Hh9Z",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 30441,
+  "native_tokens_cached": 29221,
+  "native_tokens_completion": 710,
+  "native_tokens_reasoning": 515,
+  "cache_discount": 0.0549114,
+  "total_cost": 0.0130706
+ },
+ {
+  "id": "gen-1791122633-WwzsektvsmMnW3dFKnZd",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 13144,
+  "native_tokens_cached": 0,
+  "native_tokens_completion": 52,
+  "native_tokens_reasoning": 0,
+  "cache_discount": -0.0065705,
+  "total_cost": 0.0333785
+ },
+ {
+  "id": "gen-1791122633-d2yQfoacb6FbrpVtD9KF",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 30950,
+  "native_tokens_cached": 30421,
+  "native_tokens_completion": 310,
+  "native_tokens_reasoning": 189,
+  "cache_discount": 0.0575369,
+  "total_cost": 0.0074631
+ },
+ {
+  "id": "gen-1791122644-M6jDittiLGuGWHmbT1eZ",
+  "model": "openai/gpt-6.1-sol-20260929",
+  "provider_name": "OpenAI",
+  "native_tokens_prompt": 31126,
+  "native_tokens_cached": 30930,
+  "native_tokens_completion": 421,
+  "native_tokens_reasoning": 338,
+  "cache_discount": 0.0586705,
+  "total_cost": 0.0077915
+ }
+]

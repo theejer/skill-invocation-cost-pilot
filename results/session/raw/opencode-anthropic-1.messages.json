@@ -1,0 +1,686 @@
+[
+ {
+  "type": "user",
+  "time": {
+   "created": 1791124970565
+  },
+  "text": "Add request parsing to the server: read the request line, headers and any Content-Length body, add an /echo route that replies with the method and path, and reply 400 Bad Request to malformed requests.\r\n",
+  "files": []
+ },
+ {
+  "type": "assistant",
+  "time": {
+   "created": 1791124970786,
+   "streamed": 1791124973798,
+   "completed": 1791124976007
+  },
+  "agent": "build",
+  "model": {
+   "id": "anthropic/claude-sonnet-5.5",
+   "providerID": "openrouter",
+   "variant": "default"
+  },
+  "content": [
+   {
+    "type": "tool",
+    "id": "toolu_01CF7fV6NT1USwX3We5kYJnT",
+    "name": "glob",
+    "executed": false,
+    "state": {
+     "status": "completed",
+     "input": {
+      "pattern": "**/*",
+      "limit": 200
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "<tmp>\\tmphcddhsry\\repo\\server.js\n<tmp>\\tmphcddhsry\\repo\\router.js\n<tmp>\\tmphcddhsry\\repo\\README.md\n<tmp>\\tmphcddhsry\\repo\\package.json"
+      }
+     ],
+     "metadata": {
+      "count": 4,
+      "truncated": false
+     }
+    },
+    "time": {
+     "created": 1791124972941,
+     "ran": 1791124973792,
+     "completed": 1791124975940
+    }
+   },
+   {
+    "type": "tool",
+    "id": "toolu_015Uh4in4UWGfn58oot3gDMk",
+    "name": "shell",
+    "executed": false,
+    "state": {
+     "status": "completed",
+     "input": {
+      "command": "git log --oneline | head -5; git status --short"
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "7d164fc init\n"
+      }
+     ],
+     "metadata": {
+      "status": "completed",
+      "truncated": false,
+      "exit": 0
+     }
+    },
+    "time": {
+     "created": 1791124973404,
+     "ran": 1791124973797,
+     "completed": 1791124973936
+    }
+   }
+  ],
+  "snapshot": {
+   "start": "f5e7d7f5e104879ee8bf31dfb4d6bc939a68dd4c",
+   "end": "f5e7d7f5e104879ee8bf31dfb4d6bc939a68dd4c",
+   "files": []
+  },
+  "finish": "tool-calls",
+  "rawFinish": "tool_use",
+  "cost": 0.0259405,
+  "tokens": {
+   "input": 4,
+   "output": 129,
+   "reasoning": 0,
+   "cache": {
+    "read": 0,
+    "write": 9857
+   }
+  }
+ },
+ {
+  "type": "assistant",
+  "time": {
+   "created": 1791124976094,
+   "streamed": 1791124978854,
+   "completed": 1791124978933
+  },
+  "agent": "build",
+  "model": {
+   "id": "anthropic/claude-sonnet-5.5",
+   "providerID": "openrouter",
+   "variant": "default"
+  },
+  "content": [
+   {
+    "type": "tool",
+    "id": "toolu_019hjGxzmVfFijPhtjcx53GX",
+    "name": "read",
+    "executed": false,
+    "state": {
+     "status": "completed",
+     "input": {
+      "path": "<tmp>\\tmphcddhsry\\repo\\server.js"
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "Read file <tmp>\\tmphcddhsry\\repo\\server.js, lines 1-48\n1: const net = require('net');\n2: const { BAD_REQUEST_RESPONSE, routeRequestLine } = require('./router');\n3: \n4: const PORT = process.env.PORT || 8080;\n5: const DEFAULT_MAX_REQUEST_LINE_BYTES = 8192;\n6: const REQUEST_LINE_END = '\\r\\n';\n7: \n8: const readMaxRequestLineBytes = () => {\n9:   const configuredValue = process.env.MAX_REQUEST_LINE_BYTES ?? DEFAULT_MAX_REQUEST_LINE_BYTES;\n10:   const maxRequestLineBytes = Number(configuredValue);\n11:   if (!Number.isSafeInteger(maxRequestLineBytes) || maxRequestLineBytes <= 0) {\n12:     throw new Error(`MAX_REQUEST_LINE_BYTES must be a positive integer, got \"${configuredValue}\"`);\n13:   }\n14:   return maxRequestLineBytes;\n15: };\n16: \n17: const MAX_REQUEST_LINE_BYTES = readMaxRequestLineBytes();\n18: \n19: const findRequestLine = (receivedBytes) => {\n20:   const requestLineEnd = receivedBytes\n21:     .subarray(0, MAX_REQUEST_LINE_BYTES)\n22:     .indexOf(REQUEST_LINE_END);\n23:   return requestLineEnd === -1 ? null : receivedBytes.toString('latin1', 0, requestLineEnd);\n24: };\n25: \n26: const server = net.createServer((conn) => {\n27:   let receivedBytes = Buffer.alloc(0);\n28: \n29:   const sendResponse = (response) => conn.end(response, 'latin1');\n30: \n31:   conn.on('error', () => {});\n32:   conn.on('data', (chunk) => {\n33:     if (conn.writableEnded) return;\n34:     receivedBytes = Buffer.concat([receivedBytes, chunk]);\n35: \n36:     const requestLine = findRequestLine(receivedBytes);\n37:     if (requestLine !== null) {\n38:       sendResponse(routeRequestLine(requestLine));\n39:     } else if (receivedBytes.length >= MAX_REQUEST_LINE_BYTES) {\n40:       sendResponse(BAD_REQUEST_RESPONSE);\n41:     }\n42:   });\n43:   conn.on('end', () => {\n44:     if (!conn.writableEnded) sendResponse(BAD_REQUEST_RESPONSE);\n45:   });\n46: });\n47: \n48: server.listen(PORT);"
+      }
+     ],
+     "metadata": {
+      "truncated": false
+     }
+    },
+    "time": {
+     "created": 1791124977544,
+     "ran": 1791124978841,
+     "completed": 1791124978866
+    }
+   },
+   {
+    "type": "tool",
+    "id": "toolu_01Peg7r4z7KfNGCuiNaBZdAT",
+    "name": "read",
+    "executed": false,
+    "state": {
+     "status": "completed",
+     "input": {
+      "path": "<tmp>\\tmphcddhsry\\repo\\router.js"
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "Read file <tmp>\\tmphcddhsry\\repo\\router.js, lines 1-39\n1: const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +[^ ]+$/;\n2: const ROOT_TARGET = '/';\n3: const USER_POST_TARGET_PATTERN = /^\\/users\\/([^/]+)\\/posts\\/([^/]+)$/;\n4: \n5: const buildResponse = (status, { headers = [], body = '' } = {}) =>\n6:   [\n7:     `HTTP/1.1 ${status}`,\n8:     ...headers,\n9:     `Content-Length: ${Buffer.byteLength(body, 'latin1')}`,\n10:     'Connection: close',\n11:     '',\n12:     body,\n13:   ].join('\\r\\n');\n14: \n15: const OK_RESPONSE = buildResponse('200 OK');\n16: const BAD_REQUEST_RESPONSE = buildResponse('400 Bad Request');\n17: const NOT_FOUND_RESPONSE = buildResponse('404 Not Found');\n18: const METHOD_NOT_ALLOWED_RESPONSE = buildResponse('405 Method Not Allowed', {\n19:   headers: ['Allow: GET'],\n20: });\n21: \n22: const routeRequestLine = (requestLine) => {\n23:   const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);\n24:   if (!requestLineMatch) return BAD_REQUEST_RESPONSE;\n25: \n26:   const [, method, target] = requestLineMatch;\n27:   const userPostMatch = USER_POST_TARGET_PATTERN.exec(target);\n28:   if (target !== ROOT_TARGET && !userPostMatch) return NOT_FOUND_RESPONSE;\n29:   if (method !== 'GET') return METHOD_NOT_ALLOWED_RESPONSE;\n30:   if (!userPostMatch) return OK_RESPONSE;\n31: \n32:   const [, userId, postId] = userPostMatch;\n33:   return buildResponse('200 OK', {\n34:     headers: ['Content-Type: text/plain'],\n35:     body: `${userId} ${postId}`,\n36:   });\n37: };\n38: \n39: module.exports = { BAD_REQUEST_RESPONSE, routeRequestLine };"
+      }
+     ],
+     "metadata": {
+      "truncated": false
+     }
+    },
+    "time": {
+     "created": 1791124978180,
+     "ran": 1791124978844,
+     "completed": 1791124978864
+    }
+   },
+   {
+    "type": "tool",
+    "id": "toolu_01Hm6QZsPvSbDGBiS1P92XTr",
+    "name": "read",
+    "executed": false,
+    "state": {
+     "status": "completed",
+     "input": {
+      "path": "<tmp>\\tmphcddhsry\\repo\\README.md"
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "Read file <tmp>\\tmphcddhsry\\repo\\README.md, lines 1-7\n1: An HTTP server that routes each request by the method and target in its request line.\n2: \n3: Run: `node server.js`\n4: \n5: Minimum Node.js version: 22\n6: \n7: Port: 8080"
+      }
+     ],
+     "metadata": {
+      "truncated": false
+     }
+    },
+    "time": {
+     "created": 1791124978330,
+     "ran": 1791124978847,
+     "completed": 1791124978868
+    }
+   },
+   {
+    "type": "tool",
+    "id": "toolu_01PX4q4p3zZ9oL5hQbYHot8N",
+    "name": "read",
+    "executed": false,
+    "state": {
+     "status": "completed",
+     "input": {
+      "path": "<tmp>\\tmphcddhsry\\repo\\package.json"
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "Read file <tmp>\\tmphcddhsry\\repo\\package.json, lines 1-8\n1: {\n2:   \"name\": \"http-server\",\n3:   \"version\": \"1.0.0\",\n4:   \"scripts\": {\n5:     \"start\": \"node server.js\"\n6:   },\n7:   \"dependencies\": {}\n8: }"
+      }
+     ],
+     "metadata": {
+      "truncated": false
+     }
+    },
+    "time": {
+     "created": 1791124978831,
+     "ran": 1791124978852,
+     "completed": 1791124978861
+    }
+   }
+  ],
+  "snapshot": {
+   "start": "f5e7d7f5e104879ee8bf31dfb4d6bc939a68dd4c",
+   "end": "f5e7d7f5e104879ee8bf31dfb4d6bc939a68dd4c",
+   "files": []
+  },
+  "finish": "tool-calls",
+  "rawFinish": "tool_use",
+  "cost": 0.0058829,
+  "tokens": {
+   "input": 2,
+   "output": 307,
+   "reasoning": 0,
+   "cache": {
+    "read": 9857,
+    "write": 335
+   }
+  }
+ },
+ {
+  "type": "assistant",
+  "time": {
+   "created": 1791124979017,
+   "streamed": 1791125023458,
+   "completed": 1791125023746
+  },
+  "agent": "build",
+  "model": {
+   "id": "anthropic/claude-sonnet-5.5",
+   "providerID": "openrouter",
+   "variant": "default"
+  },
+  "content": [
+   {
+    "type": "reasoning",
+    "text": "I'm planning a new incremental parser that accumulates buffered bytes until it hits the header terminator, enforcing size limits on the request line, headers, and body separately with configurable constants.\n\nI'm also deciding how to handle malformed requests\u2014bad request lines, invalid header syntax, inconsistent Content-Length values\u2014and weighing whether unsupported Transfer-Encoding should trigger a 400 or 501 response. Since each connection closes after one response, I settle on treating it leniently rather than rejecting outright, since there's no real smuggling risk without persistent connections.\n\nFor the /echo route, I'm figuring out the path should strip any query string while leaving existing routes' exact-match behavior unchanged, and I decide /echo should accept any HTTP method, replying with the method and stripped path. For errors like incomplete bodies or oversized payloads, I'm settling on 400 responses for simplicity rather than introducing 413 as a separate case.\n\nNow I'm restructuring the router to take a full request object (method, target, headers, body) instead of just a request line, which means moving request-line parsing into its own parser module. I'm sketching out a parseRequestHead function that returns a parsed request or null for malformed input, then thinking through how the server accumulates incoming bytes and locates the head/body boundary using the double-CRLF sequence, respecting the existing max-request-line-byte constraint.\n\nI'm working through edge cases like oversized headers triggering a 400, and verifying that a bare request line with no headers still correctly matches the head-end sequence at the same index as the request-line end.\n\nFor header parsing, I'm splitting the head text on CRLF, validating header name tokens with a strict regex, and rejecting lines with obs-folding, bare CR/LF, or NUL bytes. I'm deciding to lowercase header names, join duplicate values with \", \", and strictly validate Content-Length as a plain digit string so any inconsistency between duplicates just causes rejection rather than complex reconciliation logic -- with Content-Length defaulting to 0 when absent and capped against the max body size.\n\nNow I'm checking that oversized values convert cleanly to a number for the 413 comparison, then handling body reading up to the declared content length while ignoring trailing bytes since pipelining isn't supported and connections close after each response. For the request line, I considered tightening the HTTP-version regex but decided to keep the existing lenient pattern to avoid changing behavior for borderline-malformed lines that previously succeeded.\n\nI'm splitting the implementation into a parser module that extracts the method, target, headers, and content length from the raw head bytes, returning null on malformed input, while the server itself enforces the max-size check and the router keeps the response constants. Writing parser code...\n\nI realize NUL bytes could still slip through unescaped since `.` allows them, so I need an explicit check against null/CR/LF characters in both header values and the request line itself to prevent injection.\n\nNow I'm validating the content-length header against the numeric pattern before parsing it, then constructing the request object with method, target, headers, and content length for the server to attach the body later.\n\nFor routing, I'm adding an echo endpoint that strips query parameters from the target and returns the method plus path as plain text, while preserving the existing routing logic for other paths\u2014then checking for header injection risks through the method field.\n\nNow I'm reworking the server's data handler: accumulating received bytes and searching for the end of the header block, bounded by a max header size, and refining how the request line is detected so it waits for more data if incomplete but rejects with a 400 once the byte limit is exceeded without finding one.\n\nI realize that length check should run first on every data event regardless of head-parse state, so I'll apply it upfront each time. I also need an 'end' handler that returns 400 if no response was sent yet.\n\nI'm setting constants for head and body size limits (16KB head, 1MiB body) rather than pulling from env, while keeping the request-line env override intact, and I'll factor out a shared finish function to avoid duplicating response logic.",
+    "state": {
+     "reasoningField": "reasoning",
+     "reasoningDetails": [
+      {
+       "type": "reasoning.text",
+       "text": "I'm planning a new incremental parser that accumulates buffered bytes until it hits the header terminator, enforcing size limits on the request line, headers, and body separately with configurable constants.\n\nI'm also deciding how to handle malformed requests\u2014bad request lines, invalid header syntax, inconsistent Content-Length values\u2014and weighing whether unsupported Transfer-Encoding should trigger a 400 or 501 response. Since each connection closes after one response, I settle on treating it leniently rather than rejecting outright, since there's no real smuggling risk without persistent connections.\n\nFor the /echo route, I'm figuring out the path should strip any query string while leaving existing routes' exact-match behavior unchanged, and I decide /echo should accept any HTTP method, replying with the method and stripped path. For errors like incomplete bodies or oversized payloads, I'm settling on 400 responses for simplicity rather than introducing 413 as a separate case.\n\nNow I'm restructuring the router to take a full request object (method, target, headers, body) instead of just a request line, which means moving request-line parsing into its own parser module. I'm sketching out a parseRequestHead function that returns a parsed request or null for malformed input, then thinking through how the server accumulates incoming bytes and locates the head/body boundary using the double-CRLF sequence, respecting the existing max-request-line-byte constraint.\n\nI'm working through edge cases like oversized headers triggering a 400, and verifying that a bare request line with no headers still correctly matches the head-end sequence at the same index as the request-line end.\n\nFor header parsing, I'm splitting the head text on CRLF, validating header name tokens with a strict regex, and rejecting lines with obs-folding, bare CR/LF, or NUL bytes. I'm deciding to lowercase header names, join duplicate values with \", \", and strictly validate Content-Length as a plain digit string so any inconsistency between duplicates just causes rejection rather than complex reconciliation logic -- with Content-Length defaulting to 0 when absent and capped against the max body size.\n\nNow I'm checking that oversized values convert cleanly to a number for the 413 comparison, then handling body reading up to the declared content length while ignoring trailing bytes since pipelining isn't supported and connections close after each response. For the request line, I considered tightening the HTTP-version regex but decided to keep the existing lenient pattern to avoid changing behavior for borderline-malformed lines that previously succeeded.\n\nI'm splitting the implementation into a parser module that extracts the method, target, headers, and content length from the raw head bytes, returning null on malformed input, while the server itself enforces the max-size check and the router keeps the response constants. Writing parser code...\n\nI realize NUL bytes could still slip through unescaped since `.` allows them, so I need an explicit check against null/CR/LF characters in both header values and the request line itself to prevent injection.\n\nNow I'm validating the content-length header against the numeric pattern before parsing it, then constructing the request object with method, target, headers, and content length for the server to attach the body later.\n\nFor routing, I'm adding an echo endpoint that strips query parameters from the target and returns the method plus path as plain text, while preserving the existing routing logic for other paths\u2014then checking for header injection risks through the method field.\n\nNow I'm reworking the server's data handler: accumulating received bytes and searching for the end of the header block, bounded by a max header size, and refining how the request line is detected so it waits for more data if incomplete but rejects with a 400 once the byte limit is exceeded without finding one.\n\nI realize that length check should run first on every data event regardless of head-parse state, so I'll apply it upfront each time. I also need an 'end' handler that returns 400 if no response was sent yet.\n\nI'm setting constants for head and body size limits (16KB head, 1MiB body) rather than pulling from env, while keeping the request-line env override intact, and I'll factor out a shared finish function to avoid duplicating response logic.",
+       "format": "anthropic-claude-v1",
+       "index": 0,
+       "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1zb25uZXQtNS41LTIwMjYwOTI4fGNsYXVkZS1vbi1hd3MifQ"
+      }
+     ]
+    },
+    "time": {
+     "created": 1791124983635,
+     "completed": 1791125023438
+    }
+   },
+   {
+    "type": "tool",
+    "id": "toolu_011kaDy2qkFmFJk96rZ4SmMt",
+    "name": "write",
+    "executed": false,
+    "state": {
+     "status": "completed",
+     "input": {
+      "path": "<tmp>\\tmphcddhsry\\repo\\parser.js",
+      "content": "const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +[^ ]+$/;\nconst HEADER_LINE_PATTERN = /^([!#$%&'*+.^_`|~0-9A-Za-z-]+):[ \\t]*(.*?)[ \\t]*$/;\nconst CONTENT_LENGTH_PATTERN = /^\\d+$/;\nconst FORBIDDEN_CHARACTERS_PATTERN = /[\\0\\r\\n]/;\n\n// Parses the request line and headers (everything before the blank line).\n// Returns null when the head is malformed.\nconst parseRequestHead = (head) => {\n  const [requestLine, ...headerLines] = head.split('\\r\\n');\n  if (FORBIDDEN_CHARACTERS_PATTERN.test(requestLine)) return null;\n\n  const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);\n  if (!requestLineMatch) return null;\n  const [, method, target] = requestLineMatch;\n\n  const headers = new Map();\n  for (const headerLine of headerLines) {\n    if (FORBIDDEN_CHARACTERS_PATTERN.test(headerLine)) return null;\n    const headerMatch = HEADER_LINE_PATTERN.exec(headerLine);\n    if (!headerMatch) return null;\n\n    const name = headerMatch[1].toLowerCase();\n    const value = headerMatch[2];\n    headers.set(name, headers.has(name) ? `${headers.get(name)}, ${value}` : value);\n  }\n\n  let contentLength = 0;\n  if (headers.has('content-length')) {\n    const rawContentLength = headers.get('content-length');\n    if (!CONTENT_LENGTH_PATTERN.test(rawContentLength)) return null;\n    contentLength = Number(rawContentLength);\n  }\n\n  return { method, target, headers, contentLength };\n};\n\nmodule.exports = { parseRequestHead };\n"
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "Created file successfully: parser.js"
+      }
+     ],
+     "metadata": {
+      "truncated": false
+     }
+    },
+    "time": {
+     "created": 1791125017503,
+     "ran": 1791125023443,
+     "completed": 1791125023488
+    }
+   },
+   {
+    "type": "tool",
+    "id": "toolu_0111JfKyAUfX2H6WLgcVpMtV",
+    "name": "edit",
+    "executed": false,
+    "state": {
+     "status": "completed",
+     "input": {
+      "path": "<tmp>\\tmphcddhsry\\repo\\router.js",
+      "oldString": "const routeRequestLine = (requestLine) => {\n  const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);\n  if (!requestLineMatch) return BAD_REQUEST_RESPONSE;\n\n  const [, method, target] = requestLineMatch;\n  const userPostMatch",
+      "newString": "const routeRequest = ({ method, target }) => {\n  const path = target.split('?', 1)[0];\n  if (path === ECHO_PATH) {\n    return buildResponse('200 OK', {\n      headers: ['Content-Type: text/plain'],\n      body: `${method} ${path}`,\n    });\n  }\n\n  const userPostMatch"
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "Edited router.js (1 replacement)"
+      }
+     ],
+     "metadata": {
+      "files": [
+       {
+        "file": "router.js",
+        "patch": "Index: router.js\n===================================================================\n--- router.js\n+++ router.js\n@@ -18,13 +18,17 @@\n const METHOD_NOT_ALLOWED_RESPONSE = buildResponse('405 Method Not Allowed', {\n   headers: ['Allow: GET'],\n });\n \n-const routeRequestLine = (requestLine) => {\n-  const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);\n-  if (!requestLineMatch) return BAD_REQUEST_RESPONSE;\n+const routeRequest = ({ method, target }) => {\n+  const path = target.split('?', 1)[0];\n+  if (path === ECHO_PATH) {\n+    return buildResponse('200 OK', {\n+      headers: ['Content-Type: text/plain'],\n+      body: `${method} ${path}`,\n+    });\n+  }\n \n-  const [, method, target] = requestLineMatch;\n   const userPostMatch = USER_POST_TARGET_PATTERN.exec(target);\n   if (target !== ROOT_TARGET && !userPostMatch) return NOT_FOUND_RESPONSE;\n   if (method !== 'GET') return METHOD_NOT_ALLOWED_RESPONSE;\n   if (!userPostMatch) return OK_RESPONSE;\n",
+        "status": "modified",
+        "additions": 8,
+        "deletions": 4
+       }
+      ],
+      "truncated": false
+     }
+    },
+    "time": {
+     "created": 1791125019348,
+     "ran": 1791125023446,
+     "completed": 1791125023498
+    }
+   },
+   {
+    "type": "tool",
+    "id": "toolu_015LmMvcEjv8e3kFytPwNXud",
+    "name": "edit",
+    "executed": false,
+    "state": {
+     "status": "completed",
+     "input": {
+      "path": "<tmp>\\tmphcddhsry\\repo\\router.js",
+      "oldString": "const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +[^ ]+$/;\nconst ROOT_TARGET = '/';",
+      "newString": "const ROOT_TARGET = '/';\nconst ECHO_PATH = '/echo';"
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "Edited router.js (1 replacement)"
+      }
+     ],
+     "metadata": {
+      "files": [
+       {
+        "file": "router.js",
+        "patch": "Index: router.js\n===================================================================\n--- router.js\n+++ router.js\n@@ -1,6 +1,6 @@\n-const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +[^ ]+$/;\n const ROOT_TARGET = '/';\n+const ECHO_PATH = '/echo';\n const USER_POST_TARGET_PATTERN = /^\\/users\\/([^/]+)\\/posts\\/([^/]+)$/;\n \n const buildResponse = (status, { headers = [], body = '' } = {}) =>\n   [\n",
+        "status": "modified",
+        "additions": 1,
+        "deletions": 1
+       }
+      ],
+      "truncated": false
+     }
+    },
+    "time": {
+     "created": 1791125020651,
+     "ran": 1791125023449,
+     "completed": 1791125023529
+    }
+   },
+   {
+    "type": "tool",
+    "id": "toolu_011NedavwrRQ7fyHeH4yU8Ww",
+    "name": "edit",
+    "executed": false,
+    "state": {
+     "status": "completed",
+     "input": {
+      "path": "<tmp>\\tmphcddhsry\\repo\\router.js",
+      "oldString": "const NOT_FOUND_RESPONSE = buildResponse('404 Not Found');",
+      "newString": "const PAYLOAD_TOO_LARGE_RESPONSE = buildResponse('413 Payload Too Large');\nconst NOT_FOUND_RESPONSE = buildResponse('404 Not Found');"
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "Edited router.js (1 replacement)"
+      }
+     ],
+     "metadata": {
+      "files": [
+       {
+        "file": "router.js",
+        "patch": "Index: router.js\n===================================================================\n--- router.js\n+++ router.js\n@@ -13,8 +13,9 @@\n   ].join('\\r\\n');\n \n const OK_RESPONSE = buildResponse('200 OK');\n const BAD_REQUEST_RESPONSE = buildResponse('400 Bad Request');\n+const PAYLOAD_TOO_LARGE_RESPONSE = buildResponse('413 Payload Too Large');\n const NOT_FOUND_RESPONSE = buildResponse('404 Not Found');\n const METHOD_NOT_ALLOWED_RESPONSE = buildResponse('405 Method Not Allowed', {\n   headers: ['Allow: GET'],\n });\n",
+        "status": "modified",
+        "additions": 1,
+        "deletions": 0
+       }
+      ],
+      "truncated": false
+     }
+    },
+    "time": {
+     "created": 1791125022216,
+     "ran": 1791125023454,
+     "completed": 1791125023548
+    }
+   },
+   {
+    "type": "tool",
+    "id": "toolu_01PrJ7DUnjujGENpZPFE9W2w",
+    "name": "edit",
+    "executed": false,
+    "state": {
+     "status": "completed",
+     "input": {
+      "path": "<tmp>\\tmphcddhsry\\repo\\router.js",
+      "oldString": "module.exports = { BAD_REQUEST_RESPONSE, routeRequestLine };",
+      "newString": "module.exports = { BAD_REQUEST_RESPONSE, PAYLOAD_TOO_LARGE_RESPONSE, routeRequest };"
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "Edited router.js (1 replacement)"
+      }
+     ],
+     "metadata": {
+      "files": [
+       {
+        "file": "router.js",
+        "patch": "Index: router.js\n===================================================================\n--- router.js\n+++ router.js\n@@ -40,5 +40,5 @@\n     body: `${userId} ${postId}`,\n   });\n };\n \n-module.exports = { BAD_REQUEST_RESPONSE, routeRequestLine };\n+module.exports = { BAD_REQUEST_RESPONSE, PAYLOAD_TOO_LARGE_RESPONSE, routeRequest };\n",
+        "status": "modified",
+        "additions": 1,
+        "deletions": 1
+       }
+      ],
+      "truncated": false
+     }
+    },
+    "time": {
+     "created": 1791125023086,
+     "ran": 1791125023456,
+     "completed": 1791125023554
+    }
+   }
+  ],
+  "snapshot": {
+   "start": "f5e7d7f5e104879ee8bf31dfb4d6bc939a68dd4c",
+   "end": "55cfd30c3ec35e347c0f1876161b098c36ef1f1d",
+   "files": [
+    "parser.js",
+    "router.js"
+   ]
+  },
+  "finish": "tool-calls",
+  "rawFinish": "tool_use",
+  "cost": 0.0654774,
+  "tokens": {
+   "input": 2,
+   "output": 1754,
+   "reasoning": 3976,
+   "cache": {
+    "read": 10192,
+    "write": 2454
+   }
+  }
+ },
+ {
+  "type": "assistant",
+  "time": {
+   "created": 1791125023835,
+   "streamed": 1791125035446,
+   "completed": 1791125037919
+  },
+  "agent": "build",
+  "model": {
+   "id": "anthropic/claude-sonnet-5.5",
+   "providerID": "openrouter",
+   "variant": "default"
+  },
+  "content": [
+   {
+    "type": "reasoning",
+    "text": "Good, the existing routes still reference the destructured `target` variable correctly. Now I'll move on to the server code.",
+    "state": {
+     "reasoningField": "reasoning",
+     "reasoningDetails": [
+      {
+       "type": "reasoning.text",
+       "text": "Good, the existing routes still reference the destructured `target` variable correctly. Now I'll move on to the server code.",
+       "format": "anthropic-claude-v1",
+       "index": 0,
+       "signature": "CAQS7wYKEAgSGAI4AUIIdGhpbmtpbmcSDO8y+BXlgpm+7HNf5RoMke1eoUPjF526AgjFIjCks+m3oxaiXTna2CfxhKJJIHdSvcuAIfxoZT6lM+sTQXwNRmnFVrkzeNDC2iypOBQqjAZsyydKdeOS0i6AYSzlOWFxqPRTLStR7yPJSdRxc0I0xXOE7lQ4iaUWUWYbksbcRtF9xTO+ffQurXpl+TzEwUdGg5KOjEzjmAMsxK4FTuZuEpJ6mYijWHUP1BsxQK3gS3DmxhlFPbUYgp7SKwKFuRoTjexLLgHms03xqX/Ku2Xb7kq1tvtLt3h3aZO8buTGGXqD6yJEHaeOM6ANidgZoHofoJWeg0PT0xgxnFRtjKM53cCCRyqOWy3BR1n38hHeJmpmxVYZnS3UazgZKtK0AZrk86OKf9QEpF9KBHtHTimBA7buli+e7+jxiMCdZ272o461fXaZmKceV3ZiWXX8YF5Nbc4QUw/MsPZqiOqkNJxaEWn8vcVTqUrYqnYFkEcrLc8fCKYTZZzMcyBuz9V4Wlg9pMJMsYT8My1wvkCr2i16mNm7HnM/btW0D8J7buGdOj61US1bKBfS1969mjvlHCsFqmznfp9gets3S0v7qy6b0uB3yrxiMtef7UwuP3QE4jMCkwqolDp2J1U0ZtVHEFd9aV60bCLFjch0XupWWA8U7y6xUA0pkJJJ7DsGTs9YRfhSXPi2soH/dU4M2NwOu0GpLsN2Jcx2tBBMsq/WMJuzOQrsj3fpcXEJSoan0tLfPW1tt/UjhMcmE483WCKwLcGmzuqhghSRGXJj7C+svctJcS9oZjJJKU7HWRu14f/Evzc/ajxHM4Zg8v72bvkwewRoIqRNxV/8F2AAk4SVGlmiq9I0gKtN9GLzpJSYHD2/0NJLIsLSJoSDs5W3ORmcWXnUYsUOTG6I/fsLyMofjgsbZuKFFJVHYd+aIskIhzI/sX67NtBYz5udGz6zBszZ7zG2NuZj+vyzf1cWFv/lnM4HaKfgAzuiQh0fKKJ4C7XnSeSLauf5YssHmMF93eHSyXWUE7MKQBFkxgiEGIxMbOd3afZ5A7Pjun38PlwXBE3VajOLAJXrHspWC7+acuAB9UYzl27u6brWVuWyqO5BeMf/lC8xz+RPj8OarSmjGk7qj8HSDfnEvkQrQ0H1Na0YAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1zb25uZXQtNS41LTIwMjYwOTI4fGNsYXVkZS1vbi1hd3MifQ"
+      }
+     ]
+    },
+    "time": {
+     "created": 1791125026931,
+     "completed": 1791125035439
+    }
+   },
+   {
+    "type": "tool",
+    "id": "toolu_01EZbPeEYe6NozRbXnVTJtVk",
+    "name": "shell",
+    "executed": false,
+    "state": {
+     "status": "completed",
+     "input": {
+      "command": "cat > server.js <<'EOF'\nconst net = require('net');\nconst { BAD_REQUEST_RESPONSE, PAYLOAD_TOO_LARGE_RESPONSE, routeRequest } = require('./router');\nconst { parseRequestHead } = require('./parser');\n\nconst PORT = process.env.PORT || 8080;\nconst DEFAULT_MAX_REQUEST_LINE_BYTES = 8192;\nconst MAX_HEAD_BYTES = 16384;\nconst MAX_BODY_BYTES = 1024 * 1024;\nconst LINE_END = '\\r\\n';\nconst HEAD_END = '\\r\\n\\r\\n';\n\nconst readMaxRequestLineBytes = () => {\n  const configuredValue = process.env.MAX_REQUEST_LINE_BYTES ?? DEFAULT_MAX_REQUEST_LINE_BYTES;\n  const maxRequestLineBytes = Number(configuredValue);\n  if (!Number.isSafeInteger(maxRequestLineBytes) || maxRequestLineBytes <= 0) {\n    throw new Error(`MAX_REQUEST_LINE_BYTES must be a positive integer, got \"${configuredValue}\"`);\n  }\n  return maxRequestLineBytes;\n};\n\nconst MAX_REQUEST_LINE_BYTES = readMaxRequestLineBytes();\n\nconst isRequestLineTooLong = (receivedBytes) =>\n  receivedBytes.length >= MAX_REQUEST_LINE_BYTES &&\n  !receivedBytes.subarray(0, MAX_REQUEST_LINE_BYTES).includes(LINE_END);\n\nconst server = net.createServer((conn) => {\n  let receivedBytes = Buffer.alloc(0);\n  let requestHead = null;\n  let bodyStart = 0;\n\n  const sendResponse = (response) => conn.end(response, 'latin1');\n\n  const handleReceivedBytes = () => {\n    if (requestHead === null) {\n      if (isRequestLineTooLong(receivedBytes)) return sendResponse(BAD_REQUEST_RESPONSE);\n\n      const headEnd = receivedBytes.indexOf(HEAD_END);\n      if (headEnd === -1) {\n        if (receivedBytes.length > MAX_HEAD_BYTES) sendResponse(BAD_REQUEST_RESPONSE);\n        return;\n      }\n      if (headEnd > MAX_HEAD_BYTES) return sendResponse(BAD_REQUEST_RESPONSE);\n\n      requestHead = parseRequestHead(receivedBytes.toString('latin1', 0, headEnd));\n      if (requestHead === null) return sendResponse(BAD_REQUEST_RESPONSE);\n      if (requestHead.contentLength > MAX_BODY_BYTES) {\n        return sendResponse(PAYLOAD_TOO_LARGE_RESPONSE);\n      }\n      bodyStart = headEnd + HEAD_END.length;\n    }\n\n    const bodyEnd = bodyStart + requestHead.contentLength;\n    if (receivedBytes.length < bodyEnd) return;\n\n    const { method, target, headers } = requestHead;\n    sendResponse(routeRequest({ method, target, headers, body: receivedBytes.subarray(bodyStart, bodyEnd) }));\n  };\n\n  conn.on('error', () => {});\n  conn.on('data', (chunk) => {\n    if (conn.writableEnded) return;\n    receivedBytes = Buffer.concat([receivedBytes, chunk]);\n    handleReceivedBytes();\n  });\n  conn.on('end', () => {\n    if (!conn.writableEnded) sendResponse(BAD_REQUEST_RESPONSE);\n  });\n});\n\nserver.listen(PORT);\nEOF\ncat > /tmp/t.js 2>/dev/null || true\nPORT=18080 node server.js & sleep 1\nt() { printf \"$1\" | node -e \"\nconst s=require('net').connect(18080,'127.0.0.1');let o='';s.on('data',d=>o+=d);s.on('close',()=>console.log(JSON.stringify(o.split('\\r\\n')[0]), JSON.stringify(o.split('\\r\\n\\r\\n')[1])));\nprocess.stdin.on('data',d=>s.write(d));process.stdin.on('end',()=>s.end());\"; }\nt 'GET / HTTP/1.1\\r\\nHost: x\\r\\n\\r\\n'\nt 'POST /echo?a=1 HTTP/1.1\\r\\nContent-Length: 5\\r\\n\\r\\nhello'\nt 'GET /users/1/posts/2 HTTP/1.1\\r\\n\\r\\n'\nt 'GET /echo HTTP/1.1\\r\\nBadHeader\\r\\n\\r\\n'\nt 'GET /echo HTTP/1.1\\r\\nContent-Length: abc\\r\\n\\r\\n'\nt 'GET /echo HTTP/1.1\\r\\nContent-Length: 10\\r\\n\\r\\nabc'\nt 'GARBAGE\\r\\n\\r\\n'\nt 'GET /echo HTTP/1.1\\r\\nContent-Length: 99999999\\r\\n\\r\\n'\nt 'GET /nope HTTP/1.1\\r\\n\\r\\n'\nt 'POST / HTTP/1.1\\r\\n\\r\\n'\nt 'GET /echo HTTP/1.1\\r\\nHost : x\\r\\n\\r\\n'\nkill %1"
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "\"HTTP/1.1 200 OK\" \"\"\n\"HTTP/1.1 200 OK\" \"POST /echo\"\n\"HTTP/1.1 200 OK\" \"1 2\"\n\"HTTP/1.1 400 Bad Request\" \"\"\n\"HTTP/1.1 400 Bad Request\" \"\"\n\"HTTP/1.1 400 Bad Request\" \"\"\n\"HTTP/1.1 400 Bad Request\" \"\"\n\"HTTP/1.1 413 Payload Too Large\" \"\"\n\"HTTP/1.1 404 Not Found\" \"\"\n\"HTTP/1.1 405 Method Not Allowed\" \"\"\n\"HTTP/1.1 400 Bad Request\" \"\"\n"
+      }
+     ],
+     "metadata": {
+      "status": "completed",
+      "truncated": false,
+      "exit": 0
+     }
+    },
+    "time": {
+     "created": 1791125027212,
+     "ran": 1791125035445,
+     "completed": 1791125037703
+    }
+   }
+  ],
+  "snapshot": {
+   "start": "55cfd30c3ec35e347c0f1876161b098c36ef1f1d",
+   "end": "d495df36be550b0d74c6163401f931829fdcdc11",
+   "files": [
+    "server.js"
+   ]
+  },
+  "finish": "tool-calls",
+  "rawFinish": "tool_use",
+  "cost": 0.0368682,
+  "tokens": {
+   "input": 2,
+   "output": 1916,
+   "reasoning": 38,
+   "cache": {
+    "read": 12646,
+    "write": 5918
+   }
+  }
+ },
+ {
+  "type": "assistant",
+  "time": {
+   "created": 1791125038015,
+   "streamed": 1791125041025,
+   "completed": 1791125041245
+  },
+  "agent": "build",
+  "model": {
+   "id": "anthropic/claude-sonnet-5.5",
+   "providerID": "openrouter",
+   "variant": "default"
+  },
+  "content": [
+   {
+    "type": "reasoning",
+    "text": "Everything checks out, so I'll add a brief update to the README now.",
+    "state": {
+     "reasoningField": "reasoning",
+     "reasoningDetails": [
+      {
+       "type": "reasoning.text",
+       "text": "Everything checks out, so I'll add a brief update to the README now.",
+       "format": "anthropic-claude-v1",
+       "index": 0,
+       "signature": "CAQSnAYKEAgSGAI4AUIIdGhpbmtpbmcSDMaSn60K22L1uLoDkxoMUEwDKtUVRHUGmQGdIjA70DVoFm9ZRUhJNpULudidUXJYEfJ0hq4LTMj/gq+2NYUKpF0g2oNIencpF9wVqT4quQWqkGiryyQpcg1O3ea0cRc5X1ZtHIWu4c68SK74bahDApRaD1U7M/J589olQfUU+7ttFw3wG8b8rSytkur7LPbT1T6lpiKtCFG0PAA+mraZb/a1JK4AeXJl1dRpmIItMfRnbihAL0urAXB5hVQkYy209Ly2OGwA76rL84usstLnq8Fc0KQpk7QhzxG8rf10LFdqsXAzILU8pVTry+WZwItPpH2h57yvF6KN2PY6m7YNfT2O3KZSL3GtG4ofpHisr1IIDKy8wQ7UC/CiuqFG7FHauHXvNdT90clOx8gPsyzrAyEHw8/7TcQCnk4oY/HkeRYxdxX9h8CJvPoJy3eS1ga2PTof+i05KRWkzP3Iml7L04qXy+FQ8qwN4xnR4SXsY6qBTVCn5+7gxeCPqndLbBkM1MKj1vBkbblKW2wLOEd0f6EUgtIaGtGOVbLy1k4Cr8QxyT1xVOGy2tJvrKED0qCuNdRBnh2Nnwg23oNCdw1zcsYID/RqPmak2QVqtpnQYXOeORo3OGnPdjPQR9AqO7iEq1y5DZCLsIwbT0GOo2RcGIIzfnypl03QlqGpGNrvbpj/X4OHtJ1dqgA0yEZUSfKsvTqSqszsr++2qqZZqzkgiNlTY+kakKQV8b+NbeadyzJu7wW7REq+ab7i41wgd+U3iVrMQK/IAR2dgou6e6I71U3nhDTyV0fmB2q90fijobmBabLxNyjIDYsGz/6xsv/nYZHZaqqq7TKfrsAIrBc9EKIqGNRWFpBjz6N9Oy6u4Idzv7XF8CKbZD6GrIzPnG/aRpB0l/ag7gAVh2tjIHSUQLboS1O6bf7pyuoj4n5HRa9wDKmDE8NdbgCls3dm2JEQaZpY49JEoBm0mUw+Gc2eL4efFv8zoCS1NZMD56JxwojoMVi/uIw46S+UwY1EBghSoCD0iX97JQ0VGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1zb25uZXQtNS41LTIwMjYwOTI4fGNsYXVkZS1vbi1hd3MifQ"
+      }
+     ]
+    },
+    "time": {
+     "created": 1791125040583,
+     "completed": 1791125041021
+    }
+   },
+   {
+    "type": "tool",
+    "id": "toolu_01GNsTgbXhcfc8WQs3vsfLg9",
+    "name": "edit",
+    "executed": false,
+    "state": {
+     "status": "completed",
+     "input": {
+      "path": "<tmp>\\tmphcddhsry\\repo\\README.md",
+      "oldString": "Run: ",
+      "newString": "Each request's request line, headers and `Content-Length` body are parsed before routing. Malformed requests get `400 Bad Request` (bodies over 1 MiB get `413`). `/echo` replies with the request's method and path, e.g. `POST /echo`.\n\nRun: "
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "Edited README.md (1 replacement)"
+      }
+     ],
+     "metadata": {
+      "files": [
+       {
+        "file": "README.md",
+        "patch": "Index: README.md\n===================================================================\n--- README.md\n+++ README.md\n@@ -1,6 +1,8 @@\n An HTTP server that routes each request by the method and target in its request line.\n \n+Each request's request line, headers and `Content-Length` body are parsed before routing. Malformed requests get `400 Bad Request` (bodies over 1 MiB get `413`). `/echo` replies with the request's method and path, e.g. `POST /echo`.\n+\n Run: `node server.js`\n \n Minimum Node.js version: 22\n \n",
+        "status": "modified",
+        "additions": 2,
+        "deletions": 0
+       }
+      ],
+      "truncated": false
+     }
+    },
+    "time": {
+     "created": 1791125040720,
+     "ran": 1791125041024,
+     "completed": 1791125041042
+    }
+   }
+  ],
+  "snapshot": {
+   "start": "d495df36be550b0d74c6163401f931829fdcdc11",
+   "end": "54a1e7dc2f8e856fec6e6fc86c36f179da1b9de3",
+   "files": [
+    "README.md"
+   ]
+  },
+  "finish": "tool-calls",
+  "rawFinish": "tool_use",
+  "cost": 0.0114793,
+  "tokens": {
+   "input": 2,
+   "output": 216,
+   "reasoning": 12,
+   "cache": {
+    "read": 18564,
+    "write": 2193
+   }
+  }
+ },
+ {
+  "type": "assistant",
+  "time": {
+   "created": 1791125041343,
+   "streamed": 1791125048402,
+   "completed": 1791125048467
+  },
+  "agent": "build",
+  "model": {
+   "id": "anthropic/claude-sonnet-5.5",
+   "providerID": "openrouter",
+   "variant": "default"
+  },
+  "content": [
+   {
+    "type": "text",
+    "text": "The server now reads the request line, headers and any `Content-Length` body before it routes. `/echo` replies with the method and path, and malformed requests get `400 Bad Request`. I ran it against a few raw requests and got the expected status each time. There's no automated test suite, so that was a manual check.\n\n- **`parser.js`** (new): parses the request line and headers.\n  - Header names are case-insensitive, and repeated headers are joined with `, `.\n  - A request is malformed if the request line doesn't parse, a header has no colon or a bad name (for example `Host : x`), a line contains NUL or a bare CR/LF, or `Content-Length` isn't all digits.\n- **`router.js`**: `routeRequestLine` is now `routeRequest({ method, target, headers, body })`.\n  - `/echo` accepts any method and ignores any `?query`, so `POST /echo?a=1` replies `POST /echo` as `text/plain`.\n  - The existing routes behave as before.\n- **`server.js`**: it now waits for the blank line that ends the headers, then for `Content-Length` bytes of body. It replies 400 if the client disconnects mid-request, the request line is over `MAX_REQUEST_LINE_BYTES`, or the headers are over 16 KiB.\n- **`README.md`**: I added a short note about the new behavior.\n\nI made two choices you didn't specify:\n- **413 for large bodies:** a declared body over 1 MiB gets `413 Payload Too Large` instead of 400, since it's too large rather than malformed. That's a one-line change if you'd rather have 400.\n- **Request-line version:** I kept the existing request-line pattern, which accepts any third token, so `GET / junk` still isn't rejected. Say if you want it to require `HTTP/x.y`.\n\nThe parsed body isn't used by any route yet. `Transfer-Encoding: chunked` isn't supported, so a chunked body is ignored."
+   }
+  ],
+  "snapshot": {
+   "start": "54a1e7dc2f8e856fec6e6fc86c36f179da1b9de3",
+   "end": "54a1e7dc2f8e856fec6e6fc86c36f179da1b9de3",
+   "files": []
+  },
+  "finish": "stop",
+  "rawFinish": "end_turn",
+  "cost": 0.011180400000000002,
+  "tokens": {
+   "input": 2,
+   "output": 641,
+   "reasoning": 0,
+   "cache": {
+    "read": 20757,
+    "write": 246
+   }
+  }
+ },
+ {
+  "type": "idle",
+  "time": {
+   "created": 1791125048471
+  },
+  "outcome": "succeeded"
+ }
+]

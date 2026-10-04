@@ -1,0 +1,143 @@
+diff --git a/parser.js b/parser.js
+new file mode 100644
+index 0000000..e284369
+--- /dev/null
++++ b/parser.js
+@@ -0,0 +1,32 @@
++const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +(HTTP\/\d\.\d)$/;
++const HEADER_PATTERN = /^([!#$%&'*+.^_`|~0-9A-Za-z-]+):[ \t]*(.*?)[ \t]*$/;
++const CONTENT_LENGTH_PATTERN = /^\d+$/;
++
++// Parses a request head (everything before the blank line).
++// Returns { method, target, version, headers, contentLength } or null if malformed.
++const parseHead = (head) => {
++  const lines = head.split('\r\n');
++  const requestLineMatch = REQUEST_LINE_PATTERN.exec(lines[0]);
++  if (!requestLineMatch) return null;
++  const [, method, target, version] = requestLineMatch;
++
++  const headers = {};
++  for (const line of lines.slice(1)) {
++    const headerMatch = HEADER_PATTERN.exec(line);
++    if (!headerMatch) return null;
++    const name = headerMatch[1].toLowerCase();
++    headers[name] = name in headers ? `${headers[name]}, ${headerMatch[2]}` : headerMatch[2];
++  }
++
++  let contentLength = 0;
++  if ('content-length' in headers) {
++    const values = headers['content-length'].split(',').map((v) => v.trim());
++    if (new Set(values).size !== 1 || !CONTENT_LENGTH_PATTERN.test(values[0])) return null;
++    contentLength = Number(values[0]);
++    if (!Number.isSafeInteger(contentLength)) return null;
++  }
++
++  return { method, target, version, headers, contentLength };
++};
++
++module.exports = { parseHead };
+diff --git a/router.js b/router.js
+index 1c1eef1..bcc8f9b 100644
+--- a/router.js
++++ b/router.js
+@@ -1,4 +1,4 @@
+-const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +[^ ]+$/;
++const ECHO_PATH = '/echo';
+ const ROOT_TARGET = '/';
+ const USER_POST_TARGET_PATTERN = /^\/users\/([^/]+)\/posts\/([^/]+)$/;
+ 
+@@ -19,11 +19,15 @@ const METHOD_NOT_ALLOWED_RESPONSE = buildResponse('405 Method Not Allowed', {
+   headers: ['Allow: GET'],
+ });
+ 
+-const routeRequestLine = (requestLine) => {
+-  const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);
+-  if (!requestLineMatch) return BAD_REQUEST_RESPONSE;
++const routeRequest = ({ method, target }) => {
++  const path = target.split('?')[0];
++  if (path === ECHO_PATH) {
++    return buildResponse('200 OK', {
++      headers: ['Content-Type: text/plain'],
++      body: `${method} ${path}`,
++    });
++  }
+ 
+-  const [, method, target] = requestLineMatch;
+   const userPostMatch = USER_POST_TARGET_PATTERN.exec(target);
+   if (target !== ROOT_TARGET && !userPostMatch) return NOT_FOUND_RESPONSE;
+   if (method !== 'GET') return METHOD_NOT_ALLOWED_RESPONSE;
+@@ -36,4 +40,4 @@ const routeRequestLine = (requestLine) => {
+   });
+ };
+ 
+-module.exports = { BAD_REQUEST_RESPONSE, routeRequestLine };
++module.exports = { BAD_REQUEST_RESPONSE, routeRequest };
+diff --git a/server.js b/server.js
+index b5eb1f6..cfe070a 100644
+--- a/server.js
++++ b/server.js
+@@ -1,8 +1,12 @@
+ const net = require('net');
+-const { BAD_REQUEST_RESPONSE, routeRequestLine } = require('./router');
++const { parseHead } = require('./parser');
++const { BAD_REQUEST_RESPONSE, routeRequest } = require('./router');
+ 
+ const PORT = process.env.PORT || 8080;
+ const DEFAULT_MAX_REQUEST_LINE_BYTES = 8192;
++const MAX_HEAD_BYTES = 65536;
++const MAX_BODY_BYTES = 1048576;
++const HEAD_END = '\r\n\r\n';
+ const REQUEST_LINE_END = '\r\n';
+ 
+ const readMaxRequestLineBytes = () => {
+@@ -16,15 +20,15 @@ const readMaxRequestLineBytes = () => {
+ 
+ const MAX_REQUEST_LINE_BYTES = readMaxRequestLineBytes();
+ 
+-const findRequestLine = (receivedBytes) => {
+-  const requestLineEnd = receivedBytes
+-    .subarray(0, MAX_REQUEST_LINE_BYTES)
+-    .indexOf(REQUEST_LINE_END);
+-  return requestLineEnd === -1 ? null : receivedBytes.toString('latin1', 0, requestLineEnd);
++const requestLineTooLong = (bytes) => {
++  const end = bytes.subarray(0, MAX_REQUEST_LINE_BYTES).indexOf(REQUEST_LINE_END);
++  return end === -1 && bytes.length >= MAX_REQUEST_LINE_BYTES;
+ };
+ 
+ const server = net.createServer((conn) => {
+   let receivedBytes = Buffer.alloc(0);
++  let request = null;
++  let bodyStart = 0;
+ 
+   const sendResponse = (response) => conn.end(response, 'latin1');
+ 
+@@ -33,11 +37,24 @@ const server = net.createServer((conn) => {
+     if (conn.writableEnded) return;
+     receivedBytes = Buffer.concat([receivedBytes, chunk]);
+ 
+-    const requestLine = findRequestLine(receivedBytes);
+-    if (requestLine !== null) {
+-      sendResponse(routeRequestLine(requestLine));
+-    } else if (receivedBytes.length >= MAX_REQUEST_LINE_BYTES) {
+-      sendResponse(BAD_REQUEST_RESPONSE);
++    if (!request) {
++      if (requestLineTooLong(receivedBytes)) return sendResponse(BAD_REQUEST_RESPONSE);
++      const headEnd = receivedBytes.indexOf(HEAD_END);
++      if (headEnd === -1) {
++        if (receivedBytes.length >= MAX_HEAD_BYTES) sendResponse(BAD_REQUEST_RESPONSE);
++        return;
++      }
++      if (headEnd > MAX_HEAD_BYTES) return sendResponse(BAD_REQUEST_RESPONSE);
++      request = parseHead(receivedBytes.toString('latin1', 0, headEnd));
++      if (!request || request.contentLength > MAX_BODY_BYTES) {
++        return sendResponse(BAD_REQUEST_RESPONSE);
++      }
++      bodyStart = headEnd + HEAD_END.length;
++    }
++
++    if (receivedBytes.length - bodyStart >= request.contentLength) {
++      request.body = receivedBytes.subarray(bodyStart, bodyStart + request.contentLength);
++      sendResponse(routeRequest(request));
+     }
+   });
+   conn.on('end', () => {

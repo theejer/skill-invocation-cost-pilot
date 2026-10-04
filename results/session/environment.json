@@ -1,0 +1,238 @@
+{
+  "pi-openai": {
+    "harness": "pi",
+    "model_requested": "openai-codex/gpt-6.1-sol",
+    "route": "direct",
+    "model_reported": "gpt-6.1-sol",
+    "effort": "harness default",
+    "tools": [
+      "read",
+      "bash",
+      "edit",
+      "write"
+    ],
+    "system_prompt_sections": [
+      "cwd",
+      "docs",
+      "preamble",
+      "rules",
+      "tools"
+    ],
+    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
+  },
+  "codex-anthropic": {
+    "harness": "codex",
+    "model_requested": "anthropic/claude-sonnet-5.5",
+    "route": "openrouter",
+    "model_reported": "anthropic/claude-sonnet-5.5",
+    "effort": "harness default",
+    "version": "0.160.0",
+    "model_provider": "openrouter",
+    "base_instructions_chars": 21026,
+    "skills": [
+      "imagegen",
+      "openai-docs",
+      "skill-creator",
+      "skill-installer"
+    ],
+    "instruction_files": [],
+    "approval_policy": "never",
+    "sandbox": "read-only",
+    "disabled_plugin_ids": [],
+    "session_file_found": true,
+    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
+  },
+  "pi-anthropic": {
+    "harness": "pi",
+    "model_requested": "openrouter/anthropic/claude-sonnet-5.5",
+    "route": "openrouter",
+    "model_reported": "anthropic/claude-sonnet-5.5",
+    "effort": "harness default",
+    "tools": [
+      "read",
+      "bash",
+      "edit",
+      "write"
+    ],
+    "system_prompt_sections": [
+      "cwd",
+      "docs",
+      "preamble",
+      "rules",
+      "tools"
+    ],
+    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
+  },
+  "opencode-anthropic": {
+    "harness": "opencode",
+    "model_requested": "openrouter/anthropic/claude-sonnet-5.5",
+    "route": "openrouter",
+    "model_reported": "anthropic/claude-sonnet-5.5",
+    "effort": "default",
+    "agent": "build",
+    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
+  },
+  "cc-openai": {
+    "harness": "claude",
+    "model_requested": "openai/gpt-6.1-sol",
+    "route": "openrouter",
+    "model_reported": "openai/gpt-6.1-sol",
+    "effort": "harness default",
+    "version": "2.1.289",
+    "tools": [
+      "Task",
+      "Bash",
+      "CronCreate",
+      "CronDelete",
+      "CronList",
+      "DesignSync",
+      "Edit",
+      "EnterWorktree",
+      "ExitWorktree",
+      "Glob",
+      "Grep",
+      "ListAgents",
+      "Monitor",
+      "NotebookEdit",
+      "PowerShell",
+      "PushNotification",
+      "Read",
+      "ReportFindings",
+      "ScheduleWakeup",
+      "SendMessage",
+      "Skill",
+      "TaskStop",
+      "WebFetch",
+      "WebSearch",
+      "Workflow",
+      "Write"
+    ],
+    "skills": [
+      "deep-research",
+      "design",
+      "design-sync",
+      "dataviz",
+      "update-config",
+      "verify",
+      "debug",
+      "code-review",
+      "simplify",
+      "batch",
+      "fewer-permission-prompts",
+      "doctor",
+      "loop",
+      "claude-api",
+      "workflow-authoring",
+      "run",
+      "run-skill-generator",
+      "plugin-authoring"
+    ],
+    "plugins": [
+      "cc-plugin-agents-md",
+      "cc-plugin-telemetry",
+      "cc-plugin-plugin-authoring"
+    ],
+    "mcp_servers": [],
+    "instruction_files": {
+      "auto": "<home>\\.claude\\projects\\<tmp>-tmptgsz1qim-repo\\memory\\"
+    },
+    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
+  },
+  "opencode-openai": {
+    "harness": "opencode",
+    "model_requested": "openai/gpt-6.1-sol",
+    "route": "direct",
+    "model_reported": "gpt-6.1-sol",
+    "effort": "default",
+    "agent": "build",
+    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
+  },
+  "codex-openai": {
+    "harness": "codex",
+    "model_requested": "gpt-6.1-sol",
+    "route": "direct",
+    "model_reported": "gpt-6.1-sol",
+    "effort": "harness default",
+    "version": "0.160.0",
+    "model_provider": "openai",
+    "base_instructions_chars": 21769,
+    "skills": [
+      "imagegen",
+      "openai-docs",
+      "skill-creator",
+      "skill-installer"
+    ],
+    "instruction_files": [],
+    "approval_policy": "never",
+    "sandbox": "danger-full-access",
+    "disabled_plugin_ids": [],
+    "session_file_found": true,
+    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
+  },
+  "cc-anthropic": {
+    "harness": "claude",
+    "model_requested": "claude-sonnet-5-5",
+    "route": "direct",
+    "model_reported": "claude-sonnet-5-5",
+    "effort": "harness default",
+    "version": "2.1.289",
+    "tools": [
+      "Task",
+      "Bash",
+      "CronCreate",
+      "CronDelete",
+      "CronList",
+      "DesignSync",
+      "Edit",
+      "EnterWorktree",
+      "ExitWorktree",
+      "Glob",
+      "Grep",
+      "ListAgents",
+      "Monitor",
+      "NotebookEdit",
+      "PowerShell",
+      "PushNotification",
+      "Read",
+      "RemoteTrigger",
+      "ReportFindings",
+      "ScheduleWakeup",
+      "SendMessage",
+      "Skill",
+      "TaskStop",
+      "ToolSearch",
+      "WebFetch",
+      "WebSearch",
+      "Write"
+    ],
+    "skills": [
+      "design",
+      "design-sync",
+      "dataviz",
+      "update-config",
+      "verify",
+      "debug",
+      "code-review",
+      "simplify",
+      "batch",
+      "fewer-permission-prompts",
+      "doctor",
+      "loop",
+      "schedule",
+      "claude-api",
+      "run",
+      "run-skill-generator",
+      "plugin-authoring"
+    ],
+    "plugins": [
+      "cc-plugin-agents-md",
+      "cc-plugin-telemetry",
+      "cc-plugin-plugin-authoring"
+    ],
+    "mcp_servers": [],
+    "instruction_files": {
+      "auto": "<home>\\.claude\\projects\\<tmp>-tmpxyki1ee2-repo\\memory\\"
+    },
+    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
+  }
+}
