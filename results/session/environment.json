@@ -20,28 +20,6 @@
     ],
     "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
   },
-  "codex-anthropic": {
-    "harness": "codex",
-    "model_requested": "anthropic/claude-sonnet-5.5",
-    "route": "openrouter",
-    "model_reported": "anthropic/claude-sonnet-5.5",
-    "effort": "harness default",
-    "version": "0.160.0",
-    "model_provider": "openrouter",
-    "base_instructions_chars": 21026,
-    "skills": [
-      "imagegen",
-      "openai-docs",
-      "skill-creator",
-      "skill-installer"
-    ],
-    "instruction_files": [],
-    "approval_policy": "never",
-    "sandbox": "read-only",
-    "disabled_plugin_ids": [],
-    "session_file_found": true,
-    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
-  },
   "pi-anthropic": {
     "harness": "pi",
     "model_requested": "openrouter/anthropic/claude-sonnet-5.5",
@@ -232,6 +210,32 @@
     "mcp_servers": [],
     "instruction_files": {
       "auto": "<home>\\.claude\\projects\\<tmp>-tmpxyki1ee2-repo\\memory\\"
+    },
+    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
+  },
+  "codex-anthropic": {
+    "harness": "codex",
+    "model_requested": "anthropic/claude-sonnet-5.5",
+    "route": "openrouter",
+    "model_reported": "anthropic/claude-sonnet-5.5",
+    "effort": "harness default",
+    "version": "0.160.0",
+    "model_provider": "openrouter",
+    "base_instructions_chars": 21026,
+    "skills": [
+      "imagegen",
+      "openai-docs",
+      "skill-creator",
+      "skill-installer"
+    ],
+    "instruction_files": [],
+    "approval_policy": "never",
+    "sandbox": "danger-full-access",
+    "disabled_plugin_ids": [],
+    "session_file_found": true,
+    "cache_relay": {
+      "requests": 7,
+      "marked": 7
     },
     "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
   }

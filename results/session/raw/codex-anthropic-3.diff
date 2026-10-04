@@ -1,83 +1,121 @@
-diff --git a/.env.example b/.env.example
-index 62ca3e5..e9354e9 100644
---- a/.env.example
-+++ b/.env.example
-@@ -1,2 +1,4 @@
- PORT=8080
- MAX_REQUEST_LINE_BYTES=8192
-+MAX_HEADER_BYTES=16384
-+MAX_BODY_BYTES=1048576
 diff --git a/README.md b/README.md
-index 0cd6db5..1c99753 100644
+index 0cd6db5..d856ca2 100644
 --- a/README.md
 +++ b/README.md
-@@ -1,4 +1,11 @@
+@@ -1,7 +1,15 @@
 -An HTTP server that routes each request by the method and target in its request line.
-+An HTTP server that parses each request (request line, headers and any `Content-Length` body) and routes it by method and target.
-+
-+Routes:
-+- `GET /` returns 200.
-+- `GET /users/:userId/posts/:postId` returns `userId postId`.
-+- `/echo` (any method, query string ignored) returns `METHOD /path`.
-+
-+Malformed requests (bad request line, bad headers, invalid `Content-Length`, `Transfer-Encoding`, oversized request line or headers, or a connection closed before the full request arrives) get `400 Bad Request`. A body over `MAX_BODY_BYTES` gets `413`.
++﻿An HTTP server that parses each request (request line, headers and any `Content-Length` body) and routes it by method and target.
  
  Run: `node server.js`
  
+ Minimum Node.js version: 22
+ 
+ Port: 8080
++
++Routes:
++- `/echo` replies with `<METHOD> <path>` (query string excluded) for any method
++- `/` and `/users/:userId/posts/:postId` respond to `GET`
++
++Malformed requests (bad request line or header, invalid or conflicting `Content-Length`, `Transfer-Encoding`, oversized request line or headers, or a connection closed before the request is complete) get `400 Bad Request`. A body larger than `MAX_BODY_BYTES` gets `413`.
++
++Limits (env vars): `MAX_REQUEST_LINE_BYTES` (8192), `MAX_HEADER_BYTES` (16384), `MAX_BODY_BYTES` (1048576).
 diff --git a/parser.js b/parser.js
 new file mode 100644
-index 0000000..890e16c
+index 0000000..ff0f5e4
 --- /dev/null
 +++ b/parser.js
-@@ -0,0 +1,36 @@
-+const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +[^ ]+$/;
-+const HEADER_LINE_PATTERN = /^([!#$%&'*+.^_`|~0-9A-Za-z-]+):[ \t]*(.*?)[ \t]*$/;
-+const INVALID_HEADER_VALUE_PATTERN = /[\x00-\x08\x0a-\x1f\x7f]/;
-+const CONTENT_LENGTH_PATTERN = /^\d+$/;
+@@ -0,0 +1,78 @@
++﻿const {
++  BAD_REQUEST_RESPONSE,
++  PAYLOAD_TOO_LARGE_RESPONSE,
++} = require('./router');
 +
-+const parseContentLength = (headerValue) => {
-+  if (headerValue === undefined) return 0;
-+  const lengths = headerValue.split(',').map((length) => length.trim());
-+  if (!lengths.every((length) => CONTENT_LENGTH_PATTERN.test(length))) return null;
-+  if (new Set(lengths).size !== 1) return null;
-+  const contentLength = Number(lengths[0]);
++const CRLF = '\r\n';
++const HEAD_END = '\r\n\r\n';
++const REQUEST_LINE_PATTERN = /^([!#$%&'*+.^_`|~0-9A-Za-z-]+) ([^\x00-\x20\x7f]+) HTTP\/\d\.\d$/;
++const HEADER_LINE_PATTERN = /^([!#$%&'*+.^_`|~0-9A-Za-z-]+):[ \t]*(.*?)[ \t]*$/;
++const HEADER_VALUE_PATTERN = /^[\t\x20-\x7e\x80-\xff]*$/;
++const DIGITS_PATTERN = /^\d+$/;
++
++const INCOMPLETE = { type: 'incomplete' };
++const BAD_REQUEST = { type: 'error', response: BAD_REQUEST_RESPONSE };
++const PAYLOAD_TOO_LARGE = { type: 'error', response: PAYLOAD_TOO_LARGE_RESPONSE };
++
++const parseHeaders = (headerLines) => {
++  const headers = new Map();
++  for (const line of headerLines) {
++    const headerMatch = HEADER_LINE_PATTERN.exec(line);
++    if (!headerMatch || !HEADER_VALUE_PATTERN.test(headerMatch[2])) return null;
++
++    const name = headerMatch[1].toLowerCase();
++    const values = headers.get(name) ?? [];
++    values.push(headerMatch[2]);
++    headers.set(name, values);
++  }
++  return headers;
++};
++
++const readContentLength = (headers) => {
++  const values = headers.get('content-length');
++  if (!values) return 0;
++  if (!values.every((value) => DIGITS_PATTERN.test(value) && value === values[0])) return null;
++
++  const contentLength = Number(values[0]);
 +  return Number.isSafeInteger(contentLength) ? contentLength : null;
 +};
 +
-+const parseRequestHead = (head) => {
-+  const [requestLine, ...headerLines] = head.split('\r\n');
-+  const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);
-+  if (!requestLineMatch) return null;
-+
-+  const headers = {};
-+  for (const headerLine of headerLines) {
-+    const headerMatch = HEADER_LINE_PATTERN.exec(headerLine);
-+    if (!headerMatch || INVALID_HEADER_VALUE_PATTERN.test(headerMatch[2])) return null;
-+    const name = headerMatch[1].toLowerCase();
-+    headers[name] = name in headers ? `${headers[name]}, ${headerMatch[2]}` : headerMatch[2];
++const parseRequest = (receivedBytes, { maxRequestLineBytes, maxHeaderBytes, maxBodyBytes }) => {
++  const requestLineEnd = receivedBytes
++    .subarray(0, maxRequestLineBytes)
++    .indexOf(CRLF);
++  if (requestLineEnd === -1) {
++    return receivedBytes.length >= maxRequestLineBytes ? BAD_REQUEST : INCOMPLETE;
 +  }
 +
-+  if ('transfer-encoding' in headers) return null;
-+  const contentLength = parseContentLength(headers['content-length']);
-+  if (contentLength === null) return null;
++  const headEnd = receivedBytes.subarray(0, maxHeaderBytes).indexOf(HEAD_END);
++  if (headEnd === -1) {
++    return receivedBytes.length >= maxHeaderBytes ? BAD_REQUEST : INCOMPLETE;
++  }
++
++  const [requestLine, ...headerLines] = receivedBytes.toString('latin1', 0, headEnd).split(CRLF);
++  const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);
++  const headers = parseHeaders(headerLines);
++  if (!requestLineMatch || !headers || headers.has('transfer-encoding')) return BAD_REQUEST;
++
++  const contentLength = readContentLength(headers);
++  if (contentLength === null) return BAD_REQUEST;
++  if (contentLength > maxBodyBytes) return PAYLOAD_TOO_LARGE;
++
++  const bodyStart = headEnd + HEAD_END.length;
++  const bodyEnd = bodyStart + contentLength;
++  if (receivedBytes.length < bodyEnd) return INCOMPLETE;
 +
 +  const [, method, target] = requestLineMatch;
-+  return { method, target, headers, contentLength };
++  return {
++    type: 'request',
++    request: {
++      method,
++      target,
++      headers,
++      body: receivedBytes.toString('latin1', bodyStart, bodyEnd),
++    },
++  };
 +};
 +
-+module.exports = { parseRequestHead };
++module.exports = { parseRequest };
 diff --git a/router.js b/router.js
-index 1c1eef1..c79a642 100644
+index 1c1eef1..5c47dcd 100644
 --- a/router.js
 +++ b/router.js
 @@ -1,5 +1,5 @@
 -const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +[^ ]+$/;
- const ROOT_TARGET = '/';
+-const ROOT_TARGET = '/';
++﻿const ROOT_TARGET = '/';
 +const ECHO_PATH = '/echo';
  const USER_POST_TARGET_PATTERN = /^\/users\/([^/]+)\/posts\/([^/]+)$/;
  
  const buildResponse = (status, { headers = [], body = '' } = {}) =>
-@@ -15,15 +15,20 @@ const buildResponse = (status, { headers = [], body = '' } = {}) =>
+@@ -15,15 +15,22 @@ const buildResponse = (status, { headers = [], body = '' } = {}) =>
  const OK_RESPONSE = buildResponse('200 OK');
  const BAD_REQUEST_RESPONSE = buildResponse('400 Bad Request');
  const NOT_FOUND_RESPONSE = buildResponse('404 Not Found');
@@ -89,8 +127,10 @@ index 1c1eef1..c79a642 100644
 -const routeRequestLine = (requestLine) => {
 -  const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);
 -  if (!requestLineMatch) return BAD_REQUEST_RESPONSE;
++const pathOf = (target) => target.split(/[?#]/, 1)[0];
++
 +const routeRequest = ({ method, target }) => {
-+  const path = target.split('?', 1)[0];
++  const path = pathOf(target);
 +  if (path === ECHO_PATH) {
 +    return buildResponse('200 OK', {
 +      headers: ['Content-Type: text/plain'],
@@ -102,33 +142,36 @@ index 1c1eef1..c79a642 100644
    const userPostMatch = USER_POST_TARGET_PATTERN.exec(target);
    if (target !== ROOT_TARGET && !userPostMatch) return NOT_FOUND_RESPONSE;
    if (method !== 'GET') return METHOD_NOT_ALLOWED_RESPONSE;
-@@ -36,4 +41,4 @@ const routeRequestLine = (requestLine) => {
+@@ -36,4 +43,4 @@ const routeRequestLine = (requestLine) => {
    });
  };
  
 -module.exports = { BAD_REQUEST_RESPONSE, routeRequestLine };
 +module.exports = { BAD_REQUEST_RESPONSE, PAYLOAD_TOO_LARGE_RESPONSE, routeRequest };
 diff --git a/server.js b/server.js
-index b5eb1f6..9e91f1e 100644
+index b5eb1f6..b201bd2 100644
 --- a/server.js
 +++ b/server.js
-@@ -1,44 +1,69 @@
- const net = require('net');
+@@ -1,26 +1,25 @@
+-const net = require('net');
 -const { BAD_REQUEST_RESPONSE, routeRequestLine } = require('./router');
-+const { parseRequestHead } = require('./parser');
-+const { BAD_REQUEST_RESPONSE, PAYLOAD_TOO_LARGE_RESPONSE, routeRequest } = require('./router');
++﻿const net = require('net');
++const { parseRequest } = require('./parser');
++const { BAD_REQUEST_RESPONSE, routeRequest } = require('./router');
  
  const PORT = process.env.PORT || 8080;
--const DEFAULT_MAX_REQUEST_LINE_BYTES = 8192;
- const REQUEST_LINE_END = '\r\n';
-+const HEAD_END = '\r\n\r\n';
- 
+ const DEFAULT_MAX_REQUEST_LINE_BYTES = 8192;
+-const REQUEST_LINE_END = '\r\n';
+-
 -const readMaxRequestLineBytes = () => {
 -  const configuredValue = process.env.MAX_REQUEST_LINE_BYTES ?? DEFAULT_MAX_REQUEST_LINE_BYTES;
 -  const maxRequestLineBytes = Number(configuredValue);
 -  if (!Number.isSafeInteger(maxRequestLineBytes) || maxRequestLineBytes <= 0) {
 -    throw new Error(`MAX_REQUEST_LINE_BYTES must be a positive integer, got "${configuredValue}"`);
-+const readPositiveIntegerSetting = (name, defaultValue) => {
++const DEFAULT_MAX_HEADER_BYTES = 16384;
++const DEFAULT_MAX_BODY_BYTES = 1048576;
++
++const readPositiveInteger = (name, defaultValue) => {
 +  const configuredValue = process.env[name] ?? defaultValue;
 +  const value = Number(configuredValue);
 +  if (!Number.isSafeInteger(value) || value <= 0) {
@@ -139,56 +182,20 @@ index b5eb1f6..9e91f1e 100644
  };
  
 -const MAX_REQUEST_LINE_BYTES = readMaxRequestLineBytes();
-+const MAX_REQUEST_LINE_BYTES = readPositiveIntegerSetting('MAX_REQUEST_LINE_BYTES', 8192);
-+const MAX_HEADER_BYTES = Math.max(
-+  readPositiveIntegerSetting('MAX_HEADER_BYTES', 16384),
-+  MAX_REQUEST_LINE_BYTES,
-+);
-+const MAX_BODY_BYTES = readPositiveIntegerSetting('MAX_BODY_BYTES', 1048576);
- 
+-
 -const findRequestLine = (receivedBytes) => {
 -  const requestLineEnd = receivedBytes
 -    .subarray(0, MAX_REQUEST_LINE_BYTES)
 -    .indexOf(REQUEST_LINE_END);
 -  return requestLineEnd === -1 ? null : receivedBytes.toString('latin1', 0, requestLineEnd);
--};
-+const hasRequestLine = (receivedBytes) =>
-+  receivedBytes.subarray(0, MAX_REQUEST_LINE_BYTES).indexOf(REQUEST_LINE_END) !== -1;
-+
-+const findHeadEnd = (receivedBytes) =>
-+  receivedBytes.subarray(0, MAX_HEADER_BYTES).indexOf(HEAD_END);
++const LIMITS = {
++  maxRequestLineBytes: readPositiveInteger('MAX_REQUEST_LINE_BYTES', DEFAULT_MAX_REQUEST_LINE_BYTES),
++  maxHeaderBytes: readPositiveInteger('MAX_HEADER_BYTES', DEFAULT_MAX_HEADER_BYTES),
++  maxBodyBytes: readPositiveInteger('MAX_BODY_BYTES', DEFAULT_MAX_BODY_BYTES),
+ };
  
  const server = net.createServer((conn) => {
-   let receivedBytes = Buffer.alloc(0);
-+  let request = null;
-+  let bodyStart = 0;
- 
-   const sendResponse = (response) => conn.end(response, 'latin1');
- 
-+  const handleData = () => {
-+    if (request === null) {
-+      if (!hasRequestLine(receivedBytes)) {
-+        return receivedBytes.length >= MAX_REQUEST_LINE_BYTES ? BAD_REQUEST_RESPONSE : null;
-+      }
-+
-+      const headEnd = findHeadEnd(receivedBytes);
-+      if (headEnd === -1) {
-+        return receivedBytes.length >= MAX_HEADER_BYTES ? BAD_REQUEST_RESPONSE : null;
-+      }
-+
-+      request = parseRequestHead(receivedBytes.toString('latin1', 0, headEnd));
-+      if (request === null) return BAD_REQUEST_RESPONSE;
-+      if (request.contentLength > MAX_BODY_BYTES) return PAYLOAD_TOO_LARGE_RESPONSE;
-+      bodyStart = headEnd + HEAD_END.length;
-+    }
-+
-+    if (receivedBytes.length < bodyStart + request.contentLength) return null;
-+    request.body = receivedBytes.subarray(bodyStart, bodyStart + request.contentLength);
-+    return routeRequest(request);
-+  };
-+
-   conn.on('error', () => {});
-   conn.on('data', (chunk) => {
+@@ -33,12 +32,9 @@ const server = net.createServer((conn) => {
      if (conn.writableEnded) return;
      receivedBytes = Buffer.concat([receivedBytes, chunk]);
  
@@ -198,8 +205,9 @@ index b5eb1f6..9e91f1e 100644
 -    } else if (receivedBytes.length >= MAX_REQUEST_LINE_BYTES) {
 -      sendResponse(BAD_REQUEST_RESPONSE);
 -    }
-+    const response = handleData();
-+    if (response !== null) sendResponse(response);
++    const result = parseRequest(receivedBytes, LIMITS);
++    if (result.type === 'request') sendResponse(routeRequest(result.request));
++    else if (result.type === 'error') sendResponse(result.response);
    });
    conn.on('end', () => {
      if (!conn.writableEnded) sendResponse(BAD_REQUEST_RESPONSE);
