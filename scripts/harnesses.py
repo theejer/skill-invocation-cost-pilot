@@ -1,8 +1,10 @@
+import http.server
 import json
 import os
 import re
 import shutil
 import sqlite3
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -42,6 +44,67 @@ def openrouter_generation(gen_id, tries=60, wait=5):
                 raise
         time.sleep(wait)
     return None
+
+
+class CacheRelay:
+    """Local relay between Codex and OpenRouter for Anthropic models. Those models cache only when a request
+    carries `cache_control`, Codex cannot add body fields, so the relay adds the top-level field."""
+
+    FIELD = {"type": "ephemeral"}
+
+    def __init__(self, upstream=OPENROUTER_OPENAI_BASE):
+        relay = self
+        self.upstream, self.requests, self.marked = upstream, 0, 0
+
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+
+            def do_GET(self):
+                self.forward()
+
+            def do_POST(self):
+                self.forward()
+
+            def forward(self):
+                size = int(self.headers.get("Content-Length") or 0)
+                body = self.rfile.read(size) if size else None
+                if body:
+                    relay.requests += 1
+                    try:
+                        data = json.loads(body)
+                    except ValueError:
+                        data = None
+                    if isinstance(data, dict) and "cache_control" not in data:
+                        data["cache_control"] = relay.FIELD
+                        body = json.dumps(data).encode("utf-8")
+                        relay.marked += 1
+                headers = {k: v for k, v in self.headers.items()
+                           if k.lower() not in ("host", "content-length", "accept-encoding", "connection")}
+                req = urllib.request.Request(relay.upstream + self.path, data=body, headers=headers,
+                                             method=self.command)
+                try:
+                    resp = urllib.request.urlopen(req, timeout=600)
+                except urllib.error.HTTPError as e:
+                    resp = e
+                self.send_response(resp.status)
+                for k, v in resp.headers.items():
+                    if k.lower() not in ("transfer-encoding", "connection", "content-length"):
+                        self.send_header(k, v)
+                self.send_header("Connection", "close")
+                self.end_headers()
+                read = getattr(resp, "read1", resp.read)
+                while chunk := read(65536):
+                    self.wfile.write(chunk)
+                    self.wfile.flush()
+
+        self.server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        self.url = f"http://127.0.0.1:{self.server.server_address[1]}"
+        threading.Thread(target=self.server.serve_forever, daemon=True).start()
+
+    def close(self):
+        self.server.shutdown()
+        self.server.server_close()
 
 
 # ================================================================ Claude Code
@@ -200,9 +263,13 @@ class Codex:
                 + ["--sandbox", "danger-full-access" if job == "session" else "read-only"])
         if cfg["route"] == "openrouter":
             openrouter_key()
+            base = OPENROUTER_OPENAI_BASE
+            if cfg["model"].startswith("anthropic/"):
+                self.relay = CacheRelay()
+                base = self.relay.url
             argv += ["-c", 'model_provider="openrouter"',
                      "-c", 'model_providers.openrouter.name="OpenRouter"',
-                     "-c", f'model_providers.openrouter.base_url="{OPENROUTER_OPENAI_BASE}"',
+                     "-c", f'model_providers.openrouter.base_url="{base}"',
                      "-c", 'model_providers.openrouter.env_key="OPENROUTER_API_KEY"',
                      "-c", 'model_providers.openrouter.wire_api="responses"']
         else:
@@ -219,6 +286,9 @@ class Codex:
 
     def cleanup(self, home):
         (self._home(home) / "auth.json").unlink(missing_ok=True)
+        if getattr(self, "relay", None):
+            self.relay.close()
+            self.relay = None
 
     def _session_file(self, home, thread_id):
         root = self._home(home) / "sessions"
@@ -289,6 +359,8 @@ class Codex:
                 "sandbox": (ctx.get("sandbox_policy") or {}).get("type"),
                 "disabled_plugin_ids": ctx.get("disabled_plugin_ids"),
                 "session_file_found": bool(session),
+                "cache_relay": ({"requests": self.relay.requests, "marked": self.relay.marked}
+                                if getattr(self, "relay", None) else None),
             },
         }
 

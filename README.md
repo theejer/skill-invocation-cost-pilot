@@ -43,7 +43,7 @@ Each run starts in a new temporary git repository holding one commit: empty for 
 | Harness | Flags and environment | Job 2 permissions |
 |---|---|---|
 | Claude Code | `-p --setting-sources project --strict-mcp-config --no-session-persistence`; `DISABLE_AUTOUPDATER=1`; `CLAUDE_CODE_SUBAGENT_MODEL` and `ANTHROPIC_DEFAULT_{FABLE,OPUS,SONNET,HAIKU}_MODEL` set to the configuration's model, with `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1`, so subagents and background calls use it | `--permission-mode bypassPermissions` |
-| Codex | `exec --ignore-user-config --ignore-rules --skip-git-repo-check`; the npm package's native `codex.exe` run directly, not through its Node launcher; a new `CODEX_HOME` per run holding only a copy of the login | `--sandbox danger-full-access` |
+| Codex | `exec --ignore-user-config --ignore-rules --skip-git-repo-check`; the npm package's native `codex.exe` run directly, not through its Node launcher; a new `CODEX_HOME` per run holding only a copy of the login; on OpenRouter's Anthropic models, requests pass through a local relay that adds a top-level `cache_control` field, since those models cache only when asked and Codex cannot add body fields | `--sandbox danger-full-access` |
 | OpenCode | `run --standalone`; a new home directory per run | `--auto` |
 | Pi | `--print --no-session --no-extensions --no-skills --no-prompt-templates --no-context-files --no-approve --offline` | default tools |
 
