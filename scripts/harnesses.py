@@ -116,7 +116,7 @@ class Claude:
 
     def command(self, cfg, job, workdir, home):
         argv = (resolve_executable("claude") + ["-p", "--model", cfg["model"],
-                "--output-format", "stream-json", "--verbose"] + self.ISOLATION
+                "--effort", cfg["effort"], "--output-format", "stream-json", "--verbose"] + self.ISOLATION
                 + (self.SESSION if job == "session" else []))
         # Every request, including subagents and background calls, uses the configuration's model.
         env = {"DISABLE_AUTOUPDATER": "1", "CLAUDE_CODE_SUBAGENT_MODEL": cfg["model"],
@@ -234,10 +234,11 @@ class Claude:
             "harness_reported_cost_usd": None if cfg["route"] == "openrouter" else result.get("total_cost_usd"),
             "harness_turns": result.get("num_turns"),
             "model_reported": init.get("model"),
-            "effort": init.get("effort") or "harness default",
+            "effort": cfg["effort"],
             "is_error": bool(result.get("is_error")) or not result or lookup_failed,
             "environment": {
                 "version": init.get("claude_code_version"),
+                "effort_reported": init.get("effort"),
                 "tools": init.get("tools"), "skills": init.get("skills"),
                 "plugins": [p.get("name") if isinstance(p, dict) else p for p in init.get("plugins") or []],
                 "mcp_servers": init.get("mcp_servers"),
@@ -259,7 +260,8 @@ class Codex:
     def command(self, cfg, job, workdir, home):
         codex_home = self._home(home)
         codex_home.mkdir()
-        argv = (resolve_executable("codex") + ["exec", "--json", "-m", cfg["model"]] + self.ISOLATION
+        argv = (resolve_executable("codex") + ["exec", "--json", "-m", cfg["model"],
+                "-c", f'model_reasoning_effort="{cfg["effort"]}"'] + self.ISOLATION
                 + ["--sandbox", "danger-full-access" if job == "session" else "read-only"])
         if cfg["route"] == "openrouter":
             openrouter_key()
@@ -347,10 +349,11 @@ class Codex:
             "harness_reported_cost_usd": None,
             "harness_turns": turns,
             "model_reported": model,
-            "effort": settings.get("reasoning_effort") or "harness default",
+            "effort": cfg["effort"],
             "is_error": failed or not calls,
             "environment": {
                 "version": meta.get("cli_version"),
+                "effort_reported": settings.get("reasoning_effort") or ctx.get("effort"),
                 "model_provider": meta.get("model_provider"),
                 "base_instructions_chars": len(((meta.get("base_instructions") or {}).get("text")) or ""),
                 "skills": skills,
@@ -372,7 +375,7 @@ class OpenCode:
     DATA = Path(os.environ.get("XDG_DATA_HOME") or Path.home() / ".local" / "share")
 
     def command(self, cfg, job, workdir, home):
-        argv = (resolve_executable("opencode") + ["run", "--standalone", "--format", "json", "-m", cfg["model"]]
+        argv = (resolve_executable("opencode") + ["run", "--standalone", "--format", "json", "-m", f'{cfg["model"]}#{cfg["effort"]}']
                 + (["--auto"] if job == "session" else []))
         if cfg["route"] == "openrouter":
             openrouter_key()
@@ -427,10 +430,11 @@ class OpenCode:
             "harness_reported_cost_usd": session["cost"] if session else None,
             "harness_turns": sum(1 for m in export if m["type"] == "assistant"),
             "model_reported": model,
-            "effort": variant or "harness default",
+            "effort": cfg["effort"],
             "is_error": failed or not calls or any(m["type"] == "idle" and m.get("outcome") != "succeeded"
                                                    for m in export),
-            "environment": {"agent": next((m.get("agent") for m in export if m.get("agent")), None)},
+            "environment": {"agent": next((m.get("agent") for m in export if m.get("agent")), None),
+                            "effort_reported": variant},
         }
 
 
@@ -442,7 +446,8 @@ class Pi:
                  "--no-context-files", "--no-approve", "--offline"]
 
     def command(self, cfg, job, workdir, home):
-        argv = resolve_executable("pi") + ["--print", "--mode", "json", "--model", cfg["model"]] + self.ISOLATION
+        argv = resolve_executable("pi") + ["--print", "--mode", "json", "--model", cfg["model"],
+                                              "--thinking", cfg["effort"]] + self.ISOLATION
         if cfg["route"] == "openrouter":
             openrouter_key()
         return argv, {"PI_TELEMETRY": "0"}
@@ -452,7 +457,7 @@ class Pi:
 
     def parse(self, cfg, stdout_path, raw_dir, run_id, home):
         events = read_jsonl(stdout_path)
-        calls, cost, model, sections = [], 0.0, None, None
+        calls, cost, model, sections, levels = [], 0.0, None, None, set()
         for e in events:
             msg = e.get("message") or {}
             if e.get("type") == "message_start" and msg.get("role") == "system" and sections is None:
@@ -460,6 +465,8 @@ class Pi:
             if e.get("type") == "message_end" and msg.get("role") == "assistant":
                 u = msg.get("usage") or {}
                 model = msg.get("model") or model
+                if msg.get("thinkingLevel"):
+                    levels.add(msg["thinkingLevel"])
                 cost += ((u.get("cost") or {}).get("total") or 0)
                 calls.append(call_row("agent", msg.get("model"), input_uncached=u.get("input"),
                                       cache_write=u.get("cacheWrite"), cache_read=u.get("cacheRead"),
@@ -475,9 +482,10 @@ class Pi:
             "harness_reported_cost_usd": round(cost, 6) if calls else None,
             "harness_turns": sum(1 for e in events if e.get("type") == "turn_end"),
             "model_reported": model,
-            "effort": "harness default",
+            "effort": cfg["effort"],
             "is_error": not calls or stop in ("error", "aborted"),
             "environment": {
+                "effort_reported": ",".join(sorted(levels)) or None,
                 "tools": re.findall(r"^- (\w+):", str(sections.get("tools") or ""), re.M) or None,
                 "system_prompt_sections": sorted(sections),
             },

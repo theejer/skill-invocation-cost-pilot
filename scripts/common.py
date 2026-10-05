@@ -23,15 +23,19 @@ OPENAI_MODEL = "gpt-6.1-sol"
 OPENROUTER_ANTHROPIC = "anthropic/claude-sonnet-5.5"
 OPENROUTER_OPENAI = "openai/gpt-6.1-sol"
 
+# Each model runs at its vendor harness's default effort in every harness (Claude Code: medium, Codex: low).
+ANTHROPIC_EFFORT = "medium"
+OPENAI_EFFORT = "low"
+
 CONFIGS = {
-    "cc-anthropic":       {"harness": "claude",   "model": ANTHROPIC_MODEL,                      "route": "direct",     "price": ("anthropic", ANTHROPIC_MODEL)},
-    "cc-openai":          {"harness": "claude",   "model": OPENROUTER_OPENAI,                    "route": "openrouter", "price": ("openrouter", OPENROUTER_OPENAI)},
-    "codex-openai":       {"harness": "codex",    "model": OPENAI_MODEL,                         "route": "direct",     "price": ("openai", OPENAI_MODEL)},
-    "codex-anthropic":    {"harness": "codex",    "model": OPENROUTER_ANTHROPIC,                 "route": "openrouter", "price": ("openrouter", OPENROUTER_ANTHROPIC)},
-    "opencode-openai":    {"harness": "opencode", "model": f"openai/{OPENAI_MODEL}",             "route": "direct",     "price": ("openai", OPENAI_MODEL)},
-    "opencode-anthropic": {"harness": "opencode", "model": f"openrouter/{OPENROUTER_ANTHROPIC}", "route": "openrouter", "price": ("openrouter", OPENROUTER_ANTHROPIC)},
-    "pi-openai":          {"harness": "pi",       "model": f"openai-codex/{OPENAI_MODEL}",       "route": "direct",     "price": ("openai", OPENAI_MODEL)},
-    "pi-anthropic":       {"harness": "pi",       "model": f"openrouter/{OPENROUTER_ANTHROPIC}", "route": "openrouter", "price": ("openrouter", OPENROUTER_ANTHROPIC)},
+    "cc-anthropic":       {"harness": "claude",   "model": ANTHROPIC_MODEL,                      "route": "direct",     "price": ("anthropic", ANTHROPIC_MODEL), "effort": ANTHROPIC_EFFORT},
+    "cc-openai":          {"harness": "claude",   "model": OPENROUTER_OPENAI,                    "route": "openrouter", "price": ("openrouter", OPENROUTER_OPENAI), "effort": OPENAI_EFFORT},
+    "codex-openai":       {"harness": "codex",    "model": OPENAI_MODEL,                         "route": "direct",     "price": ("openai", OPENAI_MODEL), "effort": OPENAI_EFFORT},
+    "codex-anthropic":    {"harness": "codex",    "model": OPENROUTER_ANTHROPIC,                 "route": "openrouter", "price": ("openrouter", OPENROUTER_ANTHROPIC), "effort": ANTHROPIC_EFFORT},
+    "opencode-openai":    {"harness": "opencode", "model": f"openai/{OPENAI_MODEL}",             "route": "direct",     "price": ("openai", OPENAI_MODEL), "effort": OPENAI_EFFORT},
+    "opencode-anthropic": {"harness": "opencode", "model": f"openrouter/{OPENROUTER_ANTHROPIC}", "route": "openrouter", "price": ("openrouter", OPENROUTER_ANTHROPIC), "effort": ANTHROPIC_EFFORT},
+    "pi-openai":          {"harness": "pi",       "model": f"openai-codex/{OPENAI_MODEL}",       "route": "direct",     "price": ("openai", OPENAI_MODEL), "effort": OPENAI_EFFORT},
+    "pi-anthropic":       {"harness": "pi",       "model": f"openrouter/{OPENROUTER_ANTHROPIC}", "route": "openrouter", "price": ("openrouter", OPENROUTER_ANTHROPIC), "effort": ANTHROPIC_EFFORT},
 }
 
 PINNED_VERSIONS = {"claude": "2.1.289", "codex": "0.160.0", "opencode": "2.0.22", "pi": "1.0.0"}
