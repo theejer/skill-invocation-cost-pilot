@@ -20,7 +20,7 @@ Cost pilot for a study of skill invocation in LLM coding agents. It measures, fo
 | `pi-openai` | Pi | GPT-6.1 Sol | OpenAI (subscription login) |
 | `pi-anthropic` | Pi | Claude Sonnet 5.5 | OpenRouter |
 
-Each run names its model explicitly. Job 2 runs each model at a fixed effort, the default of its vendor's harness: medium for Claude Sonnet 5.5 (Claude Code) and low for GPT-6.1 Sol (Codex). The adapters pass the level as Claude Code `--effort`, Codex `-c model_reasoning_effort=`, OpenCode `-m <model>#<level>` and Pi `--thinking`; `effort` records the level in effect, and `environment.effort_reported` holds the level the harness itself logs (Claude Code logs none). Job 1 runs at each harness's default effort. Harness versions are pinned in `scripts/common.py` (Claude Code 2.1.289, Codex 0.160.0, OpenCode 2.0.22, Pi 1.0.0); a run on any other version stops with an error. Subscription-login runs are costed at the same model's API prices.
+Each run names its model explicitly. Job 2 runs each model at a fixed effort, the default of its vendor's harness: medium for Claude Sonnet 5.5 (Claude Code) and low for GPT-6.1 Sol (Codex). The adapters pass the level as Claude Code `--effort`, Codex `-c model_reasoning_effort=`, OpenCode `-m <model>#<level>` and Pi `--thinking`; `effort` records each run's level, and `environment.effort_reported` holds the level the harness itself logs (Claude Code logs none). Harness versions are pinned in `scripts/common.py` (Claude Code 2.1.289, Codex 0.160.0, OpenCode 2.0.22, Pi 1.0.0); a run on any other version stops with an error. Subscription-login runs are costed at the same model's API prices.
 
 ## Fixture and prompts
 
@@ -31,21 +31,21 @@ Each run names its model explicitly. Job 2 runs each model at a fixed effort, th
 ## Requirements
 
 - Python 3.10 or later (standard library only), git, Node.js.
-- The four harnesses at the pinned versions, logged in where the route is a subscription.
+- The four harnesses at the pinned versions, logged in where the route is a subscription. Claude Code, Codex and Pi use the user's existing login. OpenCode reads its login from `auth/opencode.db`, an OpenCode database holding only the login; `auth/` is git-ignored.
 - `OPENROUTER_API_KEY` in `.env` for OpenRouter routes.
 - On Windows, the scripts run the targets of npm's `.cmd` shims directly; `<NAME>_BIN` (e.g. `CLAUDE_BIN`) overrides the executable.
 - Port 8080 free: job 2 stops if it is in use before or after a run.
 
 ## Isolation
 
-Each run starts in a new temporary git repository holding one commit: empty for job 1, the fixture for job 2. The prompt is sent on standard input. Every process the harness starts is ended when the run ends. Job 2 checks that the fixture is unchanged before each run and records its SHA-256.
+Each run works in its own folder, `<run root>/<run id>`, removed when the run ends; the run root is `C:\pilot-runs` on Windows and `/tmp/pilot-runs` elsewhere, and `PILOT_RUN_ROOT` overrides it. The folder holds a new git repository with one commit (empty for job 1, the fixture for job 2) and the run's own home: `HOME`, `USERPROFILE`, `TEMP`, `TMP` and the XDG folders point inside it, and each harness keeps its configuration and a copy of its login there. The prompt is sent on standard input. Every process the harness starts is ended when the run ends. Job 2 checks that the fixture is unchanged before each run and records its SHA-256.
 
 | Harness | Flags and environment | Job 2 permissions |
 |---|---|---|
-| Claude Code | `-p --setting-sources project --strict-mcp-config --no-session-persistence`; `DISABLE_AUTOUPDATER=1`; `CLAUDE_CODE_SUBAGENT_MODEL` and `ANTHROPIC_DEFAULT_{FABLE,OPUS,SONNET,HAIKU}_MODEL` set to the configuration's model, with `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1`, so subagents and background calls use it | `--permission-mode bypassPermissions` |
-| Codex | `exec --ignore-user-config --ignore-rules --skip-git-repo-check`; the npm package's native `codex.exe` run directly, not through its Node launcher; a new `CODEX_HOME` per run holding only a copy of the login; on OpenRouter's Anthropic models, requests pass through a local relay that adds a top-level `cache_control` field, since those models cache only when asked and Codex cannot add body fields | `--sandbox danger-full-access` |
-| OpenCode | `run --standalone`; a new home directory per run | `--auto` |
-| Pi | `--print --no-session --no-extensions --no-skills --no-prompt-templates --no-context-files --no-approve --offline` | default tools |
+| Claude Code | `-p --setting-sources project --strict-mcp-config --no-session-persistence`; `DISABLE_AUTOUPDATER=1`; `CLAUDE_CONFIG_DIR` in the run's home; `CLAUDE_CODE_SUBAGENT_MODEL` and `ANTHROPIC_DEFAULT_{FABLE,OPUS,SONNET,HAIKU}_MODEL` set to the configuration's model, with `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1`, so subagents and background calls use it | `--permission-mode bypassPermissions` |
+| Codex | `exec --ignore-user-config --ignore-rules --skip-git-repo-check`; the npm package's native `codex.exe` run directly, not through its Node launcher; `CODEX_HOME` in the run's home; on OpenRouter's Anthropic models, requests pass through a local relay that adds a top-level `cache_control` field, since those models cache only when asked and Codex cannot add body fields | `--sandbox danger-full-access` |
+| OpenCode | `run --standalone`; a copy of `auth/opencode.db` as the database in the run's home | `--auto` |
+| Pi | `--print --no-session --no-extensions --no-skills --no-prompt-templates --no-context-files --no-approve --offline`; `PI_CODING_AGENT_DIR` in the run's home, holding copies of the user's `auth.json`, `models.json` and `settings.json` | default tools |
 
 Claude Code still loads its bundled skills and built-in plugins. `environment.json` records what each configuration loaded, where the harness reports it.
 
@@ -59,6 +59,8 @@ python scripts/scrub.py
 ```
 
 `measure_session.py` runs every configuration and run not already recorded, in an order shuffled by `--seed`. `summarize.py` rebuilds every derived value from the CSVs and `prices.json`. `scrub.py` removes local paths, account identifiers and keys from `results/`.
+
+`python -m unittest discover -s tests` runs the tests offline on synthetic fixtures in `tests/fixtures/`; no harness, login or API call is needed.
 
 ## Definitions
 

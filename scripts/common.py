@@ -1,3 +1,4 @@
+import contextlib
 import csv
 import hashlib
 import json
@@ -5,10 +6,10 @@ import os
 import re
 import shutil
 import socket
+import stat
 import statistics
 import subprocess
 import sys
-import tempfile
 import time
 from pathlib import Path
 
@@ -17,13 +18,15 @@ RESULTS = Path(os.environ.get("PILOT_RESULTS") or ROOT / "results")
 FIXTURE = ROOT / "fixture" / "http-server"
 FIXTURE_PORT = 8080
 PROMPTS = ROOT / "prompts"
+AUTH = ROOT / "auth"
+RUN_ROOT = Path(os.environ.get("PILOT_RUN_ROOT")
+                or (Path(ROOT.anchor) / "pilot-runs" if os.name == "nt" else "/tmp/pilot-runs"))
 
 ANTHROPIC_MODEL = "claude-sonnet-5-5"
 OPENAI_MODEL = "gpt-6.1-sol"
 OPENROUTER_ANTHROPIC = "anthropic/claude-sonnet-5.5"
 OPENROUTER_OPENAI = "openai/gpt-6.1-sol"
 
-# Each model runs at its vendor harness's default effort in every harness (Claude Code: medium, Codex: low).
 ANTHROPIC_EFFORT = "medium"
 OPENAI_EFFORT = "low"
 
@@ -78,8 +81,6 @@ def resolve_executable(name):
         scripts = [t for t in targets if t.lower().endswith(".js")]
         binaries = [t for t in targets if t.lower().endswith(".exe") and t.lower() != "node.exe"]
         if scripts:
-            # A package that vendors its own native binary (Codex) runs it directly, not under Node, so an
-            # agent ending every Node process cannot end the harness.
             script = Path(found).parent / scripts[0]
             native = sorted(script.parent.parent.glob(f"node_modules/*/*/vendor/*/bin/{name}.exe"))
             if native:
@@ -252,8 +253,43 @@ class Timer:
         self.seconds = round(time.monotonic() - self.start, 1)
 
 
-def temp_dir():
-    return tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
+def remove_tree(path):
+    if Path(path).exists():
+        for p in Path(path).rglob("*"):
+            if not (p.is_symlink() or (hasattr(p, "is_junction") and p.is_junction())):
+                p.chmod(stat.S_IWRITE | stat.S_IREAD | (stat.S_IEXEC if p.is_dir() else 0))
+        shutil.rmtree(path)
+
+
+@contextlib.contextmanager
+def run_dir(name):
+    path = RUN_ROOT / name
+    remove_tree(path)
+    path.mkdir(parents=True)
+    path.chmod(stat.S_IRWXU)
+    try:
+        yield path
+    finally:
+        remove_tree(path)
+
+
+def home_env(home):
+    dirs = {"TEMP": home / "tmp", "XDG_CONFIG_HOME": home / ".config", "XDG_DATA_HOME": home / ".local" / "share",
+            "XDG_STATE_HOME": home / ".local" / "state", "XDG_CACHE_HOME": home / ".cache"}
+    for d in dirs.values():
+        d.mkdir(parents=True, exist_ok=True)
+    env = {k: str(v) for k, v in dirs.items()}
+    env.update(HOME=str(home), USERPROFILE=str(home), TMP=env["TEMP"], TMPDIR=env["TEMP"])
+    return env
+
+
+def copy_login(source, dest):
+    if Path(source).exists():
+        Path(dest).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, dest)
+        os.chmod(dest, stat.S_IREAD | stat.S_IWRITE)
+        return True
+    return False
 
 
 # ---------------------------------------------------------------- prices and cost

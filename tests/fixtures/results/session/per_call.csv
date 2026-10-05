@@ -1,0 +1,11 @@
+config_id,run_id,call,call_kind,model_reported,thinking,input_uncached,cache_write,cache_write_1h,cache_read,context,output,reasoning,output_exact,input_cost_usd,output_cost_usd,cost_usd,billed_cost_usd
+cc-anthropic,cc-anthropic-1,1,agent,claude-sonnet-5-5,True,10,1000,2000,0,,50,0,False,,,,
+cc-anthropic,cc-anthropic-1,2,agent,claude-sonnet-5-5,False,5,100,0,3000,,200,0,True,,,,
+cc-anthropic,cc-anthropic-1,3,other,claude-sonnet-5-5,False,400,0,0,0,,20,0,True,,,,
+cc-anthropic,cc-anthropic-1,4,unlogged,claude-sonnet-5-5,,0,0,0,500,,30,0,True,,,,
+cc-openai,cc-openai-1,1,agent,openai/gpt-6.1-sol,False,1000,0,0,0,,40,0,True,,,,0.002
+cc-openai,cc-openai-1,2,agent,openai/gpt-6.1-sol,False,200,0,0,1500,,60,10,True,,,,0.0015
+codex-openai,codex-openai-1,1,agent,gpt-6.1-sol,False,1200,0,0,0,,10,0,True,,,,
+codex-openai,codex-openai-2,1,agent,gpt-6.1-sol,False,500,0,0,0,,20,0,True,,,,
+codex-openai,codex-openai-2,2,agent,gpt-6.1-sol,False,100,0,0,400,,30,0,True,,,,
+opencode-openai,opencode-openai-1,1,other,,False,50,0,0,0,,5,0,True,,,,

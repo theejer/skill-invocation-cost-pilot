@@ -10,8 +10,8 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-from common import (Timer, added_lines_chars, capture_diff, make_workspace, read_jsonl,
-                    resolve_executable, run_process, temp_dir)
+from common import (AUTH, Timer, added_lines_chars, capture_diff, copy_login, home_env, make_workspace, read_jsonl,
+                    resolve_executable, run_dir, run_process)
 
 OPENROUTER_ANTHROPIC_BASE = "https://openrouter.ai/api"
 OPENROUTER_OPENAI_BASE = "https://openrouter.ai/api/v1"
@@ -47,9 +47,6 @@ def openrouter_generation(gen_id, tries=60, wait=5):
 
 
 class CacheRelay:
-    """Local relay between Codex and OpenRouter for Anthropic models. Those models cache only when a request
-    carries `cache_control`, Codex cannot add body fields, so the relay adds the top-level field."""
-
     FIELD = {"type": "ephemeral"}
 
     def __init__(self, upstream=OPENROUTER_OPENAI_BASE):
@@ -118,24 +115,26 @@ class Claude:
         argv = (resolve_executable("claude") + ["-p", "--model", cfg["model"],
                 "--effort", cfg["effort"], "--output-format", "stream-json", "--verbose"] + self.ISOLATION
                 + (self.SESSION if job == "session" else []))
-        # Every request, including subagents and background calls, uses the configuration's model.
-        env = {"DISABLE_AUTOUPDATER": "1", "CLAUDE_CODE_SUBAGENT_MODEL": cfg["model"],
-               "CLAUDE_CODE_SUBAGENT_MODEL_FORCE": "1"}
+        config_dir = Path(home) / ".claude"
+        env = {"DISABLE_AUTOUPDATER": "1", "CLAUDE_CONFIG_DIR": str(config_dir),
+               "CLAUDE_CODE_SUBAGENT_MODEL": cfg["model"], "CLAUDE_CODE_SUBAGENT_MODEL_FORCE": "1"}
         env.update({f"ANTHROPIC_DEFAULT_{alias}_MODEL": cfg["model"]
                     for alias in ("FABLE", "OPUS", "SONNET", "HAIKU")})
         if cfg["route"] == "openrouter":
             env.update(ANTHROPIC_BASE_URL=OPENROUTER_ANTHROPIC_BASE,
                        ANTHROPIC_AUTH_TOKEN=openrouter_key(), ANTHROPIC_API_KEY="")
+        else:
+            login = Path(os.environ.get("CLAUDE_CONFIG_DIR") or Path.home() / ".claude") / ".credentials.json"
+            if not copy_login(login, config_dir / ".credentials.json"):
+                raise SystemExit(f"error: no Claude Code login at {login}")
         return argv, env
 
     def cleanup(self, home):
-        pass
+        (Path(home) / ".claude" / ".credentials.json").unlink(missing_ok=True)
 
     @staticmethod
     def _unlogged(calls, models, route):
-        """Calls missing from the stream (a background subagent still running at exit) appear only in the
-        session totals; each model's remainder becomes one `unlogged` row."""
-        def key(model):  # "anthropic/claude-sonnet-5.5-20260928" and "claude-sonnet-5-5" name one model
+        def key(model):
             return (model or "").split("/")[-1].replace(".", "-")
 
         rows = []
@@ -215,7 +214,6 @@ class Claude:
             (raw_dir / f"{run_id}.generations.json").write_text(json.dumps(generations, indent=1), encoding="utf-8")
         models = result.get("modelUsage") or {}
         calls += self._unlogged(calls, models, cfg["route"])
-        # The result's `usage` covers the main conversation only; `modelUsage` adds subagents.
         if models:
             session_output = sum(m.get("outputTokens") or 0 for m in models.values())
             reasoning = sum(m.get("thinkingTokens") or 0 for m in models.values())
@@ -278,19 +276,21 @@ class Codex:
             login = Path(os.environ.get("CODEX_HOME") or Path.home() / ".codex") / "auth.json"
             if not login.exists():
                 raise SystemExit(f"error: no Codex login at {login}")
-            shutil.copyfile(login, codex_home / "auth.json")
+            copy_login(login, codex_home / "auth.json")
         env = {"CODEX_HOME": str(codex_home)}
         exe = Path(argv[0])
         package = next((p.parent for p in exe.parents if p.name == "node_modules"), None)
-        if package:  # what the npm launcher sets before starting the native binary
+        if package:
             env.update(CODEX_MANAGED_PACKAGE_ROOT=str(package.resolve()), CODEX_MANAGED_BY_NPM="1")
         return argv + ["-"], env
 
     def cleanup(self, home):
-        (self._home(home) / "auth.json").unlink(missing_ok=True)
-        if getattr(self, "relay", None):
-            self.relay.close()
-            self.relay = None
+        try:
+            (self._home(home) / "auth.json").unlink(missing_ok=True)
+        finally:
+            if getattr(self, "relay", None):
+                self.relay.close()
+                self.relay = None
 
     def _session_file(self, home, thread_id):
         root = self._home(home) / "sessions"
@@ -372,23 +372,30 @@ class Codex:
 
 class OpenCode:
     name = "opencode"
-    DATA = Path(os.environ.get("XDG_DATA_HOME") or Path.home() / ".local" / "share")
+    LOGIN = AUTH / "opencode.db"
+
+    @staticmethod
+    def _data(home):
+        return Path(home) / ".local" / "share" / "opencode"
 
     def command(self, cfg, job, workdir, home):
         argv = (resolve_executable("opencode") + ["run", "--standalone", "--format", "json", "-m", f'{cfg["model"]}#{cfg["effort"]}']
                 + (["--auto"] if job == "session" else []))
         if cfg["route"] == "openrouter":
             openrouter_key()
-        return argv, {"HOME": str(home), "USERPROFILE": str(home), "XDG_DATA_HOME": str(self.DATA), "PWD": str(workdir)}
+        elif not copy_login(self.LOGIN, self._data(home) / "opencode.db"):
+            raise SystemExit("error: no OpenCode login at auth/opencode.db")
+        return argv, {"PWD": str(workdir)}
 
     def cleanup(self, home):
-        pass
+        for suffix in ("", "-wal", "-shm", "-journal"):
+            (self._data(home) / f"opencode.db{suffix}").unlink(missing_ok=True)
 
     def parse(self, cfg, stdout_path, raw_dir, run_id, home):
         events = read_jsonl(stdout_path)
         sid = next((e.get("sessionID") for e in events if e.get("sessionID")), None)
         failed = any(e.get("type") == "error" for e in events)
-        db = self.DATA / "opencode" / "opencode.db"
+        db = self._data(home) / "opencode.db"
         session, messages = None, []
         if sid and db.exists():
             for _ in range(20):
@@ -450,10 +457,17 @@ class Pi:
                                               "--thinking", cfg["effort"]] + self.ISOLATION
         if cfg["route"] == "openrouter":
             openrouter_key()
-        return argv, {"PI_TELEMETRY": "0"}
+        agent = Path(home) / ".pi" / "agent"
+        source = Path(os.environ.get("PI_CODING_AGENT_DIR") or Path.home() / ".pi" / "agent")
+        for name in ("auth.json", "models.json", "settings.json"):
+            copy_login(source / name, agent / name)
+        if cfg["route"] != "openrouter" and not (agent / "auth.json").exists():
+            raise SystemExit(f"error: no Pi login at {source / 'auth.json'}")
+        return argv, {"PI_TELEMETRY": "0", "PI_CODING_AGENT_DIR": str(agent)}
 
     def cleanup(self, home):
-        pass
+        for name in ("auth.json", "models.json", "settings.json"):
+            (Path(home) / ".pi" / "agent" / name).unlink(missing_ok=True)
 
     def parse(self, cfg, stdout_path, raw_dir, run_id, home):
         events = read_jsonl(stdout_path)
@@ -499,12 +513,13 @@ def run(cfg, job, prompt, raw_dir, run_id, timeout):
     adapter = ADAPTERS[cfg["harness"]]
     raw_dir.mkdir(parents=True, exist_ok=True)
     stdout = raw_dir / f"{run_id}.jsonl"
-    with temp_dir() as tmp:
-        home = Path(tmp) / "home"
+    with run_dir(run_id) as work:
+        home = work / "home"
         home.mkdir()
         try:
-            repo = make_workspace(tmp, with_fixture=(job == "session"))
+            repo = make_workspace(work, with_fixture=(job == "session"))
             argv, env = adapter.command(cfg, job, repo, home)
+            env = {**home_env(home), **env}
             with Timer() as t:
                 code, timed_out = run_process(argv, repo, prompt, stdout, raw_dir / f"{run_id}.stderr.txt",
                                               timeout, env)

@@ -1,0 +1,6 @@
+config_id,harness,harness_version,model_requested,model_reported,route,effort,run_id,measured_at,is_error,input_uncached,cache_write,cache_write_1h,cache_read,first_turn_context,output,tools,skills,plugins,source,raw
+cc-anthropic,claude,0.0.1,claude-sonnet-5-5,claude-sonnet-5-5,direct,medium,cc-anthropic-1,2026-01-01T00:00:00+00:00,False,2,0,5000,13998,19000,4,3,1,1,script,results/first_turn/raw/cc-anthropic-1.jsonl
+cc-anthropic,claude,0.0.1,claude-sonnet-5-5,claude-sonnet-5-5,direct,medium,cc-anthropic-2,2026-01-01T00:01:00+00:00,True,5,0,0,0,5,0,3,1,1,script,results/first_turn/raw/cc-anthropic-2.jsonl
+cc-anthropic,claude,0.0.1,claude-sonnet-5-5,claude-sonnet-5-5,direct,medium,cc-anthropic-3,2026-01-01T00:02:00+00:00,False,2,0,100,18998,19100,4,3,1,1,script,results/first_turn/raw/cc-anthropic-3.jsonl
+cc-anthropic,claude,0.0.1,claude-sonnet-5-5,claude-sonnet-5-5,direct,medium,cc-anthropic-4,2026-01-01T00:03:00+00:00,False,2,0,50,18998,19050,4,3,1,1,script,results/first_turn/raw/cc-anthropic-4.jsonl
+pi-openai,pi,0.0.1,openai-codex/gpt-6.1-sol,,direct,low,pi-openai-1,2026-01-01T00:04:00+00:00,False,1100,0,0,0,1100,3,,,,script,results/first_turn/raw/pi-openai-1.jsonl

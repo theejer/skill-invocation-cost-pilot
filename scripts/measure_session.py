@@ -16,6 +16,11 @@ from harnesses import run
 OUT = RESULTS / "session"
 
 
+def exclusion(is_error, added_lines):
+    excluded = bool(is_error) and added_lines == 0
+    return not excluded, "error before any edit" if excluded else ""
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--config", nargs="+", default=["all"], help="configuration ids, or 'all'")
@@ -47,6 +52,7 @@ def main():
         started = now_utc()
         r = run(cfg, "session", prompt, OUT / "raw", run_id, args.timeout)
         r["environment"]["fixture_sha256"] = digest
+        used, reason = exclusion(r["is_error"], r["added_lines"])
         calls = [{"config_id": config_id, "run_id": run_id, "call": i, **c} for i, c in enumerate(r["calls"], 1)]
         append_csv(OUT / "per_call.csv", summarize.PER_CALL, calls)
         append_csv(OUT / "sessions.csv", summarize.SESSIONS, [{
@@ -59,8 +65,7 @@ def main():
             "harness_turns": r["harness_turns"], "session_output": r["session_output"],
             "reasoning": r["reasoning"], "harness_reported_cost_usd": r["harness_reported_cost_usd"],
             "added_lines": r["added_lines"], "added_chars": r["added_chars"],
-            "used": not (r["is_error"] and r["added_lines"] == 0),
-            "exclusion_reason": "error before any edit" if r["is_error"] and r["added_lines"] == 0 else "",
+            "used": used, "exclusion_reason": reason,
             "raw": f"results/session/raw/{run_id}.jsonl",
         }])
         summarize.record_environment(OUT / "environment.json", config_id, cfg, r)

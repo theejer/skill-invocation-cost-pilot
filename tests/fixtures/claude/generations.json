@@ -1,0 +1,4 @@
+{
+  "gen-fixture-0001": {"id": "gen-fixture-0001", "model": "openai/gpt-6.1-sol-fixture", "provider_name": "OpenAI", "native_tokens_prompt": 1000, "native_tokens_cached": 0, "native_tokens_completion": 40, "native_tokens_reasoning": 0, "cache_discount": 0, "total_cost": 0.002, "unused_field": "x"},
+  "gen-fixture-0002": {"id": "gen-fixture-0002", "model": "openai/gpt-6.1-sol-fixture", "provider_name": "OpenAI", "native_tokens_prompt": 1700, "native_tokens_cached": 1500, "native_tokens_completion": 60, "native_tokens_reasoning": 10, "cache_discount": 0.0001, "total_cost": 0.0015, "unused_field": "x"}
+}

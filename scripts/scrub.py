@@ -1,43 +1,53 @@
 """Remove local paths, account identifiers and keys from everything under results/.
 
-python scripts/scrub.py           rewrite files in place
-python scripts/scrub.py --check   list what would change; exit 1 if anything would
+python scripts/scrub.py           rewrite files in place; exit 1 if a user folder remains
+python scripts/scrub.py --check   list what would change or remains; exit 1 if anything would or does
 """
 
 import argparse
-import json
 import os
 import re
 import sys
 import tempfile
 from pathlib import Path
 
-from common import RESULTS, ROOT, load_env_file
+from common import RESULTS, ROOT, RUN_ROOT, load_env_file
 
 ID_KEYS = ["creator_user_id", "creator_account_id", "account_id", "accountId", "user_id", "userId",
            "organization_id", "organizationId", "org_id", "email", "account_uuid", "accountUuid"]
+SECRET_KEYS = ["access_token", "refresh_token", "id_token", "api_key", "apiKey"]
+KEY_VARS = ["OPENROUTER_API_KEY", "ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "OPENAI_API_KEY"]
+
+SEP = r"(?:\\+|/+|-)"
+DRIVE = r"(?:(?:[A-Za-z]:|/[A-Za-z]|[A-Za-z]-)" + SEP + ")?"
+USER_FOLDER = re.compile(r"(?:(?<![A-Za-z0-9])(?:[A-Za-z]:|/[A-Za-z]|[A-Za-z]-)" + SEP + r"(?:Users|home)" + SEP
+                         + r"[A-Za-z0-9]|(?-i:(?<![A-Za-z0-9._~-])/(?:Users|home)/[A-Za-z0-9])"
+                         + r"|(?<![A-Za-z0-9])Users" + SEP + re.escape(Path.home().name) + r"(?![A-Za-z0-9]))",
+                         re.IGNORECASE)
+FILE_OWNER = re.compile(r"(?<=\s)" + re.escape(Path.home().name) + r"(?=\s+\d+\s)")
 
 
-def path_forms(path):
-    raw = str(Path(path).resolve())
-    forms = {raw, raw.replace("\\", "/"), raw.replace("\\", "\\\\"), json.dumps(raw)[1:-1]}
-    if re.match(r"^[A-Za-z]:", raw):
-        forms.add("/" + raw[0].lower() + raw[2:].replace("\\", "/"))
-        # streamed tool-call fragments can split the drive letter from the rest of the path
-        forms |= {f[2:] for f in list(forms) if re.match(r"^[A-Za-z]:", f)}
-    return sorted(forms, key=len, reverse=True)
+def path_pattern(path):
+    parts = [p for p in Path(path).resolve().parts[1:] if p]
+    names = [re.sub(r"\\[^A-Za-z0-9]|[^A-Za-z0-9\\]", "[^A-Za-z0-9]", re.escape(p)) for p in parts]
+    return re.compile(DRIVE + SEP.join(names) + r"(?![A-Za-z0-9])", re.IGNORECASE)
 
 
 def rules():
     out = []
-    for path, token in ((ROOT, "<repo>"), (tempfile.gettempdir(), "<tmp>"), (Path.home(), "<home>")):
-        for form in path_forms(path):
-            out.append((re.compile(re.escape(form), re.IGNORECASE), token))
-    keys = "|".join(map(re.escape, ID_KEYS))
+    paths = ((RUN_ROOT, "<runs>"), (ROOT, "<repo>"), (tempfile.gettempdir(), "<tmp>"), (Path.home(), "<home>"))
+    for path, token in sorted(paths, key=lambda p: len(Path(p[0]).resolve().parts), reverse=True):
+        out.append((path_pattern(path), token))
+    out.append((FILE_OWNER, "<user>"))
+    keys = "|".join(map(re.escape, ID_KEYS + SECRET_KEYS))
     out.append((re.compile(rf'("(?:{keys})"\s*:\s*)"(?!<redacted>")[^"]*"'), r'\1"<redacted>"'))
     out.append((re.compile(r"\bsk-[A-Za-z0-9_-]{16,}"), "<redacted>"))
+    out.append((re.compile(r"\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}"), "<redacted>"))
+    out.append((re.compile(r"\b(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|AKIA[0-9A-Z]{16})\b"),
+                "<redacted>"))
+    out.append((re.compile(r"\b(Bearer\s+)(?!<redacted>)[A-Za-z0-9._~+/=-]{8,}"), r"\1<redacted>"))
     out.append((re.compile(r"[A-Za-z0-9._%+-]+@(?!example\.invalid\b)[A-Za-z0-9.-]+\.[A-Za-z]{2,}"), "<email>"))
-    for name in ("OPENROUTER_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY"):
+    for name in KEY_VARS:
         value = os.environ.get(name)
         if value and len(value) > 8:
             out.append((re.compile(re.escape(value)), "<redacted>"))
@@ -50,7 +60,7 @@ def main():
     args = ap.parse_args()
     load_env_file()
     patterns = rules()
-    changed = 0
+    changed = remaining = 0
     for path in sorted(p for p in RESULTS.rglob("*") if p.is_file()):
         try:
             text = path.read_text(encoding="utf-8")
@@ -66,8 +76,11 @@ def main():
             print(f"{path.relative_to(RESULTS)}: {hits}")
             if not args.check:
                 path.write_text(new, encoding="utf-8", newline="")
-    print(f"{changed} file(s) {'to scrub' if args.check else 'scrubbed'}")
-    if args.check and changed:
+        for match in [*USER_FOLDER.finditer(new), *FILE_OWNER.finditer(new)]:
+            remaining += 1
+            print(f"user folder remains: {path.relative_to(RESULTS)}: {new[max(0, match.start() - 20):match.end() + 20]!r}")
+    print(f"{changed} file(s) {'to scrub' if args.check else 'scrubbed'}, {remaining} user folder(s) remain")
+    if remaining or (args.check and changed):
         sys.exit(1)
 
 

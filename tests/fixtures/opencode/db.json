@@ -1,0 +1,16 @@
+{
+  "session": {"id": "ses_fixture_0001", "tokens_input": 10, "tokens_output": 160, "tokens_reasoning": 25,
+              "tokens_cache_read": 14000, "tokens_cache_write": 4300, "cost": 0.05},
+  "messages": [
+    {"seq": 1, "type": "user", "data": {"time": {"created": 1}, "text": "Add a route.", "files": []}},
+    {"seq": 2, "type": "assistant", "data": {"time": {"created": 2}, "agent": "build",
+      "model": {"id": "anthropic/claude-sonnet-5.5", "providerID": "openrouter", "variant": "medium"},
+      "finish": "tool-calls", "cost": 0.01,
+      "tokens": {"input": 4, "output": 50, "reasoning": 0, "cache": {"read": 5000, "write": 4000}}}},
+    {"seq": 3, "type": "assistant", "data": {"time": {"created": 3}, "agent": "build",
+      "model": {"id": "anthropic/claude-sonnet-5.5", "providerID": "openrouter", "variant": "medium"},
+      "finish": "stop", "cost": 0.03,
+      "tokens": {"input": 2, "output": 100, "reasoning": 20, "cache": {"read": 9000, "write": 300}}}},
+    {"seq": 4, "type": "idle", "data": {"time": {"created": 4}, "outcome": "succeeded"}}
+  ]
+}

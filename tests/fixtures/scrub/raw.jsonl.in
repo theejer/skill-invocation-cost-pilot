@@ -1,0 +1,7 @@
+{"type": "system", "cwd": "{HOME}\project\repo", "memory_paths": {"auto": "{HOME_JSON}\\.claude\\projects"}}
+{"type": "tool", "output": "{HOME_FWD}/project/repo/server.js", "shell": "cd {HOME_GITBASH}/project && ls"}
+{"type": "tool", "output": "projects dir {HOME_FLAT}-project-repo"}
+{"type": "tool", "output": "{ROOT}/scripts/common.py and {TMP}/tmpabc/repo and {RUNS}/run-1/home"}
+{"type": "tool", "output": "-rw-r--r-- 1 fixtureuser 197121 6066 Oct  1 10:00 server.js"}
+{"type": "auth", "account_id": "acct-fixture-0001", "email": "person@mail.test", "access_token": "tok-fixture", "contact": "reach person@mail.test or pilot@example.invalid"}
+{"type": "keys", "a": "{SK_KEY}", "b": "{ENV_KEY}", "c": "{JWT}", "d": "Authorization: Bearer {BEARER}", "e": "{GH_TOKEN}", "f": "{AWS_KEY}"}

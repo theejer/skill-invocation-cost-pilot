@@ -1,0 +1,336 @@
+{
+  "pooled": {
+    "configurations": [
+      "cc-anthropic",
+      "cc-openai",
+      "codex-openai"
+    ],
+    "runs_used": [
+      "cc-anthropic-1",
+      "cc-openai-1",
+      "codex-openai-2"
+    ],
+    "token_multiplier": {
+      "n": 3,
+      "min": 1.5882,
+      "median": 2.0,
+      "mean": 1.9062,
+      "max": 2.1304
+    },
+    "api_calls": {
+      "n": 3,
+      "min": 2.0,
+      "median": 2.0,
+      "mean": 2.0,
+      "max": 2.0
+    }
+  },
+  "configurations": {
+    "cc-anthropic": {
+      "harness": "claude",
+      "harness_version": "0.0.1",
+      "model": "claude-sonnet-5-5",
+      "route": "direct",
+      "effort": "medium",
+      "prices": {
+        "provider": "anthropic",
+        "model": "claude-sonnet-5-5",
+        "input": 3.0,
+        "output": 15.0,
+        "cache_write": 3.75,
+        "cache_write_1h": 6.0,
+        "cache_read": 0.3,
+        "checked": "2026-01-01"
+      },
+      "runs_used": [
+        "cc-anthropic-1"
+      ],
+      "runs_excluded": [],
+      "api_calls": {
+        "n": 1,
+        "min": 2.0,
+        "median": 2.0,
+        "mean": 2.0,
+        "max": 2.0
+      },
+      "final_call_context": {
+        "n": 1,
+        "min": 3105.0,
+        "median": 3105.0,
+        "mean": 3105.0,
+        "max": 3105.0
+      },
+      "total_input_sent": {
+        "n": 1,
+        "min": 6615.0,
+        "median": 6615.0,
+        "mean": 6615.0,
+        "max": 6615.0
+      },
+      "token_multiplier": {
+        "n": 1,
+        "min": 2.1304,
+        "median": 2.1304,
+        "mean": 2.1304,
+        "max": 2.1304
+      },
+      "session_output": {
+        "n": 1,
+        "min": 300.0,
+        "median": 300.0,
+        "mean": 300.0,
+        "max": 300.0
+      },
+      "reasoning": {
+        "n": 1,
+        "min": 0.0,
+        "median": 0.0,
+        "mean": 0.0,
+        "max": 0.0
+      },
+      "session_cost_usd": {
+        "n": 1,
+        "min": 0.02292,
+        "median": 0.02292,
+        "mean": 0.0229,
+        "max": 0.02292
+      },
+      "duration_s": {
+        "n": 1,
+        "min": 60.0,
+        "median": 60.0,
+        "mean": 60.0,
+        "max": 60.0
+      },
+      "added_lines": {
+        "n": 1,
+        "min": 40.0,
+        "median": 40.0,
+        "mean": 40.0,
+        "max": 40.0
+      },
+      "first_turn_context_median": 19050.0
+    },
+    "cc-openai": {
+      "harness": "claude",
+      "harness_version": "0.0.1",
+      "model": "openai/gpt-6.1-sol",
+      "route": "openrouter",
+      "effort": "low",
+      "prices": {
+        "provider": "openrouter",
+        "model": "openai/gpt-6.1-sol",
+        "input": 1.0,
+        "output": 8.0,
+        "cache_write": 1.25,
+        "cache_write_1h": null,
+        "cache_read": 0.1,
+        "checked": "2026-01-01"
+      },
+      "runs_used": [
+        "cc-openai-1"
+      ],
+      "runs_excluded": [],
+      "api_calls": {
+        "n": 1,
+        "min": 2.0,
+        "median": 2.0,
+        "mean": 2.0,
+        "max": 2.0
+      },
+      "final_call_context": {
+        "n": 1,
+        "min": 1700.0,
+        "median": 1700.0,
+        "mean": 1700.0,
+        "max": 1700.0
+      },
+      "total_input_sent": {
+        "n": 1,
+        "min": 2700.0,
+        "median": 2700.0,
+        "mean": 2700.0,
+        "max": 2700.0
+      },
+      "token_multiplier": {
+        "n": 1,
+        "min": 1.5882,
+        "median": 1.5882,
+        "mean": 1.5882,
+        "max": 1.5882
+      },
+      "session_output": {
+        "n": 1,
+        "min": 100.0,
+        "median": 100.0,
+        "mean": 100.0,
+        "max": 100.0
+      },
+      "reasoning": {
+        "n": 1,
+        "min": 10.0,
+        "median": 10.0,
+        "mean": 10.0,
+        "max": 10.0
+      },
+      "session_cost_usd": {
+        "n": 1,
+        "min": 0.0035,
+        "median": 0.0035,
+        "mean": 0.0035,
+        "max": 0.0035
+      },
+      "duration_s": {
+        "n": 1,
+        "min": 30.0,
+        "median": 30.0,
+        "mean": 30.0,
+        "max": 30.0
+      },
+      "added_lines": {
+        "n": 1,
+        "min": 10.0,
+        "median": 10.0,
+        "mean": 10.0,
+        "max": 10.0
+      },
+      "first_turn_context_median": null
+    },
+    "codex-openai": {
+      "harness": "codex",
+      "harness_version": "0.0.1",
+      "model": "gpt-6.1-sol",
+      "route": "direct",
+      "effort": "low",
+      "prices": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "input": 1.0,
+        "output": 8.0,
+        "cache_write": 1.25,
+        "cache_write_1h": null,
+        "cache_read": 0.1,
+        "checked": "2026-01-01"
+      },
+      "runs_used": [
+        "codex-openai-2"
+      ],
+      "runs_excluded": [
+        "codex-openai-1"
+      ],
+      "api_calls": {
+        "n": 1,
+        "min": 2.0,
+        "median": 2.0,
+        "mean": 2.0,
+        "max": 2.0
+      },
+      "final_call_context": {
+        "n": 1,
+        "min": 500.0,
+        "median": 500.0,
+        "mean": 500.0,
+        "max": 500.0
+      },
+      "total_input_sent": {
+        "n": 1,
+        "min": 1000.0,
+        "median": 1000.0,
+        "mean": 1000.0,
+        "max": 1000.0
+      },
+      "token_multiplier": {
+        "n": 1,
+        "min": 2.0,
+        "median": 2.0,
+        "mean": 2.0,
+        "max": 2.0
+      },
+      "session_output": {
+        "n": 1,
+        "min": 50.0,
+        "median": 50.0,
+        "mean": 50.0,
+        "max": 50.0
+      },
+      "reasoning": {
+        "n": 1,
+        "min": 0.0,
+        "median": 0.0,
+        "mean": 0.0,
+        "max": 0.0
+      },
+      "session_cost_usd": {
+        "n": 1,
+        "min": 0.00104,
+        "median": 0.00104,
+        "mean": 0.001,
+        "max": 0.00104
+      },
+      "duration_s": {
+        "n": 1,
+        "min": 20.0,
+        "median": 20.0,
+        "mean": 20.0,
+        "max": 20.0
+      },
+      "added_lines": {
+        "n": 1,
+        "min": 25.0,
+        "median": 25.0,
+        "mean": 25.0,
+        "max": 25.0
+      },
+      "first_turn_context_median": null
+    },
+    "opencode-openai": {
+      "harness": "opencode",
+      "harness_version": "0.0.1",
+      "model": "openai/gpt-6.1-sol",
+      "route": "direct",
+      "effort": "low",
+      "prices": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "input": 1.0,
+        "output": 8.0,
+        "cache_write": 1.25,
+        "cache_write_1h": null,
+        "cache_read": 0.1,
+        "checked": "2026-01-01"
+      },
+      "runs_used": [],
+      "runs_excluded": [
+        "opencode-openai-1"
+      ],
+      "api_calls": {
+        "n": 0
+      },
+      "final_call_context": {
+        "n": 0
+      },
+      "total_input_sent": {
+        "n": 0
+      },
+      "token_multiplier": {
+        "n": 0
+      },
+      "session_output": {
+        "n": 0
+      },
+      "reasoning": {
+        "n": 0
+      },
+      "session_cost_usd": {
+        "n": 0
+      },
+      "duration_s": {
+        "n": 0
+      },
+      "added_lines": {
+        "n": 0
+      },
+      "first_turn_context_median": null
+    }
+  }
+}
