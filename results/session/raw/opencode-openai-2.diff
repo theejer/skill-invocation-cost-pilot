@@ -1,20 +1,19 @@
 diff --git a/README.md b/README.md
-index 0cd6db5..080e98b 100644
+index 0cd6db5..7f2aa1a 100644
 --- a/README.md
 +++ b/README.md
-@@ -1,7 +1,11 @@
+@@ -1,4 +1,10 @@
 -An HTTP server that routes each request by the method and target in its request line.
-+An HTTP server that parses request lines, headers, and Content-Length bodies before routing.
++An HTTP server that reads the request line, headers, and any Content-Length body before routing.
 +
-+`/echo` accepts any method and returns the method and path as plain text (for example, `POST /echo`). Existing GET routes `/` and `/users/:userId/posts/:postId` remain supported. Malformed or truncated requests receive `400 Bad Request`. Transfer-Encoding is not supported. Each connection handles one request and then closes.
++`/echo` accepts any method and returns the method and path as plain text (for example, `POST /echo`). Existing GET routes `/` and `/users/:userId/posts/:postId` remain available.
++
++Malformed request lines, headers, invalid or duplicate Content-Length, unsupported Transfer-Encoding, and incomplete requests return `400 Bad Request`. Connections close after one response.
++
++Test: `npm test`
  
  Run: `node server.js`
  
- Minimum Node.js version: 22
- 
- Port: 8080
-+
-+Tests: `npm test`
 diff --git a/package.json b/package.json
 index c7f518c..2d18583 100644
 --- a/package.json
@@ -31,38 +30,43 @@ index c7f518c..2d18583 100644
  }
 diff --git a/request.js b/request.js
 new file mode 100644
-index 0000000..2c06c6d
+index 0000000..17fc65d
 --- /dev/null
 +++ b/request.js
-@@ -0,0 +1,53 @@
+@@ -0,0 +1,56 @@
 +const TOKEN = /^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/;
-+const REQUEST_LINE = /^([^ ]+) (\/[^\s\x00-\x20\x7f]*) HTTP\/1\.[01]$/;
-+const MAX_HEADER_BYTES = 65536;
++const REQUEST_LINE = /^([!#$%&'*+.^_`|~0-9A-Za-z-]+) (\/[^\x00-\x20\x7f]*) HTTP\/1\.[01]$/;
 +
-+// null means more bytes are needed; malformed input throws.
++// Return null until the complete request is available; throw for invalid framing.
 +const parseRequest = (bytes, maxRequestLineBytes = 8192) => {
 +  const lineEnd = bytes.indexOf('\r\n');
 +  if (lineEnd === -1) {
-+    if (bytes.length >= maxRequestLineBytes) throw new Error('Request line too long');
++    if (bytes.length >= maxRequestLineBytes || bytes.includes(10)) {
++      throw new Error('Invalid request line');
++    }
 +    return null;
 +  }
 +  if (lineEnd + 2 > maxRequestLineBytes) throw new Error('Request line too long');
 +  const match = REQUEST_LINE.exec(bytes.toString('latin1', 0, lineEnd));
-+  if (!match || !TOKEN.test(match[1])) throw new Error('Invalid request line');
++  if (!match) throw new Error('Invalid request line');
 +
-+  const headerEnd = bytes.indexOf('\r\n\r\n');
-+  if (headerEnd === -1) {
-+    if (bytes.length > MAX_HEADER_BYTES) throw new Error('Headers too large');
-+    return null;
-+  }
-+  if (headerEnd + 4 > MAX_HEADER_BYTES) throw new Error('Headers too large');
 +  const headers = Object.create(null);
-+  const headerLines = bytes.toString('latin1', lineEnd + 2, headerEnd);
-+  for (const line of headerLines ? headerLines.split('\r\n') : []) {
++  let offset = lineEnd + 2;
++  while (true) {
++    const end = bytes.indexOf('\r\n', offset);
++    if (end === -1) {
++      if (bytes.subarray(offset).includes(10)) throw new Error('Invalid header');
++      return null;
++    }
++    if (end === offset) {
++      offset = end + 2;
++      break;
++    }
++    const line = bytes.toString('latin1', offset, end);
 +    const colon = line.indexOf(':');
 +    const name = line.slice(0, colon);
 +    const value = line.slice(colon + 1).trim();
-+    if (colon <= 0 || !TOKEN.test(name) || /[^\t\x20-\x7e\x80-\xff]/.test(line.slice(colon + 1))) {
++    if (colon < 1 || !TOKEN.test(name) || /[\x00-\x08\x0a-\x1f\x7f]/.test(line)) {
 +      throw new Error('Invalid header');
 +    }
 +    const key = name.toLowerCase();
@@ -70,87 +74,22 @@ index 0000000..2c06c6d
 +      throw new Error('Duplicate Content-Length');
 +    }
 +    headers[key] = headers[key] === undefined ? value : `${headers[key]}, ${value}`;
++    offset = end + 2;
 +  }
-+  // This server only supports Content-Length framing.
++
++  // Chunked framing is not supported; never interpret it as an empty body.
 +  if (headers['transfer-encoding'] !== undefined) throw new Error('Unsupported Transfer-Encoding');
-+  const lengthValue = headers['content-length'];
-+  if (lengthValue !== undefined && !/^\d+$/.test(lengthValue)) throw new Error('Invalid Content-Length');
-+  const contentLength = lengthValue === undefined ? 0 : Number(lengthValue);
-+  if (!Number.isSafeInteger(contentLength)) throw new Error('Invalid Content-Length');
-+  const bodyStart = headerEnd + 4;
-+  if (bytes.length - bodyStart < contentLength) return null;
-+  return {
-+    method: match[1],
-+    path: match[2],
-+    headers,
-+    body: bytes.subarray(bodyStart, bodyStart + contentLength),
-+  };
++  const length = headers['content-length'] ?? '0';
++  if (!/^[0-9]+$/.test(length) || !Number.isSafeInteger(Number(length))) {
++    throw new Error('Invalid Content-Length');
++  }
++  const bodyEnd = offset + Number(length);
++  if (!Number.isSafeInteger(bodyEnd)) throw new Error('Invalid Content-Length');
++  if (bytes.length < bodyEnd) return null;
++  return { method: match[1], path: match[2], headers, body: bytes.subarray(offset, bodyEnd) };
 +};
 +
 +module.exports = { parseRequest };
-diff --git a/request.test.js b/request.test.js
-new file mode 100644
-index 0000000..e2b84a0
---- /dev/null
-+++ b/request.test.js
-@@ -0,0 +1,57 @@
-+const test = require('node:test');
-+const assert = require('node:assert/strict');
-+const { parseRequest } = require('./request');
-+const { routeRequest, routeRequestLine } = require('./router');
-+
-+const parse = (text) => parseRequest(Buffer.from(text, 'latin1'));
-+
-+test('reads request line, case-insensitive headers and binary body', () => {
-+  const request = parse('POST /echo HTTP/1.1\r\nHost: localhost\r\ncOnTeNt-LeNgTh: 3\r\n\r\na\x00\xffextra');
-+  assert.equal(request.method, 'POST');
-+  assert.equal(request.path, '/echo');
-+  assert.equal(request.headers.host, 'localhost');
-+  assert.deepEqual(request.body, Buffer.from([97, 0, 255]));
-+  assert.ok(routeRequest(request).endsWith('\r\n\r\nPOST /echo'));
-+});
-+
-+test('waits for all headers and the complete declared body', () => {
-+  const bytes = Buffer.from('POST /echo HTTP/1.1\r\nContent-Length: 4\r\n\r\ntest');
-+  for (let i = 0; i < bytes.length; i++) {
-+    assert.equal(parseRequest(bytes.subarray(0, i)), null);
-+  }
-+  assert.equal(parseRequest(bytes).body.toString(), 'test');
-+});
-+
-+test('accepts no headers and zero-length bodies', () => {
-+  assert.equal(parse('GET / HTTP/1.0\r\n\r\n').body.length, 0);
-+  assert.equal(parse('GET / HTTP/1.1\r\nContent-Length: 0\r\n\r\n').body.length, 0);
-+});
-+
-+test('rejects malformed lines, headers and ambiguous body framing', () => {
-+  const invalid = [
-+    'GET / HTTP/9.9\r\n\r\n',
-+    'GET  / HTTP/1.1\r\n\r\n',
-+    'G(ET / HTTP/1.1\r\n\r\n',
-+    'GET / HTTP/1.1\r\nMissing-Colon\r\n\r\n',
-+    'GET / HTTP/1.1\r\nBad Name: value\r\n\r\n',
-+    'GET / HTTP/1.1\r\nX: a\x00b\r\n\r\n',
-+    ...['-1', '1.5', 'abc', '9007199254740992'].map((length) =>
-+      `POST /echo HTTP/1.1\r\nContent-Length: ${length}\r\n\r\n`),
-+    'POST /echo HTTP/1.1\r\nContent-Length: 1\r\nContent-Length: 1\r\n\r\nx',
-+    'POST /echo HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n',
-+  ];
-+  for (const text of invalid) assert.throws(() => parse(text), undefined, text);
-+});
-+
-+test('enforces request line limit', () => {
-+  assert.throws(() => parseRequest(Buffer.from('GET / HTTP/1.1\r\n\r\n'), 10));
-+  assert.throws(() => parseRequest(Buffer.from('1234567890'), 10));
-+});
-+
-+test('preserves existing routing and rejects malformed request lines', () => {
-+  assert.match(routeRequestLine('GET / HTTP/1.1'), /^HTTP\/1.1 200 OK/);
-+  assert.ok(routeRequestLine('GET /users/12/posts/34 HTTP/1.1').endsWith('12 34'));
-+  assert.match(routeRequestLine('POST / HTTP/1.1'), /^HTTP\/1.1 405/);
-+  assert.match(routeRequestLine('GET /missing HTTP/1.1'), /^HTTP\/1.1 404/);
-+  assert.match(routeRequestLine('not a request'), /^HTTP\/1.1 400/);
-+});
 diff --git a/router.js b/router.js
 index 1c1eef1..b6b0d21 100644
 --- a/router.js
@@ -242,3 +181,56 @@ index b5eb1f6..5bb15f0 100644
        sendResponse(BAD_REQUEST_RESPONSE);
      }
    });
+diff --git a/test/request.test.js b/test/request.test.js
+new file mode 100644
+index 0000000..6c3daeb
+--- /dev/null
++++ b/test/request.test.js
+@@ -0,0 +1,47 @@
++const { test } = require('node:test');
++const assert = require('node:assert/strict');
++const { parseRequest } = require('../request');
++const { routeRequest, routeRequestLine } = require('../router');
++
++const parse = (text, limit) => parseRequest(Buffer.from(text, 'latin1'), limit);
++
++test('reads request line, case-insensitive headers, and binary body', () => {
++  const request = parse('POST /echo HTTP/1.1\r\nContent-Length: 3\r\nX-Test: yes\r\n\r\na\x00\xff');
++  assert.equal(request.method, 'POST');
++  assert.equal(request.path, '/echo');
++  assert.equal(request.headers['x-test'], 'yes');
++  assert.deepEqual(request.body, Buffer.from([97, 0, 255]));
++  assert.match(routeRequest(request), /\r\n\r\nPOST \/echo$/);
++});
++
++test('waits for the entire request across every possible split', () => {
++  const bytes = Buffer.from('POST /echo HTTP/1.1\r\nContent-Length: 4\r\n\r\ndata');
++  for (let i = 0; i < bytes.length; i++) {
++    assert.equal(parseRequest(bytes.subarray(0, i)), null);
++  }
++  assert.equal(parseRequest(bytes).body.toString(), 'data');
++});
++
++test('rejects malformed requests', () => {
++  for (const text of [
++    'GET / HTTP/2.0\r\n\r\n',
++    'GET  / HTTP/1.1\r\n\r\n',
++    'GET / HTTP/1.1\n\n',
++    'GET / HTTP/1.1\r\nBad header\r\n\r\n',
++    'GET / HTTP/1.1\r\nName : value\r\n\r\n',
++    'GET / HTTP/1.1\r\nContent-Length: -1\r\n\r\n',
++    'GET / HTTP/1.1\r\nContent-Length: 1.5\r\n\r\n',
++    'GET / HTTP/1.1\r\nContent-Length: 9007199254740992\r\n\r\n',
++    'GET / HTTP/1.1\r\nContent-Length: 0\r\ncontent-length: 0\r\n\r\n',
++    'GET / HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n',
++  ]) assert.throws(() => parse(text), undefined, text);
++  assert.throws(() => parse('GET / HTTP/1.1\r\n\r\n', 8));
++});
++
++test('preserves existing routes and reports bad request lines', () => {
++  assert.match(routeRequestLine('GET / HTTP/1.1'), /^HTTP\/1.1 200 OK/);
++  assert.match(routeRequestLine('GET /users/1/posts/2 HTTP/1.1'), /\r\n\r\n1 2$/);
++  assert.match(routeRequestLine('POST / HTTP/1.1'), /^HTTP\/1.1 405/);
++  assert.match(routeRequestLine('GET /missing HTTP/1.1'), /^HTTP\/1.1 404/);
++  assert.match(routeRequestLine('invalid'), /^HTTP\/1.1 400/);
++});

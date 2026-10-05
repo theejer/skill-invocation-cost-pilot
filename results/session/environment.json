@@ -133,16 +133,6 @@
     ],
     "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
   },
-  "opencode-openai": {
-    "harness": "opencode",
-    "model_requested": "openai/gpt-6.1-sol",
-    "route": "direct",
-    "model_reported": "gpt-6.1-sol",
-    "effort": "low",
-    "agent": "build",
-    "effort_reported": "low",
-    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
-  },
   "cc-openai": {
     "harness": "claude",
     "model_requested": "openai/gpt-6.1-sol",
@@ -210,16 +200,6 @@
     },
     "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
   },
-  "opencode-anthropic": {
-    "harness": "opencode",
-    "model_requested": "openrouter/anthropic/claude-sonnet-5.5",
-    "route": "openrouter",
-    "model_reported": "anthropic/claude-sonnet-5.5",
-    "effort": "medium",
-    "agent": "build",
-    "effort_reported": "medium",
-    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
-  },
   "codex-anthropic": {
     "harness": "codex",
     "model_requested": "anthropic/claude-sonnet-5.5",
@@ -241,6 +221,26 @@
     "sandbox": "danger-full-access",
     "disabled_plugin_ids": [],
     "session_file_found": true,
+    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
+  },
+  "opencode-openai": {
+    "harness": "opencode",
+    "model_requested": "openai/gpt-6.1-sol",
+    "route": "direct",
+    "model_reported": "gpt-6.1-sol",
+    "effort": "low",
+    "agent": "build",
+    "effort_reported": "low",
+    "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
+  },
+  "opencode-anthropic": {
+    "harness": "opencode",
+    "model_requested": "openrouter/anthropic/claude-sonnet-5.5",
+    "route": "openrouter",
+    "model_reported": "anthropic/claude-sonnet-5.5",
+    "effort": "medium",
+    "agent": "build",
+    "effort_reported": "medium",
     "fixture_sha256": "7e0c124e35581a68e3a735264c6515ce8a5cafeebae7717b50609afb4fed4812"
   }
 }

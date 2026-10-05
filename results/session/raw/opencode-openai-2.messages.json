@@ -2,7 +2,7 @@
  {
   "type": "user",
   "time": {
-   "created": 1791200777584
+   "created": 1791224460414
   },
   "text": "Add request parsing to the server: read the request line, headers and any Content-Length body, add an /echo route that replies with the method and path, and reply 400 Bad Request to malformed requests.\r\n",
   "files": []
@@ -10,9 +10,9 @@
  {
   "type": "assistant",
   "time": {
-   "created": 1791200777874,
-   "streamed": 1791200782778,
-   "completed": 1791200782876
+   "created": 1791224460789,
+   "streamed": 1791224464336,
+   "completed": 1791224464506
   },
   "agent": "build",
   "model": {
@@ -23,11 +23,11 @@
   "content": [
    {
     "type": "tool",
-    "id": "call_319GasKXmx8wZiXAnjBl2GK5",
+    "id": "call_RYyJ5dH8FObAyJXSp1MtsWzJ",
     "name": "read",
     "executed": false,
     "providerState": {
-     "itemId": "fc_07c33f61f02600a5016ac38e0e7e7c87d09e2cba594e8ef2fb"
+     "itemId": "fc_01a2cc014ce09387016ac3ea8fdb6087d0b136c166482e9fc4"
     },
     "state": {
      "status": "completed",
@@ -45,9 +45,9 @@
      }
     },
     "time": {
-     "created": 1791200782426,
-     "ran": 1791200782718,
-     "completed": 1791200782740
+     "created": 1791224463935,
+     "ran": 1791224464309,
+     "completed": 1791224464350
     }
    }
   ],
@@ -58,12 +58,12 @@
   },
   "finish": "tool-calls",
   "providerState": {
-   "responseId": "resp_07c33f61f02600a5016ac38e0c1b7087d0acdbd580d46514b9",
+   "responseId": "resp_01a2cc014ce09387016ac3ea8deb0887d08362d31d3b9df28f",
    "serviceTier": "default"
   },
   "cost": 0,
   "tokens": {
-   "input": 5853,
+   "input": 4238,
    "output": 17,
    "reasoning": 0,
    "cache": {
@@ -75,9 +75,9 @@
  {
   "type": "assistant",
   "time": {
-   "created": 1791200783005,
-   "streamed": 1791200788503,
-   "completed": 1791200788969
+   "created": 1791224464755,
+   "streamed": 1791224469330,
+   "completed": 1791224469696
   },
   "agent": "build",
   "model": {
@@ -88,11 +88,11 @@
   "content": [
    {
     "type": "tool",
-    "id": "call_lco9i98vFNgnBfQRxg2UTfz9",
+    "id": "call_m7qWilRQWZvP0up0CNifzqDA",
     "name": "read",
     "executed": false,
     "providerState": {
-     "itemId": "fc_07c33f61f02600a5016ac38e145f2087d08de11f4c5fac4ecd"
+     "itemId": "fc_01a2cc014ce09387016ac3ea94fc6087d08a0f9c43aaf54ff9"
     },
     "state": {
      "status": "completed",
@@ -110,18 +110,18 @@
      }
     },
     "time": {
-     "created": 1791200788300,
-     "ran": 1791200788313,
-     "completed": 1791200788356
+     "created": 1791224469155,
+     "ran": 1791224469171,
+     "completed": 1791224469375
     }
    },
    {
     "type": "tool",
-    "id": "call_l2MOnSo2KWW721D5Flh5WqVp",
+    "id": "call_7b34Zy2XqSoDL9ySXTN18G1p",
     "name": "read",
     "executed": false,
     "providerState": {
-     "itemId": "fc_07c33f61f02600a5016ac38e145f4487d0957ad910d33f945d"
+     "itemId": "fc_01a2cc014ce09387016ac3ea94fc7487d080e427cbb61c9067"
     },
     "state": {
      "status": "completed",
@@ -139,18 +139,18 @@
      }
     },
     "time": {
-     "created": 1791200788319,
-     "ran": 1791200788340,
-     "completed": 1791200788360
+     "created": 1791224469178,
+     "ran": 1791224469200,
+     "completed": 1791224469383
     }
    },
    {
     "type": "tool",
-    "id": "call_VuUVGaIB9s0Vy8vU9UeL9eM3",
+    "id": "call_kYSWHxIonA68zqfysZ0YyXFq",
     "name": "read",
     "executed": false,
     "providerState": {
-     "itemId": "fc_07c33f61f02600a5016ac38e145f5487d0bf979ca0ac1b0c05"
+     "itemId": "fc_01a2cc014ce09387016ac3ea94fc8087d08b4f40fb3ff532e7"
     },
     "state": {
      "status": "completed",
@@ -168,18 +168,18 @@
      }
     },
     "time": {
-     "created": 1791200788344,
-     "ran": 1791200788446,
-     "completed": 1791200788535
+     "created": 1791224469207,
+     "ran": 1791224469257,
+     "completed": 1791224469397
     }
    },
    {
     "type": "tool",
-    "id": "call_1SD25mQkYwych7lTLnK6NKiQ",
+    "id": "call_Kvqf6pjt6BYYQFrdUjh3W6O4",
     "name": "read",
     "executed": false,
     "providerState": {
-     "itemId": "fc_07c33f61f02600a5016ac38e145f6487d09261a001b0f9f4c7"
+     "itemId": "fc_01a2cc014ce09387016ac3ea94fc8887d092a08258c0e4b1e9"
     },
     "state": {
      "status": "completed",
@@ -197,18 +197,18 @@
      }
     },
     "time": {
-     "created": 1791200788451,
-     "ran": 1791200788465,
-     "completed": 1791200788546
+     "created": 1791224469265,
+     "ran": 1791224469279,
+     "completed": 1791224469406
     }
    },
    {
     "type": "tool",
-    "id": "call_u0lleyMbxDxpiKxyMEPLh1Z8",
+    "id": "call_ahiWNYLfuHcVaYMzUhdjUdQQ",
     "name": "shell",
     "executed": false,
     "providerState": {
-     "itemId": "fc_07c33f61f02600a5016ac38e145f7487d08ca63e9dbdd37b2c"
+     "itemId": "fc_01a2cc014ce09387016ac3ea94fc9087d0b990645a768d1174"
     },
     "state": {
      "status": "completed",
@@ -228,9 +228,9 @@
      }
     },
     "time": {
-     "created": 1791200788475,
-     "ran": 1791200788484,
-     "completed": 1791200788880
+     "created": 1791224469293,
+     "ran": 1791224469309,
+     "completed": 1791224469555
     }
    }
   ],
@@ -241,16 +241,16 @@
   },
   "finish": "tool-calls",
   "providerState": {
-   "responseId": "resp_07c33f61f02600a5016ac38e0f94a487d0a5d2ff93fc6bafad",
+   "responseId": "resp_01a2cc014ce09387016ac3ea91307087d0b426cb846728c8b5",
    "serviceTier": "default"
   },
   "cost": 0,
   "tokens": {
-   "input": 148,
+   "input": 197,
    "output": 92,
    "reasoning": 0,
    "cache": {
-    "read": 5760,
+    "read": 4096,
     "write": 0
    }
   }
@@ -258,9 +258,137 @@
  {
   "type": "assistant",
   "time": {
-   "created": 1791200789097,
-   "streamed": 1791200851231,
-   "completed": 1791200851528
+   "created": 1791224469943,
+   "streamed": 1791224504309,
+   "completed": 1791224504876
+  },
+  "agent": "build",
+  "model": {
+   "id": "gpt-6.1-sol",
+   "providerID": "openai",
+   "variant": "low"
+  },
+  "content": [
+   {
+    "type": "reasoning",
+    "text": "**Planning parser tests**\n\nI need to implement parser tests quickly. Time is a factor here, but I think the budget will be sufficient. I wonder how I can balance speed and effectiveness. It\u2019s crucial to ensure that the tests are thorough while still being efficiently executed. I could outline what specific aspects of the parser need testing. It's all about finding that sweet spot between thoroughness and time constraints! Let's map this out effectively.",
+    "state": {
+     "itemId": "rs_01a2cc014ce09387016ac3ea97a43087d098aea900aaf75a1c",
+     "reasoningEncryptedContent": "gAAAAABqw-qZ2dfwnMhEMjCPQj0H7opRvF5_HWUBwhT8QSsTPcr2Ro0cTnWlzmOs3316397LrDJE6ulGVTAFPJR0l9i29KhZ3YhwifhWIM97VWo0uD1BD04u8lH4vPJBG3iFDIC4Pisk2_ci2Uj0LrDQYOqz2oNKO3unMnapNAIgQZP5MAYorDGfYRNO4ohSQa2_H7KE9KTJLJFkaXelPljMaaFts2LXJAzAnNAWcQmyBhwD1xVUop8I2CVP7Ih4D95iiN0GnyBTirWIbnOVLQybo6naCQ8FtAuASul_leUdK5Je3HLcgE8BNt9O7uH7oL26J1SCCRDr_XdZnUNpogLLxAdkVTfFi3sEtm79_Grtl0Y_3NOs4BRJUyM6Bi_OkVoJ9dCzKFA5wrsdc_2ds4oIq6HpdUGvUC-8t6qkFXuuATqQ49GqSl1SeZJBT9SMHTjfIQu-FA0aDfpMXz74xd0f_sEp_siYg1xYfsxW_IJMBIfJZYi8hbK7rWE87wDjdeIPl4G8PvB-p6_1_tQrBkDSJgI52dAilJ9mS9ykKl9chu8EFlb_hazpzcCfszv5nQW-b3lfxmrQHbNBOmgAY9KxSezkM05uQcCDlBdUhc5kFI7lDv7PviCemQ5nq72bkEMBOuIBW6bD496jxzj3RVWF_FKATgsBdYvzDRKHYn2DZViW0zC2aR8iRgxu5X9vMpPVRAe9IJscILHtGgkGD9JAd_YO1_8PVwXLe0wa3vmz8ajfrLHcP2vzG6LWZQMzzFfxwlZNuS1FEoJtHmo6iVGz0QwcovefuQomJoxNc9HUamdZR_wJkE1m3JvSzYVCy0PDq5NJcWDjSL28H-8JQZB8mOsUZhGydDNOroy1uIolDo3-BDtG_cTifRzk4i9SCH1aPSXE4yR8UQz5qe-Buw1S9N_TarZfRjwPQoOib9kBM2aB9oXKFt5j8HGAq1BJDE1sDwifDGg7HCXfmo5jXdPLqXzVwjpPV6BwpQtC62P3VdP4RGmVWEpBhjRKLQ4P9m2PFVutQe8LF7_LxzA9pYxc-zUCsDH2hXUXCYTkp2UC43FiZvpSZ-UlNXHoeMZr1xwDA68J2NenH8nQ3EVr8jp_2O_ezWgzLF-mVruT7FkYPUJZjfo5FVKYxrE4fFcCDZ3VcoEgYVbYmJWHMh9nrrnZLsw8OVdeFFqjHna1Y2_lMlrQHV03KhQgRhayrQncQJvFTh7fLJZQXA4y9re5MckXQxJdD9S-iSjLQzEYPZ3m4L3s6Ad3H_qDUQEQeeNCCkXw0XGcv8Gl3_e0eNupSmOeXmFQrvGa07k4OHFkuvy841qarwEVQQn6H6c0CaTsZ1ncWXAZuAJhteBebeLbMnHM5KfZMgyWZw=="
+    },
+    "time": {
+     "created": 1791224471818,
+     "completed": 1791224473486
+    }
+   },
+   {
+    "type": "text",
+    "text": "The server currently responds as soon as it receives the request line. I\u2019ll make it wait for the headers and full `Content-Length` body, reject malformed requests, and add `/echo` returning plain text such as `POST /echo`.",
+    "state": {
+     "itemId": "msg_01a2cc014ce09387016ac3ea996b4c87d086aa8e4e5bb1a934",
+     "phase": "commentary"
+    }
+   },
+   {
+    "type": "tool",
+    "id": "call_PjaezOFmzqvYR0cz7cN96SZe",
+    "name": "patch",
+    "executed": false,
+    "providerState": {
+     "itemId": "fc_01a2cc014ce09387016ac3ea99987087d0ab0b1d6e69510578"
+    },
+    "state": {
+     "status": "completed",
+     "input": {
+      "patchText": "*** Begin Patch\n*** Add File: request.js\n+const TOKEN = /^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/;\n+const REQUEST_LINE = /^([!#$%&'*+.^_`|~0-9A-Za-z-]+) (\\/[^\\x00-\\x20\\x7f]*) HTTP\\/1\\.[01]$/;\n+\n+// Return null until the complete request is available; throw for invalid framing.\n+const parseRequest = (bytes, maxRequestLineBytes = 8192) => {\n+  const lineEnd = bytes.indexOf('\\r\\n');\n+  if (lineEnd === -1) {\n+    if (bytes.length >= maxRequestLineBytes || bytes.includes(10)) {\n+      throw new Error('Invalid request line');\n+    }\n+    return null;\n+  }\n+  if (lineEnd + 2 > maxRequestLineBytes) throw new Error('Request line too long');\n+  const match = REQUEST_LINE.exec(bytes.toString('latin1', 0, lineEnd));\n+  if (!match) throw new Error('Invalid request line');\n+\n+  const headers = Object.create(null);\n+  let offset = lineEnd + 2;\n+  while (true) {\n+    const end = bytes.indexOf('\\r\\n', offset);\n+    if (end === -1) {\n+      if (bytes.subarray(offset).includes(10)) throw new Error('Invalid header');\n+      return null;\n+    }\n+    if (end === offset) {\n+      offset = end + 2;\n+      break;\n+    }\n+    const line = bytes.toString('latin1', offset, end);\n+    const colon = line.indexOf(':');\n+    const name = line.slice(0, colon);\n+    const value = line.slice(colon + 1).trim();\n+    if (colon < 1 || !TOKEN.test(name) || /[\\x00-\\x08\\x0a-\\x1f\\x7f]/.test(line)) {\n+      throw new Error('Invalid header');\n+    }\n+    const key = name.toLowerCase();\n+    if (key === 'content-length' && headers[key] !== undefined) {\n+      throw new Error('Duplicate Content-Length');\n+    }\n+    headers[key] = headers[key] === undefined ? value : `${headers[key]}, ${value}`;\n+    offset = end + 2;\n+  }\n+\n+  // Chunked framing is not supported; never interpret it as an empty body.\n+  if (headers['transfer-encoding'] !== undefined) throw new Error('Unsupported Transfer-Encoding');\n+  const length = headers['content-length'] ?? '0';\n+  if (!/^[0-9]+$/.test(length) || !Number.isSafeInteger(Number(length))) {\n+    throw new Error('Invalid Content-Length');\n+  }\n+  const bodyEnd = offset + Number(length);\n+  if (!Number.isSafeInteger(bodyEnd)) throw new Error('Invalid Content-Length');\n+  if (bytes.length < bodyEnd) return null;\n+  return { method: match[1], path: match[2], headers, body: bytes.subarray(offset, bodyEnd) };\n+};\n+\n+module.exports = { parseRequest };\n*** Update File: server.js\n@@\n-const { BAD_REQUEST_RESPONSE, routeRequestLine } = require('./router');\n+const { BAD_REQUEST_RESPONSE, routeRequest } = require('./router');\n+const { parseRequest } = require('./request');\n@@\n-const REQUEST_LINE_END = '\\r\\n';\n@@\n-const findRequestLine = (receivedBytes) => {\n-  const requestLineEnd = receivedBytes\n-    .subarray(0, MAX_REQUEST_LINE_BYTES)\n-    .indexOf(REQUEST_LINE_END);\n-  return requestLineEnd === -1 ? null : receivedBytes.toString('latin1', 0, requestLineEnd);\n-};\n-\n-const server = net.createServer((conn) => {\n+const server = net.createServer({ allowHalfOpen: true }, (conn) => {\n@@\n-    const requestLine = findRequestLine(receivedBytes);\n-    if (requestLine !== null) {\n-      sendResponse(routeRequestLine(requestLine));\n-    } else if (receivedBytes.length >= MAX_REQUEST_LINE_BYTES) {\n+    try {\n+      const request = parseRequest(receivedBytes, MAX_REQUEST_LINE_BYTES);\n+      if (request !== null) sendResponse(routeRequest(request));\n+    } catch {\n       sendResponse(BAD_REQUEST_RESPONSE);\n*** Update File: router.js\n@@\n-const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +[^ ]+$/;\n+const { parseRequest } = require('./request');\n@@\n-const routeRequestLine = (requestLine) => {\n-  const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);\n-  if (!requestLineMatch) return BAD_REQUEST_RESPONSE;\n-\n-  const [, method, target] = requestLineMatch;\n+const routeRequest = ({ method, path: target }) => {\n+  if (target === '/echo') {\n+    return buildResponse('200 OK', {\n+      headers: ['Content-Type: text/plain'],\n+      body: `${method} ${target}`,\n+    });\n+  }\n@@\n-module.exports = { BAD_REQUEST_RESPONSE, routeRequestLine };\n+const routeRequestLine = (requestLine) => {\n+  try {\n+    const request = parseRequest(Buffer.from(`${requestLine}\\r\\n\\r\\n`, 'latin1'));\n+    return request ? routeRequest(request) : BAD_REQUEST_RESPONSE;\n+  } catch {\n+    return BAD_REQUEST_RESPONSE;\n+  }\n+};\n+\n+module.exports = { BAD_REQUEST_RESPONSE, routeRequest, routeRequestLine };\n*** Update File: package.json\n@@\n-    \"start\": \"node server.js\"\n+    \"start\": \"node server.js\",\n+    \"test\": \"node --test\"\n*** Update File: README.md\n@@\n-An HTTP server that routes each request by the method and target in its request line.\n+An HTTP server that reads the request line, headers, and any Content-Length body before routing.\n+\n+`/echo` accepts any method and returns the method and path as plain text (for example, `POST /echo`). Existing GET routes `/` and `/users/:userId/posts/:postId` remain available.\n+\n+Malformed request lines, headers, invalid or duplicate Content-Length, unsupported Transfer-Encoding, and incomplete requests return `400 Bad Request`. Connections close after one response.\n+\n+Test: `npm test`\n*** End Patch"
+     },
+     "content": [
+      {
+       "type": "text",
+       "text": "Success. Updated the following files:\nA request.js\nM server.js\nM router.js\nM package.json\nM README.md"
+      }
+     ],
+     "metadata": {
+      "files": [
+       {
+        "file": "request.js",
+        "patch": "Index: <runs>\\opencode-openai-2\\repo\\request.js\n===================================================================\n--- <runs>\\opencode-openai-2\\repo\\request.js\n+++ <runs>\\opencode-openai-2\\repo\\request.js\n@@ -0,0 +1,56 @@\n+const TOKEN = /^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/;\n+const REQUEST_LINE = /^([!#$%&'*+.^_`|~0-9A-Za-z-]+) (\\/[^\\x00-\\x20\\x7f]*) HTTP\\/1\\.[01]$/;\n+\n+// Return null until the complete request is available; throw for invalid framing.\n+const parseRequest = (bytes, maxRequestLineBytes = 8192) => {\n+  const lineEnd = bytes.indexOf('\\r\\n');\n+  if (lineEnd === -1) {\n+    if (bytes.length >= maxRequestLineBytes || bytes.includes(10)) {\n+      throw new Error('Invalid request line');\n+    }\n+    return null;\n+  }\n+  if (lineEnd + 2 > maxRequestLineBytes) throw new Error('Request line too long');\n+  const match = REQUEST_LINE.exec(bytes.toString('latin1', 0, lineEnd));\n+  if (!match) throw new Error('Invalid request line');\n+\n+  const headers = Object.create(null);\n+  let offset = lineEnd + 2;\n+  while (true) {\n+    const end = bytes.indexOf('\\r\\n', offset);\n+    if (end === -1) {\n+      if (bytes.subarray(offset).includes(10)) throw new Error('Invalid header');\n+      return null;\n+    }\n+    if (end === offset) {\n+      offset = end + 2;\n+      break;\n+    }\n+    const line = bytes.toString('latin1', offset, end);\n+    const colon = line.indexOf(':');\n+    const name = line.slice(0, colon);\n+    const value = line.slice(colon + 1).trim();\n+    if (colon < 1 || !TOKEN.test(name) || /[\\x00-\\x08\\x0a-\\x1f\\x7f]/.test(line)) {\n+      throw new Error('Invalid header');\n+    }\n+    const key = name.toLowerCase();\n+    if (key === 'content-length' && headers[key] !== undefined) {\n+      throw new Error('Duplicate Content-Length');\n+    }\n+    headers[key] = headers[key] === undefined ? value : `${headers[key]}, ${value}`;\n+    offset = end + 2;\n+  }\n+\n+  // Chunked framing is not supported; never interpret it as an empty body.\n+  if (headers['transfer-encoding'] !== undefined) throw new Error('Unsupported Transfer-Encoding');\n+  const length = headers['content-length'] ?? '0';\n+  if (!/^[0-9]+$/.test(length) || !Number.isSafeInteger(Number(length))) {\n+    throw new Error('Invalid Content-Length');\n+  }\n+  const bodyEnd = offset + Number(length);\n+  if (!Number.isSafeInteger(bodyEnd)) throw new Error('Invalid Content-Length');\n+  if (bytes.length < bodyEnd) return null;\n+  return { method: match[1], path: match[2], headers, body: bytes.subarray(offset, bodyEnd) };\n+};\n+\n+module.exports = { parseRequest };\n",
+        "status": "added",
+        "additions": 56,
+        "deletions": 0
+       },
+       {
+        "file": "server.js",
+        "patch": "Index: <runs>\\opencode-openai-2\\repo\\server.js\n===================================================================\n--- <runs>\\opencode-openai-2\\repo\\server.js\n+++ <runs>\\opencode-openai-2\\repo\\server.js\n@@ -1,10 +1,10 @@\n const net = require('net');\n-const { BAD_REQUEST_RESPONSE, routeRequestLine } = require('./router');\n+const { BAD_REQUEST_RESPONSE, routeRequest } = require('./router');\n+const { parseRequest } = require('./request');\n \n const PORT = process.env.PORT || 8080;\n const DEFAULT_MAX_REQUEST_LINE_BYTES = 8192;\n-const REQUEST_LINE_END = '\\r\\n';\n \n const readMaxRequestLineBytes = () => {\n   const configuredValue = process.env.MAX_REQUEST_LINE_BYTES ?? DEFAULT_MAX_REQUEST_LINE_BYTES;\n   const maxRequestLineBytes = Number(configuredValue);\n@@ -15,16 +15,9 @@\n };\n \n const MAX_REQUEST_LINE_BYTES = readMaxRequestLineBytes();\n \n-const findRequestLine = (receivedBytes) => {\n-  const requestLineEnd = receivedBytes\n-    .subarray(0, MAX_REQUEST_LINE_BYTES)\n-    .indexOf(REQUEST_LINE_END);\n-  return requestLineEnd === -1 ? null : receivedBytes.toString('latin1', 0, requestLineEnd);\n-};\n-\n-const server = net.createServer((conn) => {\n+const server = net.createServer({ allowHalfOpen: true }, (conn) => {\n   let receivedBytes = Buffer.alloc(0);\n \n   const sendResponse = (response) => conn.end(response, 'latin1');\n \n@@ -32,12 +25,12 @@\n   conn.on('data', (chunk) => {\n     if (conn.writableEnded) return;\n     receivedBytes = Buffer.concat([receivedBytes, chunk]);\n \n-    const requestLine = findRequestLine(receivedBytes);\n-    if (requestLine !== null) {\n-      sendResponse(routeRequestLine(requestLine));\n-    } else if (receivedBytes.length >= MAX_REQUEST_LINE_BYTES) {\n+    try {\n+      const request = parseRequest(receivedBytes, MAX_REQUEST_LINE_BYTES);\n+      if (request !== null) sendResponse(routeRequest(request));\n+    } catch {\n       sendResponse(BAD_REQUEST_RESPONSE);\n     }\n   });\n   conn.on('end', () => {\n",
+        "status": "modified",
+        "additions": 7,
+        "deletions": 14
+       },
+       {
+        "file": "router.js",
+        "patch": "Index: <runs>\\opencode-openai-2\\repo\\router.js\n===================================================================\n--- <runs>\\opencode-openai-2\\repo\\router.js\n+++ <runs>\\opencode-openai-2\\repo\\router.js\n@@ -1,5 +1,5 @@\n-const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +[^ ]+$/;\n+const { parseRequest } = require('./request');\n const ROOT_TARGET = '/';\n const USER_POST_TARGET_PATTERN = /^\\/users\\/([^/]+)\\/posts\\/([^/]+)$/;\n \n const buildResponse = (status, { headers = [], body = '' } = {}) =>\n@@ -18,13 +18,15 @@\n const METHOD_NOT_ALLOWED_RESPONSE = buildResponse('405 Method Not Allowed', {\n   headers: ['Allow: GET'],\n });\n \n-const routeRequestLine = (requestLine) => {\n-  const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);\n-  if (!requestLineMatch) return BAD_REQUEST_RESPONSE;\n-\n-  const [, method, target] = requestLineMatch;\n+const routeRequest = ({ method, path: target }) => {\n+  if (target === '/echo') {\n+    return buildResponse('200 OK', {\n+      headers: ['Content-Type: text/plain'],\n+      body: `${method} ${target}`,\n+    });\n+  }\n   const userPostMatch = USER_POST_TARGET_PATTERN.exec(target);\n   if (target !== ROOT_TARGET && !userPostMatch) return NOT_FOUND_RESPONSE;\n   if (method !== 'GET') return METHOD_NOT_ALLOWED_RESPONSE;\n   if (!userPostMatch) return OK_RESPONSE;\n@@ -35,5 +37,14 @@\n     body: `${userId} ${postId}`,\n   });\n };\n \n-module.exports = { BAD_REQUEST_RESPONSE, routeRequestLine };\n+const routeRequestLine = (requestLine) => {\n+  try {\n+    const request = parseRequest(Buffer.from(`${requestLine}\\r\\n\\r\\n`, 'latin1'));\n+    return request ? routeRequest(request) : BAD_REQUEST_RESPONSE;\n+  } catch {\n+    return BAD_REQUEST_RESPONSE;\n+  }\n+};\n+\n+module.exports = { BAD_REQUEST_RESPONSE, routeRequest, routeRequestLine };\n",
+        "status": "modified",
+        "additions": 18,
+        "deletions": 7
+       },
+       {
+        "file": "package.json",
+        "patch": "Index: <runs>\\opencode-openai-2\\repo\\package.json\n===================================================================\n--- <runs>\\opencode-openai-2\\repo\\package.json\n+++ <runs>\\opencode-openai-2\\repo\\package.json\n@@ -1,8 +1,9 @@\n {\n   \"name\": \"http-server\",\n   \"version\": \"1.0.0\",\n   \"scripts\": {\n-    \"start\": \"node server.js\"\n+    \"start\": \"node server.js\",\n+    \"test\": \"node --test\"\n   },\n   \"dependencies\": {}\n }\n",
+        "status": "modified",
+        "additions": 2,
+        "deletions": 1
+       },
+       {
+        "file": "README.md",
+        "patch": "Index: <runs>\\opencode-openai-2\\repo\\README.md\n===================================================================\n--- <runs>\\opencode-openai-2\\repo\\README.md\n+++ <runs>\\opencode-openai-2\\repo\\README.md\n@@ -1,6 +1,12 @@\n-An HTTP server that routes each request by the method and target in its request line.\n+An HTTP server that reads the request line, headers, and any Content-Length body before routing.\n \n+`/echo` accepts any method and returns the method and path as plain text (for example, `POST /echo`). Existing GET routes `/` and `/users/:userId/posts/:postId` remain available.\n+\n+Malformed request lines, headers, invalid or duplicate Content-Length, unsupported Transfer-Encoding, and incomplete requests return `400 Bad Request`. Connections close after one response.\n+\n+Test: `npm test`\n+\n Run: `node server.js`\n \n Minimum Node.js version: 22\n \n",
+        "status": "modified",
+        "additions": 7,
+        "deletions": 1
+       }
+      ],
+      "truncated": false
+     }
+    },
+    "time": {
+     "created": 1791224473670,
+     "ran": 1791224504298,
+     "completed": 1791224504415
+    }
+   }
+  ],
+  "snapshot": {
+   "start": "f5e7d7f5e104879ee8bf31dfb4d6bc939a68dd4c",
+   "end": "2fc0dce65b3030b295709975f9fe4b3d99cdaf4a",
+   "files": [
+    "README.md",
+    "package.json",
+    "request.js",
+    "router.js",
+    "server.js"
+   ]
+  },
+  "finish": "tool-calls",
+  "providerState": {
+   "responseId": "resp_01a2cc014ce09387016ac3ea965dcc87d0935f73e070865225",
+   "serviceTier": "default"
+  },
+  "cost": 0,
+  "tokens": {
+   "input": 1409,
+   "output": 1644,
+   "reasoning": 17,
+   "cache": {
+    "read": 4096,
+    "write": 0
+   }
+  }
+ },
+ {
+  "type": "assistant",
+  "time": {
+   "created": 1791224505135,
+   "streamed": 1791224525114,
+   "completed": 1791224525637
   },
   "agent": "build",
   "model": {
@@ -273,168 +401,40 @@
     "type": "reasoning",
     "text": "",
     "state": {
-     "itemId": "rs_07c33f61f02600a5016ac38e174df087d08570949c73cd719f",
-     "reasoningEncryptedContent": "gAAAAABqw44Z63zcsrut2HqzuKqs9LtUmlbChdj2DPSyjXZ9TrOKOl07cYs2jR80A3a7iuLqKdPFTB0sLfU30Muavo9au-odpjUY_MppzsJuq1dZ-wRJj_n2QqJj-GM1Q5pKbgRAZKgLLQ_kQAJq-x-gJm9D1gRN0xbCkaQ20Y31NOM4JMHVPbtuq377Zb1BaFpcCENy0QhrqaX4v4mrv-_GX1iKK5hay8y-aIx6rmQHEj8_pyinD_UToQ9WBnJc6n9jJbHSDTt8_SFh_9eRkVdRIX0TxPk3iQYVq8BWLpL1CB7jEY3jRnTEJF_pMjpAcmnxAzM6dMhC1pK4LlCzZ_QynDkNfqXBfEHromW8zUPdIJd0VsiiU8Om1jc2tJl7pVwA_X2t8tmU8bQGwrao-xmY1ycukKEQpCYjfaGUH4BnufuVgQWXBWZV6WAHykhhWibEOQFre-Lq8nnnuozKCgNK0mrInanDU5DeD21zOcn-8wKIm13aQSXIzLjr0_MVHQDFLMYN0byqwcKvEzn-RWLvUF3xnTsi6duXeHA8xcsaGlFJbOK462QxQ_s86fDSUAhkJmYuB-8UaXZCkM447tyRKAyfp8UrCJIAxqev_qYAVA3lL3iC3jM5SaUtjPgibV16zeb7qZJM7bVYMX7_Wo0H6YjfQ8ok3LWmsdyhnZlv-a4Nu_9ewz3GuqOSX5UfbJzbt147cT6t8EIUzYR47WbUsc3k9LD0WPFDxXoUh2bOI_7G1mgjPmzIrahxacSm_9ZfXv18hxCjKfibbxgHVFNxOkBTnEYYl2f2foNQhk3rO8YPjpMgV5PaDqTZmKykG_PN0f9hq-cEGMJ-k739kVTtEj7DTCrkZCA7i7SrlhCeQfOQUSjSsQgxKGLmPxQAmBTjCkKfZy_einj5H88CrY49q0ALfI2CJQS1JLVRFhGrcb8iyAC95EE4-LWtKA_xJSBL9-vuFwjN3sSyrWoFf_4BofeF2AEwO5c3gvhZfhQsfj4n3IM0poSIkY8zs8v8td92rEE1o9FVTbvS1wXWSdCHInHaoMMODugak_F1XEmogL1NZuF-imCysVj0OEEzpMNQAuaa807IAxEYoT2SIeqfUxa7aNAQPfqpflSuYG89Iw8e4gYtAs4ghlSA_lEK1m-pm7NAQc4EvvQhcIrlFS5sDP0jVdRnuVeGtLvUAzpM9pHhObY53xr9Q8f0_nlbZkblqRl-14q6Ogha6EpD-FXuC4jz0igY2CEEUbkgfDnmXuF4kCrWuoEJCOD-k2CPiTN7SrS-g_grkiVtSGIIgAN8mGHnU_dSC-5nbufCM55AmHNSeQ9pKfOLmuYji9cTf2wWsDChl9bLqo2npLWreo0YOcnFGSapFhPNzio0xPjLTTyzQKwvApFwaAPK8x6-WvwsKRgE96UVAT92tJXpoLSPcQkBqsVNqV9g4dNOgvkV5XdlhbMicJk="
+     "itemId": "rs_01a2cc014ce09387016ac3eabb0c7487d0bf11e21790acb171",
+     "reasoningEncryptedContent": "gAAAAABqw-q8BJ0Uz_vXJVH71b7lp22NqjIfh7AY0_u8_vzyzLMcSYN565oTL6dTiqP9g0uel0jkrQYVYecY-qxd63KqGzAL4IxZ-NcpPOkDB8B4pGU8OhdoOJOU4LXE_pjOO1PblVBwrsn3BmgaGmmesMl6n3o6fGtQqCRTI1rDv5HgsLozRR4tsJRMuAObbFS1JO25V3PGYIZEUUvmDTvx3kbeknmmfOTsGlcn5RenXiWe20iTSpmOmkq9-RqgwjbAaM1-H68t4M81uBuWmMjO9w18R9tXHLk9IHDIsBk-w5kiLmyu-QwA3IJj8m8cDrTfuDki3Sr5UT7pF9UTqZLRhVswlzADbfhpPOXQ46hlYoqT8i83Grb-s5fGept3JhMiHTc5sV0Tih-6LBg_kIJiVKHbzNJHJn_HYvHqX1bb8zuZ6ff5W1XWQfdDw-2LPq7Ke-kM4fGPQiXniD46p7KJAtrlUAAFF5giU3Q7tne2hcH0dUBV65j33wx8LiXV-Q8oMHySAiiGSGYl8Pcp41sjU6lr7m0EkMIweUUJbW6SF-XQTl8buguhH2posvOaiSKqlS8RboJhIKxQ75o-tuY6otcxQYw6XKutv8ZPKLkzD2UPDHRSuUwBm5njj2-HeM7ydbeA4aIT2kVgQNJkmYqv2UNptoJ-NlBGWVkx0CnG9aMCipHhL4fNpHy17cax4csEZg85LlLFWwQnQ6E_WazcRQ6sRv7IkFROf10sUEFZLrBKIKE2XW6Ede45FXHPymOrqsKFFQQhRNwODUZfIekiscvtyyTNZJ4WlZRCO_42YS6XpTv_aj9AqWcp4h2wcF6LzbdTHqBEwfw96k-OUhEFX7ic-dM6vH_KILqXMP240C3WTmXWP8d9Lkfap0XeexTYRDLVRtZL7fReS9Dql7voA8HicRbE8pIbLxgAKX1SP10dvYkQT5SZDxxVHtjMW82OiX6OOEvXIQMzLu-XaBmg8xmEGesf-Oaw1mL5LaLwfNlZljdPc5IEjIg4D60XRwglwqOhp6wwSFEimim_5fChbxW3JG_F8DMyXpf6kn9Qt8c3OnX2jHOC_FtI0bQXVMcLcZROzdmYyoC-kDkMf8vsd_VZOyNXF2tutFgpSQNWx5M-lCCAVpLnO_8pRkCqj2Jkf4HXgT-0FMsbhx0BhZ0z9dNoA7HFRz_uZVAHNSPunhC_ARYMvhBvXIPc6GUo3Quo6-bkl6zk3o47Y68r0siD_k842CM06QnDFyTSs1suwul0d9ePJs-P06taEJxQoPCYiRUkdvPlIyAzkm5hL7L9rD8IfRdCewJPlSaF183WqEWAMhqJ6BFAaPhanm4aqLfvZGGNbLj0gE4beqsVY8Hvx7SfqzpRjnj0NUTsHHLE2pqAEE5t5hQ="
     },
     "time": {
-     "created": 1791200791233,
-     "completed": 1791200793462
-    }
-   },
-   {
-    "type": "text",
-    "text": "The server currently responds after reading only the request line. I\u2019ll make it wait for the headers and declared body, preserve the existing routes, and have `/echo` return plain text such as `POST /echo`.",
-    "state": {
-     "itemId": "msg_07c33f61f02600a5016ac38e195a1c87d0a6c235ab1e9e3738",
-     "phase": "commentary"
+     "created": 1791224507144,
+     "completed": 1791224508161
     }
    },
    {
     "type": "tool",
-    "id": "call_wsO5a07NCegQ9mHONdsXttAF",
+    "id": "call_aaZRF2MB7jxBXppuUmvIMrpY",
     "name": "patch",
     "executed": false,
     "providerState": {
-     "itemId": "fc_07c33f61f02600a5016ac38e1a49b887d0955983e2d813e54b"
+     "itemId": "fc_01a2cc014ce09387016ac3eabc08bc87d0986957376f2191f5"
     },
     "state": {
      "status": "completed",
      "input": {
-      "patchText": "*** Begin Patch\n*** Add File: request.js\n+const TOKEN = /^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/;\n+const REQUEST_LINE = /^([^ ]+) (\\/[^\\s\\x00-\\x20\\x7f]*) HTTP\\/1\\.[01]$/;\n+const MAX_HEADER_BYTES = 65536;\n+\n+// null means more bytes are needed; malformed input throws.\n+const parseRequest = (bytes, maxRequestLineBytes = 8192) => {\n+  const lineEnd = bytes.indexOf('\\r\\n');\n+  if (lineEnd === -1) {\n+    if (bytes.length >= maxRequestLineBytes) throw new Error('Request line too long');\n+    return null;\n+  }\n+  if (lineEnd + 2 > maxRequestLineBytes) throw new Error('Request line too long');\n+  const match = REQUEST_LINE.exec(bytes.toString('latin1', 0, lineEnd));\n+  if (!match || !TOKEN.test(match[1])) throw new Error('Invalid request line');\n+\n+  const headerEnd = bytes.indexOf('\\r\\n\\r\\n');\n+  if (headerEnd === -1) {\n+    if (bytes.length > MAX_HEADER_BYTES) throw new Error('Headers too large');\n+    return null;\n+  }\n+  if (headerEnd + 4 > MAX_HEADER_BYTES) throw new Error('Headers too large');\n+  const headers = Object.create(null);\n+  const headerLines = bytes.toString('latin1', lineEnd + 2, headerEnd);\n+  for (const line of headerLines ? headerLines.split('\\r\\n') : []) {\n+    const colon = line.indexOf(':');\n+    const name = line.slice(0, colon);\n+    const value = line.slice(colon + 1).trim();\n+    if (colon <= 0 || !TOKEN.test(name) || /[^\\t\\x20-\\x7e\\x80-\\xff]/.test(line.slice(colon + 1))) {\n+      throw new Error('Invalid header');\n+    }\n+    const key = name.toLowerCase();\n+    if (key === 'content-length' && headers[key] !== undefined) {\n+      throw new Error('Duplicate Content-Length');\n+    }\n+    headers[key] = headers[key] === undefined ? value : `${headers[key]}, ${value}`;\n+  }\n+  // This server only supports Content-Length framing.\n+  if (headers['transfer-encoding'] !== undefined) throw new Error('Unsupported Transfer-Encoding');\n+  const lengthValue = headers['content-length'];\n+  if (lengthValue !== undefined && !/^\\d+$/.test(lengthValue)) throw new Error('Invalid Content-Length');\n+  const contentLength = lengthValue === undefined ? 0 : Number(lengthValue);\n+  if (!Number.isSafeInteger(contentLength)) throw new Error('Invalid Content-Length');\n+  const bodyStart = headerEnd + 4;\n+  if (bytes.length - bodyStart < contentLength) return null;\n+  return {\n+    method: match[1],\n+    path: match[2],\n+    headers,\n+    body: bytes.subarray(bodyStart, bodyStart + contentLength),\n+  };\n+};\n+\n+module.exports = { parseRequest };\n*** Update File: server.js\n@@\n-const { BAD_REQUEST_RESPONSE, routeRequestLine } = require('./router');\n+const { BAD_REQUEST_RESPONSE, routeRequest } = require('./router');\n+const { parseRequest } = require('./request');\n@@\n-const REQUEST_LINE_END = '\\r\\n';\n@@\n-const findRequestLine = (receivedBytes) => {\n-  const requestLineEnd = receivedBytes\n-    .subarray(0, MAX_REQUEST_LINE_BYTES)\n-    .indexOf(REQUEST_LINE_END);\n-  return requestLineEnd === -1 ? null : receivedBytes.toString('latin1', 0, requestLineEnd);\n-};\n-\n-const server = net.createServer((conn) => {\n+const server = net.createServer({ allowHalfOpen: true }, (conn) => {\n@@\n-    const requestLine = findRequestLine(receivedBytes);\n-    if (requestLine !== null) {\n-      sendResponse(routeRequestLine(requestLine));\n-    } else if (receivedBytes.length >= MAX_REQUEST_LINE_BYTES) {\n+    try {\n+      const request = parseRequest(receivedBytes, MAX_REQUEST_LINE_BYTES);\n+      if (request !== null) sendResponse(routeRequest(request));\n+    } catch {\n       sendResponse(BAD_REQUEST_RESPONSE);\n*** Update File: router.js\n@@\n-const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +[^ ]+$/;\n+const { parseRequest } = require('./request');\n@@\n-const routeRequestLine = (requestLine) => {\n-  const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);\n-  if (!requestLineMatch) return BAD_REQUEST_RESPONSE;\n-\n-  const [, method, target] = requestLineMatch;\n+const routeRequest = ({ method, path: target }) => {\n+  if (target === '/echo') {\n+    return buildResponse('200 OK', {\n+      headers: ['Content-Type: text/plain'],\n+      body: `${method} ${target}`,\n+    });\n+  }\n@@\n-module.exports = { BAD_REQUEST_RESPONSE, routeRequestLine };\n+const routeRequestLine = (requestLine) => {\n+  try {\n+    const request = parseRequest(Buffer.from(`${requestLine}\\r\\n\\r\\n`, 'latin1'));\n+    return request ? routeRequest(request) : BAD_REQUEST_RESPONSE;\n+  } catch {\n+    return BAD_REQUEST_RESPONSE;\n+  }\n+};\n+\n+module.exports = { BAD_REQUEST_RESPONSE, routeRequest, routeRequestLine };\n*** Update File: package.json\n@@\n-    \"start\": \"node server.js\"\n+    \"start\": \"node server.js\",\n+    \"test\": \"node --test\"\n*** Update File: README.md\n@@\n-An HTTP server that routes each request by the method and target in its request line.\n+An HTTP server that parses request lines, headers, and Content-Length bodies before routing.\n+\n+`/echo` accepts any method and returns the method and path as plain text (for example, `POST /echo`). Existing GET routes `/` and `/users/:userId/posts/:postId` remain supported. Malformed or truncated requests receive `400 Bad Request`. Transfer-Encoding is not supported. Each connection handles one request and then closes.\n@@\n Port: 8080\n+\n+Tests: `npm test`\n*** End Patch"
+      "patchText": "*** Begin Patch\n*** Add File: test/request.test.js\n+const { test } = require('node:test');\n+const assert = require('node:assert/strict');\n+const { parseRequest } = require('../request');\n+const { routeRequest, routeRequestLine } = require('../router');\n+\n+const parse = (text, limit) => parseRequest(Buffer.from(text, 'latin1'), limit);\n+\n+test('reads request line, case-insensitive headers, and binary body', () => {\n+  const request = parse('POST /echo HTTP/1.1\\r\\nContent-Length: 3\\r\\nX-Test: yes\\r\\n\\r\\na\\x00\\xff');\n+  assert.equal(request.method, 'POST');\n+  assert.equal(request.path, '/echo');\n+  assert.equal(request.headers['x-test'], 'yes');\n+  assert.deepEqual(request.body, Buffer.from([97, 0, 255]));\n+  assert.match(routeRequest(request), /\\r\\n\\r\\nPOST \\/echo$/);\n+});\n+\n+test('waits for the entire request across every possible split', () => {\n+  const bytes = Buffer.from('POST /echo HTTP/1.1\\r\\nContent-Length: 4\\r\\n\\r\\ndata');\n+  for (let i = 0; i < bytes.length; i++) {\n+    assert.equal(parseRequest(bytes.subarray(0, i)), null);\n+  }\n+  assert.equal(parseRequest(bytes).body.toString(), 'data');\n+});\n+\n+test('rejects malformed requests', () => {\n+  for (const text of [\n+    'GET / HTTP/2.0\\r\\n\\r\\n',\n+    'GET  / HTTP/1.1\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\n\\n',\n+    'GET / HTTP/1.1\\r\\nBad header\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nName : value\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nContent-Length: -1\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nContent-Length: 1.5\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nContent-Length: 9007199254740992\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nContent-Length: 0\\r\\ncontent-length: 0\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nTransfer-Encoding: chunked\\r\\n\\r\\n',\n+  ]) assert.throws(() => parse(text), undefined, text);\n+  assert.throws(() => parse('GET / HTTP/1.1\\r\\n\\r\\n', 8));\n+});\n+\n+test('preserves existing routes and reports bad request lines', () => {\n+  assert.match(routeRequestLine('GET / HTTP/1.1'), /^HTTP\\/1.1 200 OK/);\n+  assert.match(routeRequestLine('GET /users/1/posts/2 HTTP/1.1'), /\\r\\n\\r\\n1 2$/);\n+  assert.match(routeRequestLine('POST / HTTP/1.1'), /^HTTP\\/1.1 405/);\n+  assert.match(routeRequestLine('GET /missing HTTP/1.1'), /^HTTP\\/1.1 404/);\n+  assert.match(routeRequestLine('invalid'), /^HTTP\\/1.1 400/);\n+});\n*** End Patch"
      },
      "content": [
       {
        "type": "text",
-       "text": "Success. Updated the following files:\nA request.js\nM server.js\nM router.js\nM package.json\nM README.md"
+       "text": "Success. Updated the following files:\nA test/request.test.js"
       }
      ],
      "metadata": {
       "files": [
        {
-        "file": "request.js",
-        "patch": "Index: <tmp>\\tmp3x92t06g\\repo\\request.js\n===================================================================\n--- <tmp>\\tmp3x92t06g\\repo\\request.js\n+++ <tmp>\\tmp3x92t06g\\repo\\request.js\n@@ -0,0 +1,53 @@\n+const TOKEN = /^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/;\n+const REQUEST_LINE = /^([^ ]+) (\\/[^\\s\\x00-\\x20\\x7f]*) HTTP\\/1\\.[01]$/;\n+const MAX_HEADER_BYTES = 65536;\n+\n+// null means more bytes are needed; malformed input throws.\n+const parseRequest = (bytes, maxRequestLineBytes = 8192) => {\n+  const lineEnd = bytes.indexOf('\\r\\n');\n+  if (lineEnd === -1) {\n+    if (bytes.length >= maxRequestLineBytes) throw new Error('Request line too long');\n+    return null;\n+  }\n+  if (lineEnd + 2 > maxRequestLineBytes) throw new Error('Request line too long');\n+  const match = REQUEST_LINE.exec(bytes.toString('latin1', 0, lineEnd));\n+  if (!match || !TOKEN.test(match[1])) throw new Error('Invalid request line');\n+\n+  const headerEnd = bytes.indexOf('\\r\\n\\r\\n');\n+  if (headerEnd === -1) {\n+    if (bytes.length > MAX_HEADER_BYTES) throw new Error('Headers too large');\n+    return null;\n+  }\n+  if (headerEnd + 4 > MAX_HEADER_BYTES) throw new Error('Headers too large');\n+  const headers = Object.create(null);\n+  const headerLines = bytes.toString('latin1', lineEnd + 2, headerEnd);\n+  for (const line of headerLines ? headerLines.split('\\r\\n') : []) {\n+    const colon = line.indexOf(':');\n+    const name = line.slice(0, colon);\n+    const value = line.slice(colon + 1).trim();\n+    if (colon <= 0 || !TOKEN.test(name) || /[^\\t\\x20-\\x7e\\x80-\\xff]/.test(line.slice(colon + 1))) {\n+      throw new Error('Invalid header');\n+    }\n+    const key = name.toLowerCase();\n+    if (key === 'content-length' && headers[key] !== undefined) {\n+      throw new Error('Duplicate Content-Length');\n+    }\n+    headers[key] = headers[key] === undefined ? value : `${headers[key]}, ${value}`;\n+  }\n+  // This server only supports Content-Length framing.\n+  if (headers['transfer-encoding'] !== undefined) throw new Error('Unsupported Transfer-Encoding');\n+  const lengthValue = headers['content-length'];\n+  if (lengthValue !== undefined && !/^\\d+$/.test(lengthValue)) throw new Error('Invalid Content-Length');\n+  const contentLength = lengthValue === undefined ? 0 : Number(lengthValue);\n+  if (!Number.isSafeInteger(contentLength)) throw new Error('Invalid Content-Length');\n+  const bodyStart = headerEnd + 4;\n+  if (bytes.length - bodyStart < contentLength) return null;\n+  return {\n+    method: match[1],\n+    path: match[2],\n+    headers,\n+    body: bytes.subarray(bodyStart, bodyStart + contentLength),\n+  };\n+};\n+\n+module.exports = { parseRequest };\n",
+        "file": "test/request.test.js",
+        "patch": "Index: <runs>\\opencode-openai-2\\repo\\test\\request.test.js\n===================================================================\n--- <runs>\\opencode-openai-2\\repo\\test\\request.test.js\n+++ <runs>\\opencode-openai-2\\repo\\test\\request.test.js\n@@ -0,0 +1,47 @@\n+const { test } = require('node:test');\n+const assert = require('node:assert/strict');\n+const { parseRequest } = require('../request');\n+const { routeRequest, routeRequestLine } = require('../router');\n+\n+const parse = (text, limit) => parseRequest(Buffer.from(text, 'latin1'), limit);\n+\n+test('reads request line, case-insensitive headers, and binary body', () => {\n+  const request = parse('POST /echo HTTP/1.1\\r\\nContent-Length: 3\\r\\nX-Test: yes\\r\\n\\r\\na\\x00\\xff');\n+  assert.equal(request.method, 'POST');\n+  assert.equal(request.path, '/echo');\n+  assert.equal(request.headers['x-test'], 'yes');\n+  assert.deepEqual(request.body, Buffer.from([97, 0, 255]));\n+  assert.match(routeRequest(request), /\\r\\n\\r\\nPOST \\/echo$/);\n+});\n+\n+test('waits for the entire request across every possible split', () => {\n+  const bytes = Buffer.from('POST /echo HTTP/1.1\\r\\nContent-Length: 4\\r\\n\\r\\ndata');\n+  for (let i = 0; i < bytes.length; i++) {\n+    assert.equal(parseRequest(bytes.subarray(0, i)), null);\n+  }\n+  assert.equal(parseRequest(bytes).body.toString(), 'data');\n+});\n+\n+test('rejects malformed requests', () => {\n+  for (const text of [\n+    'GET / HTTP/2.0\\r\\n\\r\\n',\n+    'GET  / HTTP/1.1\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\n\\n',\n+    'GET / HTTP/1.1\\r\\nBad header\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nName : value\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nContent-Length: -1\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nContent-Length: 1.5\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nContent-Length: 9007199254740992\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nContent-Length: 0\\r\\ncontent-length: 0\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nTransfer-Encoding: chunked\\r\\n\\r\\n',\n+  ]) assert.throws(() => parse(text), undefined, text);\n+  assert.throws(() => parse('GET / HTTP/1.1\\r\\n\\r\\n', 8));\n+});\n+\n+test('preserves existing routes and reports bad request lines', () => {\n+  assert.match(routeRequestLine('GET / HTTP/1.1'), /^HTTP\\/1.1 200 OK/);\n+  assert.match(routeRequestLine('GET /users/1/posts/2 HTTP/1.1'), /\\r\\n\\r\\n1 2$/);\n+  assert.match(routeRequestLine('POST / HTTP/1.1'), /^HTTP\\/1.1 405/);\n+  assert.match(routeRequestLine('GET /missing HTTP/1.1'), /^HTTP\\/1.1 404/);\n+  assert.match(routeRequestLine('invalid'), /^HTTP\\/1.1 400/);\n+});\n",
         "status": "added",
-        "additions": 53,
-        "deletions": 0
-       },
-       {
-        "file": "server.js",
-        "patch": "Index: <tmp>\\tmp3x92t06g\\repo\\server.js\n===================================================================\n--- <tmp>\\tmp3x92t06g\\repo\\server.js\n+++ <tmp>\\tmp3x92t06g\\repo\\server.js\n@@ -1,10 +1,10 @@\n const net = require('net');\n-const { BAD_REQUEST_RESPONSE, routeRequestLine } = require('./router');\n+const { BAD_REQUEST_RESPONSE, routeRequest } = require('./router');\n+const { parseRequest } = require('./request');\n \n const PORT = process.env.PORT || 8080;\n const DEFAULT_MAX_REQUEST_LINE_BYTES = 8192;\n-const REQUEST_LINE_END = '\\r\\n';\n \n const readMaxRequestLineBytes = () => {\n   const configuredValue = process.env.MAX_REQUEST_LINE_BYTES ?? DEFAULT_MAX_REQUEST_LINE_BYTES;\n   const maxRequestLineBytes = Number(configuredValue);\n@@ -15,16 +15,9 @@\n };\n \n const MAX_REQUEST_LINE_BYTES = readMaxRequestLineBytes();\n \n-const findRequestLine = (receivedBytes) => {\n-  const requestLineEnd = receivedBytes\n-    .subarray(0, MAX_REQUEST_LINE_BYTES)\n-    .indexOf(REQUEST_LINE_END);\n-  return requestLineEnd === -1 ? null : receivedBytes.toString('latin1', 0, requestLineEnd);\n-};\n-\n-const server = net.createServer((conn) => {\n+const server = net.createServer({ allowHalfOpen: true }, (conn) => {\n   let receivedBytes = Buffer.alloc(0);\n \n   const sendResponse = (response) => conn.end(response, 'latin1');\n \n@@ -32,12 +25,12 @@\n   conn.on('data', (chunk) => {\n     if (conn.writableEnded) return;\n     receivedBytes = Buffer.concat([receivedBytes, chunk]);\n \n-    const requestLine = findRequestLine(receivedBytes);\n-    if (requestLine !== null) {\n-      sendResponse(routeRequestLine(requestLine));\n-    } else if (receivedBytes.length >= MAX_REQUEST_LINE_BYTES) {\n+    try {\n+      const request = parseRequest(receivedBytes, MAX_REQUEST_LINE_BYTES);\n+      if (request !== null) sendResponse(routeRequest(request));\n+    } catch {\n       sendResponse(BAD_REQUEST_RESPONSE);\n     }\n   });\n   conn.on('end', () => {\n",
-        "status": "modified",
-        "additions": 7,
-        "deletions": 14
-       },
-       {
-        "file": "router.js",
-        "patch": "Index: <tmp>\\tmp3x92t06g\\repo\\router.js\n===================================================================\n--- <tmp>\\tmp3x92t06g\\repo\\router.js\n+++ <tmp>\\tmp3x92t06g\\repo\\router.js\n@@ -1,5 +1,5 @@\n-const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +[^ ]+$/;\n+const { parseRequest } = require('./request');\n const ROOT_TARGET = '/';\n const USER_POST_TARGET_PATTERN = /^\\/users\\/([^/]+)\\/posts\\/([^/]+)$/;\n \n const buildResponse = (status, { headers = [], body = '' } = {}) =>\n@@ -18,13 +18,15 @@\n const METHOD_NOT_ALLOWED_RESPONSE = buildResponse('405 Method Not Allowed', {\n   headers: ['Allow: GET'],\n });\n \n-const routeRequestLine = (requestLine) => {\n-  const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);\n-  if (!requestLineMatch) return BAD_REQUEST_RESPONSE;\n-\n-  const [, method, target] = requestLineMatch;\n+const routeRequest = ({ method, path: target }) => {\n+  if (target === '/echo') {\n+    return buildResponse('200 OK', {\n+      headers: ['Content-Type: text/plain'],\n+      body: `${method} ${target}`,\n+    });\n+  }\n   const userPostMatch = USER_POST_TARGET_PATTERN.exec(target);\n   if (target !== ROOT_TARGET && !userPostMatch) return NOT_FOUND_RESPONSE;\n   if (method !== 'GET') return METHOD_NOT_ALLOWED_RESPONSE;\n   if (!userPostMatch) return OK_RESPONSE;\n@@ -35,5 +37,14 @@\n     body: `${userId} ${postId}`,\n   });\n };\n \n-module.exports = { BAD_REQUEST_RESPONSE, routeRequestLine };\n+const routeRequestLine = (requestLine) => {\n+  try {\n+    const request = parseRequest(Buffer.from(`${requestLine}\\r\\n\\r\\n`, 'latin1'));\n+    return request ? routeRequest(request) : BAD_REQUEST_RESPONSE;\n+  } catch {\n+    return BAD_REQUEST_RESPONSE;\n+  }\n+};\n+\n+module.exports = { BAD_REQUEST_RESPONSE, routeRequest, routeRequestLine };\n",
-        "status": "modified",
-        "additions": 18,
-        "deletions": 7
-       },
-       {
-        "file": "package.json",
-        "patch": "Index: <tmp>\\tmp3x92t06g\\repo\\package.json\n===================================================================\n--- <tmp>\\tmp3x92t06g\\repo\\package.json\n+++ <tmp>\\tmp3x92t06g\\repo\\package.json\n@@ -1,8 +1,9 @@\n {\n   \"name\": \"http-server\",\n   \"version\": \"1.0.0\",\n   \"scripts\": {\n-    \"start\": \"node server.js\"\n+    \"start\": \"node server.js\",\n+    \"test\": \"node --test\"\n   },\n   \"dependencies\": {}\n }\n",
-        "status": "modified",
-        "additions": 2,
-        "deletions": 1
-       },
-       {
-        "file": "README.md",
-        "patch": "Index: <tmp>\\tmp3x92t06g\\repo\\README.md\n===================================================================\n--- <tmp>\\tmp3x92t06g\\repo\\README.md\n+++ <tmp>\\tmp3x92t06g\\repo\\README.md\n@@ -1,7 +1,11 @@\n-An HTTP server that routes each request by the method and target in its request line.\n+An HTTP server that parses request lines, headers, and Content-Length bodies before routing.\n \n+`/echo` accepts any method and returns the method and path as plain text (for example, `POST /echo`). Existing GET routes `/` and `/users/:userId/posts/:postId` remain supported. Malformed or truncated requests receive `400 Bad Request`. Transfer-Encoding is not supported. Each connection handles one request and then closes.\n+\n Run: `node server.js`\n \n Minimum Node.js version: 22\n \n Port: 8080\n+\n+Tests: `npm test`\n",
-        "status": "modified",
-        "additions": 5,
-        "deletions": 1
-       }
-      ],
-      "truncated": false
-     }
-    },
-    "time": {
-     "created": 1791200794219,
-     "ran": 1791200851175,
-     "completed": 1791200851240
-    }
-   }
-  ],
-  "snapshot": {
-   "start": "f5e7d7f5e104879ee8bf31dfb4d6bc939a68dd4c",
-   "end": "8ec4e0b05a44ee27a79043be796a3c968953456a",
-   "files": [
-    "README.md",
-    "package.json",
-    "request.js",
-    "router.js",
-    "server.js"
-   ]
-  },
-  "finish": "tool-calls",
-  "providerState": {
-   "responseId": "resp_07c33f61f02600a5016ac38e15b3a887d0b7e7dddbeef5394c",
-   "serviceTier": "default"
-  },
-  "cost": 0,
-  "tokens": {
-   "input": 7120,
-   "output": 1643,
-   "reasoning": 24,
-   "cache": {
-    "read": 0,
-    "write": 0
-   }
-  }
- },
- {
-  "type": "assistant",
-  "time": {
-   "created": 1791200851662,
-   "streamed": 1791200894248,
-   "completed": 1791200894566
-  },
-  "agent": "build",
-  "model": {
-   "id": "gpt-6.1-sol",
-   "providerID": "openai",
-   "variant": "low"
-  },
-  "content": [
-   {
-    "type": "reasoning",
-    "text": "**Analyzing testing setup**\n\nI\u2019m looking into some bugs with empty headers when the substring start is greater than the end, resulting in an empty string. It seems that the buffer's `toString` method is also returning an empty string, which is probably correct. I\u2019m thinking about adding integration tests, but there\u2019s the issue of selecting an available port. Maybe I should use a temporary server for this testing with easier methods for the parser? It'll simplify the overall testing process.",
-    "state": {
-     "itemId": "rs_07c33f61f02600a5016ac38e55da3487d09bf0ea92e0c5911a",
-     "reasoningEncryptedContent": "gAAAAABqw45ZKLGVACzSL2pAMLv4nNO4aGJ8UUc0vBVQ_cyMiQk51YPpfu59KUy3EwmlDszEgz9X2DFKmyGsa3Wnj92QRxmuK4myWUUtxDS-Yo5LdSUeET1x9WBLKATmwwH1v_TINRp6t21gmmqwcj3VbmLlSKdihQ5glSpy_bbxSJVOTamwaPnC3GYN7sCRYoiUakiIHUv5bzmCnh9dC7TeyFEzEN2YjLwzKe2-r0coYciATK8hilCN8JPp4LqI9CqVCzbQTxMkyUKN8jHguQVMli7tas5lkK_ZMPqNsMR65a4omuqoTeEEPQx61rzYP0_zeFBCqAR2ArY1RoTyLB8GvYXs8CiGoSmhW-9WXohU-Lmaofu0YBVupUMS-r4FuYx88mDhI6OPxxqRq3QFYQ44OfBVd6Qr7DXFLNgNwyw8IvCd75uuVp2ZIuqdrjd_J4Kt1uOluGIV7gHtf4qrtWZfk1F2OSNTIBWi5oo-FmTdsay8Z7uldeuJ5l3fYKN9ztebrAv_jO4K3-24JPN-nRuIrVU5VhF6_4SI0TzDlb-O6zrriSSedUteJImNfiNBxGjxTpx54Fc8z1YHQKQ7Lepn1LxOLseYd1JmXoBqHKgrMXm3wP_byggZc-1QA-dVxb75WqbcVDWLiYy3-0lEFvSviHUhIH4D2vH9jiFRyjMrpuItQvxtX_NsNG7GBT8BnGfpPspC0PUkjDKZ_N52-vfrK62HRjHlK-BReNpvNSQSqPZK3UJwSFUUzcq2SDANe1JpftNDm4cH_jbCCMmvZwzfGmtqWWr5IlBZQvkcRZiPZJatfyqdTFSOwG9eVV79goYzH1TQ9iQhwBK-BYTeMK0WUvP2C92ae2vLjicVMAfcSrwe6fDH1pq3qC0R1S86ZJVDnlwf_BaYbP-vt0JZTgyGxc5ikzcw5mjSFYwk9onQUnXgWuhBIrLUobE-jwDMDyI_xtqxlF6yPQvRhcUfLdbn_09OLdcRXHWhjudhTbSJOjlr_vNRNZCvesnL1jch3-sDAQBE4ar6cVt5ATf9x7NSCya-RcwAa4mLqv4RNgGTmNBSJkoLkdjR87aPxq8Oyvt1gz5bEjLQt0pCFYdM5ZGZ4PNr6TKM9iF9sbv_q7Lrf38Aldp7eW0zClqp-FeHUpxX3vZbMKMpD4HTTdRyyHweOD_zbbDCckujNXta1t-qZOCY4RaQHDaMYhUatTqXLmrBdh-ATpWL3sPCHW0hu-N5p-mkoGAV9yaesSwID60hKZNtDdnakJy9OP9NOK6QrSA7-7eIvkdXzLUA-Kluj1mg6unqTrgGmkqdGNeJSVxpy-RoiipV337yNsoDqFU9g-JH3v_TMk31lg6c_MATnCxlS1hKczZ0cWHDFrj-MCwxXtKcm_QCj96Oj2BbkZtcsgimD7W4lDIzLAopdJxhGPpZXvhRqNAujz5DxcGYhM3blyc8oXGrp1zHZrnBgtgQQFxDD4ZyTqWxjhXoSfU0zY71dGaaIXx7eqOGHvVp1IEpCyHg4GobHwKJUN3xDEBeZ0zI6olUyzNZlLv222vDj6KH31OcSwc2SlE771SIDboVf5VUMtrNoTwe0BrHhJloqiT_RIr5ZDbXpqmCs6Oesod0lrZlt4rgrgwteTjylqYtAXSxGdoVRcUPFbf-EWe4fsRXPIBtdFcf6Gu7HA8mErSNi1utirIzlnc5go8fIKd1w_tpNGCgM_TT6S-wAS1QjoKLoJ70FGMxKtGJSYCNXWP3BCIUyvuBbmKhMi_MuwE8Fnqs1kqzy-I="
-    },
-    "time": {
-     "created": 1791200853778,
-     "completed": 1791200857718
-    }
-   },
-   {
-    "type": "tool",
-    "id": "call_DJjqxwRmvpdrORNo3rgKAr8k",
-    "name": "patch",
-    "executed": false,
-    "providerState": {
-     "itemId": "fc_07c33f61f02600a5016ac38e59caa087d0a466f1eef4a5d722"
-    },
-    "state": {
-     "status": "completed",
-     "input": {
-      "patchText": "*** Begin Patch\n*** Add File: request.test.js\n+const test = require('node:test');\n+const assert = require('node:assert/strict');\n+const { parseRequest } = require('./request');\n+const { routeRequest, routeRequestLine } = require('./router');\n+\n+const parse = (text) => parseRequest(Buffer.from(text, 'latin1'));\n+\n+test('reads request line, case-insensitive headers and binary body', () => {\n+  const request = parse('POST /echo HTTP/1.1\\r\\nHost: localhost\\r\\ncOnTeNt-LeNgTh: 3\\r\\n\\r\\na\\x00\\xffextra');\n+  assert.equal(request.method, 'POST');\n+  assert.equal(request.path, '/echo');\n+  assert.equal(request.headers.host, 'localhost');\n+  assert.deepEqual(request.body, Buffer.from([97, 0, 255]));\n+  assert.ok(routeRequest(request).endsWith('\\r\\n\\r\\nPOST /echo'));\n+});\n+\n+test('waits for all headers and the complete declared body', () => {\n+  const bytes = Buffer.from('POST /echo HTTP/1.1\\r\\nContent-Length: 4\\r\\n\\r\\ntest');\n+  for (let i = 0; i < bytes.length; i++) {\n+    assert.equal(parseRequest(bytes.subarray(0, i)), null);\n+  }\n+  assert.equal(parseRequest(bytes).body.toString(), 'test');\n+});\n+\n+test('accepts no headers and zero-length bodies', () => {\n+  assert.equal(parse('GET / HTTP/1.0\\r\\n\\r\\n').body.length, 0);\n+  assert.equal(parse('GET / HTTP/1.1\\r\\nContent-Length: 0\\r\\n\\r\\n').body.length, 0);\n+});\n+\n+test('rejects malformed lines, headers and ambiguous body framing', () => {\n+  const invalid = [\n+    'GET / HTTP/9.9\\r\\n\\r\\n',\n+    'GET  / HTTP/1.1\\r\\n\\r\\n',\n+    'G(ET / HTTP/1.1\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nMissing-Colon\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nBad Name: value\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nX: a\\x00b\\r\\n\\r\\n',\n+    ...['-1', '1.5', 'abc', '9007199254740992'].map((length) =>\n+      `POST /echo HTTP/1.1\\r\\nContent-Length: ${length}\\r\\n\\r\\n`),\n+    'POST /echo HTTP/1.1\\r\\nContent-Length: 1\\r\\nContent-Length: 1\\r\\n\\r\\nx',\n+    'POST /echo HTTP/1.1\\r\\nTransfer-Encoding: chunked\\r\\n\\r\\n',\n+  ];\n+  for (const text of invalid) assert.throws(() => parse(text), undefined, text);\n+});\n+\n+test('enforces request line limit', () => {\n+  assert.throws(() => parseRequest(Buffer.from('GET / HTTP/1.1\\r\\n\\r\\n'), 10));\n+  assert.throws(() => parseRequest(Buffer.from('1234567890'), 10));\n+});\n+\n+test('preserves existing routing and rejects malformed request lines', () => {\n+  assert.match(routeRequestLine('GET / HTTP/1.1'), /^HTTP\\/1.1 200 OK/);\n+  assert.ok(routeRequestLine('GET /users/12/posts/34 HTTP/1.1').endsWith('12 34'));\n+  assert.match(routeRequestLine('POST / HTTP/1.1'), /^HTTP\\/1.1 405/);\n+  assert.match(routeRequestLine('GET /missing HTTP/1.1'), /^HTTP\\/1.1 404/);\n+  assert.match(routeRequestLine('not a request'), /^HTTP\\/1.1 400/);\n+});\n*** End Patch"
-     },
-     "content": [
-      {
-       "type": "text",
-       "text": "Success. Updated the following files:\nA request.test.js"
-      }
-     ],
-     "metadata": {
-      "files": [
-       {
-        "file": "request.test.js",
-        "patch": "Index: <tmp>\\tmp3x92t06g\\repo\\request.test.js\n===================================================================\n--- <tmp>\\tmp3x92t06g\\repo\\request.test.js\n+++ <tmp>\\tmp3x92t06g\\repo\\request.test.js\n@@ -0,0 +1,57 @@\n+const test = require('node:test');\n+const assert = require('node:assert/strict');\n+const { parseRequest } = require('./request');\n+const { routeRequest, routeRequestLine } = require('./router');\n+\n+const parse = (text) => parseRequest(Buffer.from(text, 'latin1'));\n+\n+test('reads request line, case-insensitive headers and binary body', () => {\n+  const request = parse('POST /echo HTTP/1.1\\r\\nHost: localhost\\r\\ncOnTeNt-LeNgTh: 3\\r\\n\\r\\na\\x00\\xffextra');\n+  assert.equal(request.method, 'POST');\n+  assert.equal(request.path, '/echo');\n+  assert.equal(request.headers.host, 'localhost');\n+  assert.deepEqual(request.body, Buffer.from([97, 0, 255]));\n+  assert.ok(routeRequest(request).endsWith('\\r\\n\\r\\nPOST /echo'));\n+});\n+\n+test('waits for all headers and the complete declared body', () => {\n+  const bytes = Buffer.from('POST /echo HTTP/1.1\\r\\nContent-Length: 4\\r\\n\\r\\ntest');\n+  for (let i = 0; i < bytes.length; i++) {\n+    assert.equal(parseRequest(bytes.subarray(0, i)), null);\n+  }\n+  assert.equal(parseRequest(bytes).body.toString(), 'test');\n+});\n+\n+test('accepts no headers and zero-length bodies', () => {\n+  assert.equal(parse('GET / HTTP/1.0\\r\\n\\r\\n').body.length, 0);\n+  assert.equal(parse('GET / HTTP/1.1\\r\\nContent-Length: 0\\r\\n\\r\\n').body.length, 0);\n+});\n+\n+test('rejects malformed lines, headers and ambiguous body framing', () => {\n+  const invalid = [\n+    'GET / HTTP/9.9\\r\\n\\r\\n',\n+    'GET  / HTTP/1.1\\r\\n\\r\\n',\n+    'G(ET / HTTP/1.1\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nMissing-Colon\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nBad Name: value\\r\\n\\r\\n',\n+    'GET / HTTP/1.1\\r\\nX: a\\x00b\\r\\n\\r\\n',\n+    ...['-1', '1.5', 'abc', '9007199254740992'].map((length) =>\n+      `POST /echo HTTP/1.1\\r\\nContent-Length: ${length}\\r\\n\\r\\n`),\n+    'POST /echo HTTP/1.1\\r\\nContent-Length: 1\\r\\nContent-Length: 1\\r\\n\\r\\nx',\n+    'POST /echo HTTP/1.1\\r\\nTransfer-Encoding: chunked\\r\\n\\r\\n',\n+  ];\n+  for (const text of invalid) assert.throws(() => parse(text), undefined, text);\n+});\n+\n+test('enforces request line limit', () => {\n+  assert.throws(() => parseRequest(Buffer.from('GET / HTTP/1.1\\r\\n\\r\\n'), 10));\n+  assert.throws(() => parseRequest(Buffer.from('1234567890'), 10));\n+});\n+\n+test('preserves existing routing and rejects malformed request lines', () => {\n+  assert.match(routeRequestLine('GET / HTTP/1.1'), /^HTTP\\/1.1 200 OK/);\n+  assert.ok(routeRequestLine('GET /users/12/posts/34 HTTP/1.1').endsWith('12 34'));\n+  assert.match(routeRequestLine('POST / HTTP/1.1'), /^HTTP\\/1.1 405/);\n+  assert.match(routeRequestLine('GET /missing HTTP/1.1'), /^HTTP\\/1.1 404/);\n+  assert.match(routeRequestLine('not a request'), /^HTTP\\/1.1 400/);\n+});\n",
-        "status": "added",
-        "additions": 57,
+        "additions": 47,
         "deletions": 0
        }
       ],
@@ -442,31 +442,31 @@
      }
     },
     "time": {
-     "created": 1791200857725,
-     "ran": 1791200894222,
-     "completed": 1791200894285
+     "created": 1791224508169,
+     "ran": 1791224525093,
+     "completed": 1791224525183
     }
    }
   ],
   "snapshot": {
-   "start": "8ec4e0b05a44ee27a79043be796a3c968953456a",
-   "end": "3a0465d41765310ac7e5bb44ed81342412ff233a",
+   "start": "2fc0dce65b3030b295709975f9fe4b3d99cdaf4a",
+   "end": "d35066e90c7a97711495f3ff768dabe434c8aead",
    "files": [
-    "request.test.js"
+    "test/request.test.js"
    ]
   },
   "finish": "tool-calls",
   "providerState": {
-   "responseId": "resp_07c33f61f02600a5016ac38e54432c87d09b79e1911f122ce5",
+   "responseId": "resp_01a2cc014ce09387016ac3eab9980c87d095334905082f75c0",
    "serviceTier": "default"
   },
   "cost": 0,
   "tokens": {
-   "input": 1783,
-   "output": 1059,
-   "reasoning": 66,
+   "input": 1826,
+   "output": 912,
+   "reasoning": 14,
    "cache": {
-    "read": 7040,
+    "read": 5376,
     "write": 0
    }
   }
@@ -474,9 +474,9 @@
  {
   "type": "assistant",
   "time": {
-   "created": 1791200894693,
-   "streamed": 1791200897445,
-   "completed": 1791200898580
+   "created": 1791224525864,
+   "streamed": 1791224528043,
+   "completed": 1791224529577
   },
   "agent": "build",
   "model": {
@@ -487,11 +487,11 @@
   "content": [
    {
     "type": "tool",
-    "id": "call_E8H6NCXjrZy1PdYXiw1fKHsT",
+    "id": "call_dSPlVRiFFRC7DxvSLxzBmYb2",
     "name": "shell",
     "executed": false,
     "providerState": {
-     "itemId": "fc_07c33f61f02600a5016ac38e812a5087d0b877fc7e7025aa3b"
+     "itemId": "fc_01a2cc014ce09387016ac3eacf923c87d0a78ed833dcf842d4"
     },
     "state": {
      "status": "completed",
@@ -501,7 +501,7 @@
      "content": [
       {
        "type": "text",
-       "text": "\n> http-server@1.0.0 test\n> node --test\n\n\u2714 reads request line, case-insensitive headers and binary body (7.6378ms)\n\u2714 waits for all headers and the complete declared body (0.4089ms)\n\u2714 accepts no headers and zero-length bodies (0.1215ms)\n\u2714 rejects malformed lines, headers and ambiguous body framing (1.0196ms)\n\u2714 enforces request line limit (0.1459ms)\n\u2714 preserves existing routing and rejects malformed request lines (0.3187ms)\n\u2139 tests 6\n\u2139 suites 0\n\u2139 pass 6\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 103.9622\n"
+       "text": "\n> http-server@1.0.0 test\n> node --test\n\n\u2714 reads request line, case-insensitive headers, and binary body (2.0854ms)\n\u2714 waits for the entire request across every possible split (0.8313ms)\n\u2714 rejects malformed requests (0.6739ms)\n\u2714 preserves existing routes and reports bad request lines (1.656ms)\n\u2139 tests 4\n\u2139 suites 0\n\u2139 pass 4\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 138.4713\n"
       }
      ],
      "metadata": {
@@ -511,29 +511,29 @@
      }
     },
     "time": {
-     "created": 1791200897091,
-     "ran": 1791200897401,
-     "completed": 1791200898474
+     "created": 1791224527730,
+     "ran": 1791224528033,
+     "completed": 1791224529435
     }
    }
   ],
   "snapshot": {
-   "start": "3a0465d41765310ac7e5bb44ed81342412ff233a",
-   "end": "3a0465d41765310ac7e5bb44ed81342412ff233a",
+   "start": "d35066e90c7a97711495f3ff768dabe434c8aead",
+   "end": "d35066e90c7a97711495f3ff768dabe434c8aead",
    "files": []
   },
   "finish": "tool-calls",
   "providerState": {
-   "responseId": "resp_07c33f61f02600a5016ac38e7f459887d0a8740394f8d0efe9",
+   "responseId": "resp_01a2cc014ce09387016ac3eace492487d0b7811e2f7cd133d0",
    "serviceTier": "default"
   },
   "cost": 0,
   "tokens": {
-   "input": 1265,
+   "input": 1110,
    "output": 18,
    "reasoning": 0,
    "cache": {
-    "read": 8704,
+    "read": 7040,
     "write": 0
    }
   }
@@ -541,9 +541,9 @@
  {
   "type": "assistant",
   "time": {
-   "created": 1791200898729,
-   "streamed": 1791200903175,
-   "completed": 1791200903280
+   "created": 1791224529801,
+   "streamed": 1791224533492,
+   "completed": 1791224533622
   },
   "agent": "build",
   "model": {
@@ -554,30 +554,30 @@
   "content": [
    {
     "type": "text",
-    "text": "Implemented request parsing for the request line, headers, and complete `Content-Length` body.\n\n- `/echo` returns plain text such as `POST /echo`.\n- Malformed or truncated requests receive `400 Bad Request`.\n- Existing routes remain supported.\n\nValidation: `npm test` \u2014 all 6 tests pass.",
+    "text": "Implemented request-line, header, and `Content-Length` body parsing.\n\n- `/echo` returns plain text such as `POST /echo`.\n- Malformed or incomplete requests return `400 Bad Request`.\n- Existing routes remain unchanged.\n- Added tests and documentation.\n\n`npm test`: all 4 tests pass.",
     "state": {
-     "itemId": "msg_07c33f61f02600a5016ac38e84d33087d0a4f2ac9491a642c3",
+     "itemId": "msg_01a2cc014ce09387016ac3ead3d95087d0aef501a6f7ba6f76",
      "phase": "final_answer"
     }
    }
   ],
   "snapshot": {
-   "start": "3a0465d41765310ac7e5bb44ed81342412ff233a",
-   "end": "3a0465d41765310ac7e5bb44ed81342412ff233a",
+   "start": "d35066e90c7a97711495f3ff768dabe434c8aead",
+   "end": "d35066e90c7a97711495f3ff768dabe434c8aead",
    "files": []
   },
   "finish": "stop",
   "providerState": {
-   "responseId": "resp_07c33f61f02600a5016ac38e836d5487d09162d6024bb2a40b",
+   "responseId": "resp_01a2cc014ce09387016ac3ead253ac87d09517436ecce666db",
    "serviceTier": "default"
   },
   "cost": 0,
   "tokens": {
-   "input": 4403,
-   "output": 67,
+   "input": 8310,
+   "output": 66,
    "reasoning": 0,
    "cache": {
-    "read": 5760,
+    "read": 0,
     "write": 0
    }
   }
@@ -585,7 +585,7 @@
  {
   "type": "idle",
   "time": {
-   "created": 1791200903285
+   "created": 1791224533633
   },
   "outcome": "succeeded"
  }
