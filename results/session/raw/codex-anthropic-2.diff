@@ -1,185 +1,153 @@
-diff --git a/README.md b/README.md
-index 0cd6db5..bba96e3 100644
---- a/README.md
-+++ b/README.md
-@@ -5,3 +5,5 @@ Run: `node server.js`
- Minimum Node.js version: 22
- 
- Port: 8080
-+
-+Routes: `/`, `/users/{id}/posts/{id}`, and `/echo` (replies with the request method and path). The server parses the request line, headers and any `Content-Length` body, and replies `400 Bad Request` to malformed requests.
 diff --git a/parser.js b/parser.js
 new file mode 100644
-index 0000000..a93c2dc
+index 0000000..52ce029
 --- /dev/null
 +++ b/parser.js
-@@ -0,0 +1,78 @@
+@@ -0,0 +1,33 @@
 +const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +[^ ]+$/;
-+const HEADER_LINE_PATTERN = /^([!#$%&'*+.^_`|~0-9A-Za-z-]+):[ \t]*(.*?)[ \t]*$/;
++const HEADER_PATTERN = /^([!#$%&'*+.^_`|~0-9A-Za-z-]+):[ \t]*(.*?)[ \t]*$/;
 +const CONTENT_LENGTH_PATTERN = /^\d+$/;
-+const LINE_END = '\r\n';
-+const HEADERS_END = '\r\n\r\n';
 +
-+const INCOMPLETE = { state: 'incomplete' };
-+const INVALID = { state: 'invalid' };
++const parseRequestHead = (head) => {
++  const [requestLine, ...headerLines] = head.split('\r\n');
++  const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);
++  if (!requestLineMatch) return null;
 +
-+const parseHeaders = (headerBlock) => {
-+  const headerValues = new Map();
-+  const headerLines = headerBlock === '' ? [] : headerBlock.split(LINE_END);
++  const headers = new Map();
 +  for (const headerLine of headerLines) {
-+    const headerMatch = HEADER_LINE_PATTERN.exec(headerLine);
++    const headerMatch = HEADER_PATTERN.exec(headerLine);
 +    if (!headerMatch) return null;
-+
 +    const name = headerMatch[1].toLowerCase();
-+    headerValues.set(name, [...(headerValues.get(name) ?? []), headerMatch[2]]);
++    const value = headerMatch[2];
++    if (name === 'content-length' && headers.has(name) && headers.get(name) !== value) return null;
++    headers.set(name, value);
 +  }
-+  return headerValues;
-+};
++  if (headers.has('transfer-encoding')) return null;
 +
-+const readContentLength = (headerValues, maxBodyBytes) => {
-+  if (headerValues.has('transfer-encoding')) return null;
-+  if (!headerValues.has('content-length')) return 0;
-+
-+  const distinctValues = [...new Set(headerValues.get('content-length'))];
-+  if (distinctValues.length !== 1 || !CONTENT_LENGTH_PATTERN.test(distinctValues[0])) return null;
-+
-+  const contentLength = Number(distinctValues[0]);
-+  return Number.isSafeInteger(contentLength) && contentLength <= maxBodyBytes ? contentLength : null;
-+};
-+
-+const parseRequest = (receivedBytes, { maxRequestLineBytes, maxHeaderBytes, maxBodyBytes }) => {
-+  const requestLineEnd = receivedBytes.subarray(0, maxRequestLineBytes).indexOf(LINE_END);
-+  if (requestLineEnd === -1) {
-+    return receivedBytes.length >= maxRequestLineBytes ? INVALID : INCOMPLETE;
++  let contentLength = 0;
++  if (headers.has('content-length')) {
++    const value = headers.get('content-length');
++    if (!CONTENT_LENGTH_PATTERN.test(value)) return null;
++    contentLength = Number(value);
++    if (!Number.isSafeInteger(contentLength)) return null;
 +  }
 +
-+  const requestLineMatch = REQUEST_LINE_PATTERN.exec(receivedBytes.toString('latin1', 0, requestLineEnd));
-+  if (!requestLineMatch) return INVALID;
-+
-+  const headersEnd = receivedBytes.indexOf(HEADERS_END, requestLineEnd);
-+  if (headersEnd === -1) {
-+    const pendingHeaderBytes = receivedBytes.length - requestLineEnd;
-+    return pendingHeaderBytes > maxHeaderBytes ? INVALID : INCOMPLETE;
-+  }
-+  if (headersEnd - requestLineEnd > maxHeaderBytes) return INVALID;
-+
-+  const headerBlock =
-+    headersEnd > requestLineEnd
-+      ? receivedBytes.toString('latin1', requestLineEnd + LINE_END.length, headersEnd)
-+      : '';
-+  const headerValues = parseHeaders(headerBlock);
-+  if (!headerValues) return INVALID;
-+
-+  const contentLength = readContentLength(headerValues, maxBodyBytes);
-+  if (contentLength === null) return INVALID;
-+
-+  const bodyStart = headersEnd + HEADERS_END.length;
-+  if (receivedBytes.length < bodyStart + contentLength) return INCOMPLETE;
-+
-+  const headers = Object.fromEntries(
-+    [...headerValues].map(([name, values]) => [name, values.join(', ')]),
-+  );
 +  const [, method, target] = requestLineMatch;
-+  return {
-+    state: 'complete',
-+    request: {
-+      method,
-+      target,
-+      headers,
-+      body: receivedBytes.toString('latin1', bodyStart, bodyStart + contentLength),
-+    },
-+  };
++  return { method, target, headers, contentLength };
 +};
 +
-+module.exports = { parseRequest };
++module.exports = { parseRequestHead };
 diff --git a/router.js b/router.js
-index 1c1eef1..3c84fc8 100644
+index 1c1eef1..0cb60ef 100644
 --- a/router.js
 +++ b/router.js
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -const REQUEST_LINE_PATTERN = /^([^ ]+) +([^ ]+) +[^ ]+$/;
-+const ECHO_PATH = '/echo';
  const ROOT_TARGET = '/';
++const ECHO_PATH = '/echo';
  const USER_POST_TARGET_PATTERN = /^\/users\/([^/]+)\/posts\/([^/]+)$/;
  
-@@ -19,11 +19,15 @@ const METHOD_NOT_ALLOWED_RESPONSE = buildResponse('405 Method Not Allowed', {
+ const buildResponse = (status, { headers = [], body = '' } = {}) =>
+@@ -19,11 +19,14 @@ const METHOD_NOT_ALLOWED_RESPONSE = buildResponse('405 Method Not Allowed', {
    headers: ['Allow: GET'],
  });
  
 -const routeRequestLine = (requestLine) => {
 -  const requestLineMatch = REQUEST_LINE_PATTERN.exec(requestLine);
 -  if (!requestLineMatch) return BAD_REQUEST_RESPONSE;
+-
+-  const [, method, target] = requestLineMatch;
 +const routeRequest = ({ method, target }) => {
-+  const [path] = target.split('?', 1);
++  const path = target.split('?')[0];
 +  if (path === ECHO_PATH) {
 +    return buildResponse('200 OK', {
 +      headers: ['Content-Type: text/plain'],
 +      body: `${method} ${path}`,
 +    });
 +  }
- 
--  const [, method, target] = requestLineMatch;
    const userPostMatch = USER_POST_TARGET_PATTERN.exec(target);
    if (target !== ROOT_TARGET && !userPostMatch) return NOT_FOUND_RESPONSE;
    if (method !== 'GET') return METHOD_NOT_ALLOWED_RESPONSE;
-@@ -36,4 +40,5 @@ const routeRequestLine = (requestLine) => {
+@@ -36,4 +39,4 @@ const routeRequestLine = (requestLine) => {
    });
  };
  
 -module.exports = { BAD_REQUEST_RESPONSE, routeRequestLine };
 +module.exports = { BAD_REQUEST_RESPONSE, routeRequest };
-+
 diff --git a/server.js b/server.js
-index b5eb1f6..a99fa96 100644
+index b5eb1f6..6680d7a 100644
 --- a/server.js
 +++ b/server.js
-@@ -1,9 +1,11 @@
+@@ -1,8 +1,11 @@
  const net = require('net');
 -const { BAD_REQUEST_RESPONSE, routeRequestLine } = require('./router');
-+const { parseRequest } = require('./parser');
 +const { BAD_REQUEST_RESPONSE, routeRequest } = require('./router');
++const { parseRequestHead } = require('./parser');
  
  const PORT = process.env.PORT || 8080;
  const DEFAULT_MAX_REQUEST_LINE_BYTES = 8192;
--const REQUEST_LINE_END = '\r\n';
-+const MAX_HEADER_BYTES = 16384;
-+const MAX_BODY_BYTES = 1048576;
++const MAX_BODY_BYTES = 1024 * 1024;
++const HEAD_END = '\r\n\r\n';
+ const REQUEST_LINE_END = '\r\n';
  
  const readMaxRequestLineBytes = () => {
-   const configuredValue = process.env.MAX_REQUEST_LINE_BYTES ?? DEFAULT_MAX_REQUEST_LINE_BYTES;
-@@ -16,11 +18,10 @@ const readMaxRequestLineBytes = () => {
+@@ -15,30 +18,45 @@ const readMaxRequestLineBytes = () => {
+ };
  
  const MAX_REQUEST_LINE_BYTES = readMaxRequestLineBytes();
- 
+-
 -const findRequestLine = (receivedBytes) => {
 -  const requestLineEnd = receivedBytes
 -    .subarray(0, MAX_REQUEST_LINE_BYTES)
 -    .indexOf(REQUEST_LINE_END);
 -  return requestLineEnd === -1 ? null : receivedBytes.toString('latin1', 0, requestLineEnd);
-+const PARSE_LIMITS = {
-+  maxRequestLineBytes: MAX_REQUEST_LINE_BYTES,
-+  maxHeaderBytes: MAX_HEADER_BYTES,
-+  maxBodyBytes: MAX_BODY_BYTES,
- };
+-};
++const MAX_HEAD_BYTES = MAX_REQUEST_LINE_BYTES * 4;
  
  const server = net.createServer((conn) => {
-@@ -33,10 +34,10 @@ const server = net.createServer((conn) => {
+   let receivedBytes = Buffer.alloc(0);
++  let request = null;
++  let bodyStart = 0;
+ 
+   const sendResponse = (response) => conn.end(response, 'latin1');
+ 
++  const handleData = () => {
++    if (request === null) {
++      const lineEnd = receivedBytes
++        .subarray(0, MAX_REQUEST_LINE_BYTES + REQUEST_LINE_END.length)
++        .indexOf(REQUEST_LINE_END);
++      if (lineEnd === -1 && receivedBytes.length >= MAX_REQUEST_LINE_BYTES) {
++        return sendResponse(BAD_REQUEST_RESPONSE);
++      }
++      const headEnd = receivedBytes.subarray(0, MAX_HEAD_BYTES + HEAD_END.length).indexOf(HEAD_END);
++      if (headEnd === -1) {
++        return receivedBytes.length >= MAX_HEAD_BYTES ? sendResponse(BAD_REQUEST_RESPONSE) : undefined;
++      }
++      request = parseRequestHead(receivedBytes.toString('latin1', 0, headEnd));
++      if (request === null || request.contentLength > MAX_BODY_BYTES) {
++        return sendResponse(BAD_REQUEST_RESPONSE);
++      }
++      bodyStart = headEnd + HEAD_END.length;
++    }
++
++    if (receivedBytes.length - bodyStart >= request.contentLength) {
++      const body = receivedBytes.subarray(bodyStart, bodyStart + request.contentLength);
++      sendResponse(routeRequest({ ...request, body }));
++    }
++  };
++
+   conn.on('error', () => {});
+   conn.on('data', (chunk) => {
      if (conn.writableEnded) return;
      receivedBytes = Buffer.concat([receivedBytes, chunk]);
- 
+-
 -    const requestLine = findRequestLine(receivedBytes);
 -    if (requestLine !== null) {
 -      sendResponse(routeRequestLine(requestLine));
 -    } else if (receivedBytes.length >= MAX_REQUEST_LINE_BYTES) {
-+    const parsed = parseRequest(receivedBytes, PARSE_LIMITS);
-+    if (parsed.state === 'complete') {
-+      sendResponse(routeRequest(parsed.request));
-+    } else if (parsed.state === 'invalid') {
-       sendResponse(BAD_REQUEST_RESPONSE);
-     }
+-      sendResponse(BAD_REQUEST_RESPONSE);
+-    }
++    handleData();
    });
-@@ -46,3 +47,4 @@ const server = net.createServer((conn) => {
- });
- 
- server.listen(PORT);
-+
+   conn.on('end', () => {
+     if (!conn.writableEnded) sendResponse(BAD_REQUEST_RESPONSE);

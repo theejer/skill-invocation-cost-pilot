@@ -216,7 +216,7 @@
     "model_requested": "openai/gpt-6.1-sol",
     "route": "direct",
     "model_reported": "gpt-6.1-sol",
-    "effort": "default",
+    "effort": "harness default",
     "agent": "build"
   },
   "opencode-anthropic": {
@@ -224,7 +224,7 @@
     "model_requested": "openrouter/anthropic/claude-sonnet-5.5",
     "route": "openrouter",
     "model_reported": "anthropic/claude-sonnet-5.5",
-    "effort": "default",
+    "effort": "harness default",
     "agent": "build"
   }
 }

@@ -20,7 +20,7 @@ Cost pilot for a study of skill invocation in LLM coding agents. It measures, fo
 | `pi-openai` | Pi | GPT-6.1 Sol | OpenAI (subscription login) |
 | `pi-anthropic` | Pi | Claude Sonnet 5.5 | OpenRouter |
 
-Each run names its model explicitly and sets a fixed effort per model, the default of its vendor's harness: medium for Claude Sonnet 5.5 (Claude Code) and low for GPT-6.1 Sol (Codex). The level is passed as Claude Code `--effort`, Codex `-c model_reasoning_effort=`, OpenCode `-m <model>#<level>` and Pi `--thinking`, and each run records it; `environment.effort_reported` holds the level the harness itself logs (Claude Code logs none). Harness versions are pinned in `scripts/common.py` (Claude Code 2.1.289, Codex 0.160.0, OpenCode 2.0.22, Pi 1.0.0); a run on any other version stops with an error. Subscription-login runs are costed at the same model's API prices.
+Each run names its model explicitly. Job 2 runs each model at a fixed effort, the default of its vendor's harness: medium for Claude Sonnet 5.5 (Claude Code) and low for GPT-6.1 Sol (Codex). The adapters pass the level as Claude Code `--effort`, Codex `-c model_reasoning_effort=`, OpenCode `-m <model>#<level>` and Pi `--thinking`; `effort` records the level in effect, and `environment.effort_reported` holds the level the harness itself logs (Claude Code logs none). Job 1 runs at each harness's default effort. Harness versions are pinned in `scripts/common.py` (Claude Code 2.1.289, Codex 0.160.0, OpenCode 2.0.22, Pi 1.0.0); a run on any other version stops with an error. Subscription-login runs are costed at the same model's API prices.
 
 ## Fixture and prompts
 
