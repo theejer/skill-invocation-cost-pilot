@@ -88,7 +88,9 @@ Claude Code through OpenRouter (`cc-openai`) reports no per-call token counts. E
 | `session/sessions.csv` | session | calls, final-call context, total input sent, token multiplier, output, reasoning, costs, lines added, whether used |
 | `session/summary.json` | configuration, plus `pooled` | spreads per configuration; token multiplier and calls pooled across all used sessions |
 | `*/environment.json` | configuration | what the harness loaded |
-| `*/raw/` | run | harness output, stderr, the agent's diff, and Codex's session file, OpenCode's messages or OpenRouter's generation lookups |
+| `*/raw/` | run | harness output, stderr, the agent's diff, OpenCode's messages or OpenRouter's generation lookups |
+
+Codex session files are read to extract usage but kept locally, not published in `results/`.
 
 A session is excluded (`used` = false) only when an error ended it before any line was added.
 

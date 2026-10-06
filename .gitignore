@@ -2,3 +2,4 @@ __pycache__/
 /.env
 /.env.*
 /auth/
+/results/**/raw/*.session.jsonl
